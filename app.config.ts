@@ -25,7 +25,7 @@ export default ({ config }: ConfigContext) => ({
     slug: "vrcmm",
     version: "0.0.1",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./src/assets/images/icon.png",
     scheme: "vrcmm", // This is used for deep linking (ex. schema://internal/link)
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
@@ -42,9 +42,9 @@ export default ({ config }: ConfigContext) => ({
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon-fg.png",
-        backgroundImage: "./assets/images/adaptive-icon-bg.png",
-        monochromeImage: "./assets/images/adaptive-icon-mono.png",
+        foregroundImage: "./src/assets/images/adaptive-icon-fg.png",
+        backgroundImage: "./src/assets/images/adaptive-icon-bg.png",
+        monochromeImage: "./src/assets/images/adaptive-icon-mono.png",
       },
       edgeToEdgeEnabled: true,
       package: appIdentifier[profile],
@@ -52,7 +52,7 @@ export default ({ config }: ConfigContext) => ({
     web: {
       bundler: "metro",
       output: "static",
-      favicon: "./assets/images/favicon.png"
+      favicon: "./src/assets/images/favicon.png"
     },
     plugins: [
       "expo-router",
@@ -61,7 +61,7 @@ export default ({ config }: ConfigContext) => ({
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./src/assets/images/splash-icon.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: "#ffffff"

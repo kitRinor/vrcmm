@@ -1,4 +1,4 @@
-import { ConfigContext } from "@expo/config"
+import { ConfigContext } from "@expo/config";
 
 interface ProfileSwitch<T = any> {development: T; preview: T; production: T;}
 
@@ -42,8 +42,9 @@ export default ({ config }: ConfigContext) => ({
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
-        backgroundColor: "#ffffff"
+        foregroundImage: "./assets/images/adaptive-icon-fg.png",
+        backgroundImage: "./assets/images/adaptive-icon-bg.png",
+        monochromeImage: "./assets/images/adaptive-icon-mono.png",
       },
       edgeToEdgeEnabled: true,
       package: appIdentifier[profile],

@@ -1,7 +1,7 @@
-import { HapticTab } from '@/components/HapticTab';
-import IconButton from '@/components/icon-components/IconButton';
-import IconSymbol from '@/components/icon-components/IconView';
-import SearchBox from '@/components/SearchBox';
+import { HapticTab } from '@/components/layout/HapticTab';
+import IconButton from '@/components/view/icon-components/IconButton';
+import IconSymbol from '@/components/view/icon-components/IconView';
+import SearchBox from '@/components/view/SearchBox';
 import { spacing } from '@/config/styles';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';

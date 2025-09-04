@@ -5,21 +5,22 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 interface Props {
   size?: number;
+  notext?: boolean;
+  absolute?: boolean;
 }
 
-const LoadingIndicator = ({size}: Props) => {
+const LoadingIndicator = ({size, notext = false, absolute = false}: Props) => {
   const theme = useTheme();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, absolute ? {position: "absolute"} : {}]}>
       <ActivityIndicator size={size || 90} color={theme.colors.border} />
-      <Text style={[styles.text, {color: theme.colors.subText}]} >Loading...</Text>
+      {!notext && <Text style={[styles.text, {color: theme.colors.subText}]} >Loading...</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
     zIndex: 1,
     top: 0,
     left: 0,

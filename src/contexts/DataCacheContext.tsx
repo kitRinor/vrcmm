@@ -2,6 +2,8 @@
 import { User, World } from "@/api/vrchat";
 import { createContext, ReactNode, useContext, useRef } from "react";
 
+// json-Data Cache in Memory
+
 
 interface Cache<T> {
   expiredAt: Date;

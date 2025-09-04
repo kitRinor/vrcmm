@@ -1,10 +1,10 @@
 import { Avatar, FavoriteGroup, User, World } from "@/api/vrchat";
-import GenericScreen from "@/components/GenericScreen";
-import CardViewAvatar from "@/components/item-CardView/CardViewAvatar";
-import CardViewUser from "@/components/item-CardView/CardViewUser";
-import CardViewWorld from "@/components/item-CardView/CardViewWorld";
-import LoadingIndicator from "@/components/LoadingIndicator";
-import SelectGroupButton from "@/components/SelectGroupButton";
+import GenericScreen from "@/components/layout/GenericScreen";
+import CardViewAvatar from "@/components/view/item-CardView/CardViewAvatar";
+import CardViewUser from "@/components/view/item-CardView/CardViewUser";
+import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
+import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
@@ -103,7 +103,7 @@ export default function Favorites() {
           onChange={setSelectedGroup}
           nameExtractor={(item) => item.displayName.length > 0 ? item.displayName : undefined}
         />
-        { isLoading && <LoadingIndicator /> }
+        { isLoading && <LoadingIndicator  absolute/> }
         { selectedGroup ? (
           <FlatList
             data={worlds}
@@ -169,7 +169,7 @@ export default function Favorites() {
           onChange={setSelectedGroup}
           nameExtractor={(item) => item.displayName.length > 0 ? item.displayName : undefined}
         />
-        { isLoading && <LoadingIndicator /> }
+        { isLoading && <LoadingIndicator absolute/> }
         { selectedGroup ? (
           <FlatList
             data={friends}
@@ -235,7 +235,7 @@ export default function Favorites() {
           onChange={setSelectedGroup}
           nameExtractor={(item) => item.displayName.length > 0 ? item.displayName : undefined}
         />
-        { isLoading && <LoadingIndicator /> }
+        { isLoading && <LoadingIndicator absolute/> }
         { selectedGroup ? (
           <FlatList
             data={avatars}

@@ -25,8 +25,8 @@ const radius = {
 }
 
 const globalStyles = StyleSheet.create({
+  // container styles
   container: {
-    flex: 1,
     padding: spacing.small,
   },
   containerCentered: {
@@ -49,14 +49,26 @@ const globalStyles = StyleSheet.create({
     width: '100%',
     padding: spacing.small,
   },
+  headerContainer: {
+    width: '100%',
+    padding: spacing.small,
+    textAlign: "center",
+    // borderColor: 'blue', borderWidth: 1, borderStyle: 'solid',
+  },
+  //text Styles
   header: {
-    fontSize: 18,
+    fontSize: fontSize.large,
     fontWeight: "bold",
-    marginVertical: 10,
+  },
+  subheader: {
+    fontSize: fontSize.medium,
+    fontWeight: "bold",
   },
   text: {
-    padding: spacing.medium,
+    fontSize: fontSize.medium,
   },
+
+  // form elements
   input: {
     borderColor: 'gray',
     borderWidth: 1,
@@ -81,4 +93,4 @@ const globalStyles = StyleSheet.create({
 
 
 export default globalStyles;
-export { fontWeight, fontSize, spacing, radius };
+export { fontSize, fontWeight, radius, spacing };

@@ -2,8 +2,8 @@ import { fontSize, spacing } from "@/config/styles";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
-import IconButton from "../icon-components/IconButton";
-import { SupportedIconNames } from "../icon-components/utils";
+import IconButton from "../../view/icon-components/IconButton";
+import { SupportedIconNames } from "../../view/icon-components/utils";
 
 interface Props {
   title: string ;

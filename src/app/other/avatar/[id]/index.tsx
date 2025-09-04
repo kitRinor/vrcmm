@@ -1,8 +1,8 @@
 import { Avatar } from "@/api/vrchat";
-import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
-import GenericScreen from "@/components/GenericScreen";
-import CardViewAvatarDetail from "@/components/item-CardView/detail/CardViewAvatarDetail";
-import LoadingIndicator from "@/components/LoadingIndicator";
+import GenericScreen from "@/components/layout/GenericScreen";
+import DetailItemContainer from "@/components/screen/detail/DetailItemContainer";
+import CardViewAvatarDetail from "@/components/view/item-CardView/detail/CardViewAvatarDetail";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, radius, spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
@@ -60,7 +60,7 @@ export default function AvatarDetail() {
           </ScrollView>
         </View>
       ) : (
-        <LoadingIndicator />
+        <LoadingIndicator  />
       )}
     </GenericScreen>
   );

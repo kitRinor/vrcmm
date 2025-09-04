@@ -1,7 +1,7 @@
-import GenericModal from "@/components/GenericModal";
-import GenericScreen from "@/components/GenericScreen";
-import IconSymbol from "@/components/icon-components/IconView";
-import LoadingIndicator from "@/components/LoadingIndicator";
+import GenericModal from "@/components/layout/GenericModal";
+import GenericScreen from "@/components/layout/GenericScreen";
+import IconSymbol from "@/components/view/icon-components/IconView";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { spacing } from "@/config/styles";
 import texts from "@/config/texts";
 import useAuth from "@/contexts/AuthContext";
@@ -144,7 +144,7 @@ export default function Login() {
 
         {/* 2fa modal */}
         <GenericModal open={openTFA} onClose={() => setOpenTFA(false)}>
-          <Text style={[globalStyles.text, {color: theme.colors.text}]}>Two-Factor Authentication</Text>
+          <Text style={[globalStyles.subheader, globalStyles.headerContainer, {color: theme.colors.text}]}>Two-Factor Authentication</Text>
           <Text style={[globalStyles.text, {color: theme.colors.text}]}>
             {modeTFA === "totp" ? "Enter the code from your authenticator app" : "Enter the code sent to your email"}
           </Text>

@@ -1,8 +1,8 @@
 import { Avatar, LimitedWorld } from "@/api/vrchat";
-import GenericScreen from "@/components/GenericScreen";
-import CardViewAvatar from "@/components/item-CardView/CardViewAvatar";
-import CardViewWorld from "@/components/item-CardView/CardViewWorld";
-import LoadingIndicator from "@/components/LoadingIndicator";
+import GenericScreen from "@/components/layout/GenericScreen";
+import CardViewAvatar from "@/components/view/item-CardView/CardViewAvatar";
+import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
@@ -43,7 +43,7 @@ export default function Resources() {
 
     return (
       <View>
-        {isLoading && <LoadingIndicator />}
+        {isLoading && <LoadingIndicator absolute />}
         <Text style={{color: theme.colors.text}}>Avatars</Text>
         <FlatList
           data={avatars}
@@ -80,7 +80,7 @@ export default function Resources() {
 
     return (
       <View>
-        {isLoading && <LoadingIndicator />}
+        {isLoading && <LoadingIndicator absolute/>}
         <Text style={{color: theme.colors.text}}>Worlds</Text>
         <FlatList
           data={worlds}

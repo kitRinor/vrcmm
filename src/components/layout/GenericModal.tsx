@@ -42,8 +42,6 @@ const styles = StyleSheet.create({
       minHeight: 200,
       borderRadius: radius.medium,
       padding: spacing.large,
-      justifyContent: "center",
-      alignItems: "center",
       
       // borderColor: 'blue',
       // borderWidth: 1,

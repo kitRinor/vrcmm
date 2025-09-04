@@ -1,9 +1,9 @@
 import { CurrentUser } from "@/api/vrchat";
-import LinkChip from "@/components/chip-badge/LinkChip";
-import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
-import GenericScreen from "@/components/GenericScreen";
-import CardViewUserDetail from "@/components/item-CardView/detail/CardViewUserDetail";
-import LoadingIndicator from "@/components/LoadingIndicator";
+import GenericScreen from "@/components/layout/GenericScreen";
+import DetailItemContainer from "@/components/screen/detail/DetailItemContainer";
+import LinkChip from "@/components/view/chip-badge/LinkChip";
+import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { radius, spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
@@ -69,7 +69,7 @@ export default function Profile() {
         
         </View>
       ) : (
-        <LoadingIndicator />
+        <LoadingIndicator absolute />
       )}
     </GenericScreen>
   );

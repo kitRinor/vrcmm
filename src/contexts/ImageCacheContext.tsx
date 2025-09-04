@@ -1,13 +1,12 @@
 
-
-// VRCのAPIを使うためのContext
 import { omitObject } from "@/lib/objectUtils";
+import * as Crypto from 'expo-crypto';
 import * as FileSystem from 'expo-file-system';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { Image } from "react-native";
 import useVRChat from "./VRChatContext";
 
-
+// Image Cache in Storage
 
 interface ImageCacheContextType {
   // CachedImage: React.FC<{url: string}>;
@@ -18,7 +17,10 @@ const Context = createContext<ImageCacheContextType | undefined>(undefined)
 
 
 const cacheDir = `${FileSystem.documentDirectory}cache/images`;
-const getLocalUri = (url: string) => cacheDir + '/' + url.split("/").pop();
+const getLocalUri = async (url: string) => {
+  const key = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, url)
+  return cacheDir + '/' + key;
+}
 
 
 
@@ -42,7 +44,9 @@ const ImageCacheProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
   }, [])
 
   const clearCache = async () => {
+    // delete and recreate cache dir
     await FileSystem.deleteAsync(cacheDir, { idempotent: true });
+    await FileSystem.makeDirectoryAsync(cacheDir, { intermediates: true });
   };
 
   const getCacheInfo = async () => {
@@ -70,7 +74,7 @@ const CachedImage = ({src:remoteUri , ...rest}: {src: string, [key: string]: any
     
     const load = async () => {
       try {
-        const localUri = getLocalUri(remoteUri);
+        const localUri = await getLocalUri(remoteUri);
         const fileInfo = await FileSystem.getInfoAsync(localUri);
         if (fileInfo.exists) {
           setSrc(localUri);

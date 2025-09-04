@@ -1,6 +1,6 @@
 import { spacing } from "@/config/styles";
 import { useRouter } from "expo-router";
-import IconButton from "./icon-components/IconButton";
+import IconButton from "../view/icon-components/IconButton";
 
 const BackButtonForHeader = () => {
   const router = useRouter();

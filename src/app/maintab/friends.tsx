@@ -1,8 +1,8 @@
 import { LimitedUserFriend, User, UserState } from "@/api/vrchat";
-import GenericScreen from "@/components/GenericScreen";
-import ListViewUser from "@/components/item-ListView/ListViewUser";
-import LoadingIndicator from "@/components/LoadingIndicator";
-import SelectGroupButton from "@/components/SelectGroupButton";
+import GenericScreen from "@/components/layout/GenericScreen";
+import ListViewUser from "@/components/view/item-ListView/ListViewUser";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
+import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
@@ -64,7 +64,7 @@ export default function Friends() {
 
     return (
       <View style={{ flex: 1 }}>
-        { isLoading && <LoadingIndicator /> }
+        { isLoading && <LoadingIndicator absolute /> }
         <SelectGroupButton
           style={styles.selectGroupButton}
           data={["online", "active", "offline"] as UserState[]}
@@ -80,6 +80,7 @@ export default function Friends() {
           )}
           numColumns={1}
         />
+
       </View>
     )
   }
@@ -107,7 +108,7 @@ export default function Friends() {
     }, []);
     return (
       <>
-        { isLoading && <LoadingIndicator /> }
+        { isLoading && <LoadingIndicator absolute /> }
         <FlatList
           data={friends}
           keyExtractor={(item) => item.id}
@@ -145,7 +146,7 @@ export default function Friends() {
     }, []);
     return (
       <>
-        { isLoading && <LoadingIndicator /> }
+        { isLoading && <LoadingIndicator absolute /> }
         <FlatList
           data={friends}
           keyExtractor={(item) => item.id}
@@ -181,7 +182,7 @@ export default function Friends() {
     }, []);
     return (
       <>
-        { isLoading && <LoadingIndicator /> }
+        { isLoading && <LoadingIndicator absolute /> }
         <FlatList
           data={friends}
           keyExtractor={(item) => item.id}

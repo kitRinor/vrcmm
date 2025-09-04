@@ -1,8 +1,8 @@
 import { Group } from "@/api/vrchat";
-import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
-import GenericScreen from "@/components/GenericScreen";
-import CardViewGroupDetail from "@/components/item-CardView/detail/CardViewGroupDetail";
-import LoadingIndicator from "@/components/LoadingIndicator";
+import GenericScreen from "@/components/layout/GenericScreen";
+import DetailItemContainer from "@/components/screen/detail/DetailItemContainer";
+import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, radius, spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";

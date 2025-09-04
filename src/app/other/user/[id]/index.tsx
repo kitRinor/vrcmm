@@ -1,9 +1,9 @@
 import { User } from "@/api/vrchat";
-import LinkChip from "@/components/chip-badge/LinkChip";
-import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
-import GenericScreen from "@/components/GenericScreen";
-import CardViewUserDetail from "@/components/item-CardView/detail/CardViewUserDetail";
-import LoadingIndicator from "@/components/LoadingIndicator";
+import GenericScreen from "@/components/layout/GenericScreen";
+import DetailItemContainer from "@/components/screen/detail/DetailItemContainer";
+import LinkChip from "@/components/view/chip-badge/LinkChip";
+import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, radius, spacing } from "@/config/styles";
 import { CachedImage } from "@/contexts/ImageCacheContext";
 import useVRChat from "@/contexts/VRChatContext";
@@ -99,7 +99,7 @@ export default function UserDetail() {
           />
           <ScrollView>
             <DetailItemContainer title="Location">
-              {!locationInfo && <LoadingIndicator size={30} />}
+              {!locationInfo && <LoadingIndicator size={30} absolute />}
               { locationInfo?.image && <CachedImage style={styles.detailItemImage} src={locationInfo?.image ?? ""} />}
               <View style={styles.detailItemContent}>
                 { locationInfo?.baseInfo && <Text numberOfLines={1} style={{color: theme.colors.text}}>{locationInfo?.baseInfo}</Text>}

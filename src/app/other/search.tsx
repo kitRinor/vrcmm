@@ -1,9 +1,9 @@
 import { GroupsApi, LimitedGroup, LimitedUserSearch, LimitedWorld, UsersApi, WorldsApi } from "@/api/vrchat";
-import GenericScreen from "@/components/GenericScreen";
-import CardViewGroup from "@/components/item-CardView/CardViewGroup";
-import CardViewUser from "@/components/item-CardView/CardViewUser";
-import CardViewWorld from "@/components/item-CardView/CardViewWorld";
-import SearchBox from "@/components/SearchBox";
+import GenericScreen from "@/components/layout/GenericScreen";
+import CardViewGroup from "@/components/view/item-CardView/CardViewGroup";
+import CardViewUser from "@/components/view/item-CardView/CardViewUser";
+import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
+import SearchBox from "@/components/view/SearchBox";
 import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";

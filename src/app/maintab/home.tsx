@@ -1,4 +1,4 @@
-import GenericScreen from "@/components/GenericScreen";
+import GenericScreen from "@/components/layout/GenericScreen";
 import globalStyles from "@/config/styles";
 import texts from "@/config/texts";
 import useAuth from "@/contexts/AuthContext";

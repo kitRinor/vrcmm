@@ -5,7 +5,7 @@ import LinkChip from "@/components/view/chip-badge/LinkChip";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, radius, spacing } from "@/config/styles";
-import { CachedImage } from "@/contexts/ImageCacheContext";
+import { CachedImage } from "@/contexts/CacheContext";
 import useVRChat from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { getInstanceType, parseLocationString } from "@/lib/vrchatUtils";

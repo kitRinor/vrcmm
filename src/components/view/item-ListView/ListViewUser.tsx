@@ -1,7 +1,6 @@
 import { World } from "@/api/vrchat";
 import { radius, spacing } from "@/config/styles";
-import useApiCache from "@/contexts/ApiCacheContext";
-import { CachedImage } from "@/contexts/ImageCacheContext";
+import useCache, { CachedImage } from "@/contexts/CacheContext";
 import { getInstanceType, getStatusColor, parseInstanceId, parseLocationString, UserLike } from "@/lib/vrchatUtils";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -36,13 +35,14 @@ const extractSubtitles = (data: UserLike, world?: World) => {
 
 const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
   const theme = useTheme();
-  const { worlds } = useApiCache();
+  const { world } = useCache();
   const [subtitles, setSubtitles] = useState<string[]>(extractSubtitles(user));
+  // ワールド情報をキャッシュから取得してサブタイトルを更新
   useEffect(() => {
     const {parsedLocation} = parseLocationString(Object(user).location);
     if (!parsedLocation?.worldId) return;
     // get world data with using cache
-    worlds.get(parsedLocation.worldId)
+    world.get(parsedLocation.worldId)
     .then((world) => {
       setSubtitles(extractSubtitles(user, world));
     })

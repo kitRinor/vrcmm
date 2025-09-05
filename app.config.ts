@@ -4,12 +4,12 @@ interface ProfileSwitch<T = any> {development: T; preview: T; production: T;}
 
 const appIdentifier: ProfileSwitch<string> = {
   development: "dev.ktrn.vrcmm.dev",
-  preview: "pre.ktrn.vrcmm.dev",
-  production: "ktrn.vrcmm.dev"
+  preview: "dev.ktrn.vrcmm.pre",
+  production: "dev.ktrn.vrcmm"
 }
 const appName: ProfileSwitch<string> = {
-  development: "VRCMM-dev",
-  preview: "VRCMM-pre",
+  development: "VRCMM(dev)",
+  preview: "VRCMM(pre)",
   production: "VRCMM"
 }
 const contact: ProfileSwitch<string> = {
@@ -31,7 +31,10 @@ export default ({ config }: ConfigContext) => ({
     newArchEnabled: true,
     owner: "ktrn-dev",
     extra: {
-      contact: contact[profile],
+      vrcmm: {// custom constants accessible via Constants.expoConfig.extra.vrcmm
+        buildProfile: profile,
+        contact: contact[profile],  
+      },
       eas: {
         projectId: "acd8a179-f1e0-4dc6-aad8-b201b899ce14"
       },

@@ -1,5 +1,5 @@
 import { radius, spacing } from "@/config/styles";
-import { CachedImage } from "@/contexts/ImageCacheContext";
+import { CachedImage } from "@/contexts/CacheContext";
 import { getStatusColor, UserLike } from "@/lib/vrchatUtils";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";

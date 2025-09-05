@@ -23,7 +23,10 @@ export default function Home() {
       <Button onPress={() => {navigate("/_sitemap")}} >SiteMap</Button>
 
       <Text style={[globalStyles.text, {color: theme.colors.subText}]}>
-        tmp
+        [ToDo]  
+        - Webhook for Feed,
+        - GloballyStateControl for Favorite Friend, Active-Online-Offline Friends
+
       </Text>
     </GenericScreen>
   );

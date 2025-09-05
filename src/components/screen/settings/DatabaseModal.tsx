@@ -1,7 +1,7 @@
 import GenericModal from "@/components/layout/GenericModal";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { spacing } from "@/config/styles";
-import useImageCache from "@/contexts/ImageCacheContext";
+import useCache from "@/contexts/CacheContext";
 import { Button, Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -15,7 +15,7 @@ interface Props {
 
 const DatabaseModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
-  const imageCache = useImageCache();
+  const imageCache = useCache();
 
   const [imageCacheInfo, setImageCacheInfo] = useState<{ size: number; count: number }>();
 
@@ -46,7 +46,7 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
               imageCacheInfo ? (
                 <View style={styles.cacheContainer}>
                   <Text style={[globalStyles.text, globalStyles.container, {color: theme.colors.text}]}>
-                    {`${(imageCacheInfo.size / (1024 * 1024)).toFixed(2)} MB, ${imageCacheInfo.count} images`}
+                    {`${(imageCacheInfo.size / (1024 * 1024)).toFixed(2)} MB, ${imageCacheInfo.count} Files`}
                   </Text>
                   <Button
                     style={[globalStyles.button, {marginLeft: spacing.medium}]}

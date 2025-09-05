@@ -1,5 +1,5 @@
 import { fontSize, radius, spacing } from "@/config/styles";
-import { CachedImage } from "@/contexts/ImageCacheContext";
+import { CachedImage } from "@/contexts/CacheContext";
 import { omitObject } from "@/lib/objectUtils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";

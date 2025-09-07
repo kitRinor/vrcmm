@@ -1,6 +1,6 @@
 
-import { User, World } from "@/api/vrchat";
 import { omitObject } from "@/lib/objectUtils";
+import { User, World } from "@/vrchat/api";
 import * as Crypto from 'expo-crypto';
 import * as FileSystem from 'expo-file-system';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";

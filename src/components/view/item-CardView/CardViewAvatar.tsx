@@ -1,5 +1,5 @@
-import { Avatar } from "@/api/vrchat";
 import { spacing } from "@/config/styles";
+import { Avatar } from "@/vrchat/api";
 import { useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import ReleaseStatusChip from "../chip-badge/ReleaseStatusChip";

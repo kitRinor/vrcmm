@@ -1,4 +1,4 @@
-import { Avatar, CurrentUser, Group, GroupAccessType, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, World } from "@/api/vrchat";
+import { Avatar, CurrentUser, Group, GroupAccessType, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, UserState, World } from "@/vrchat/api";
 export type UserLike = LimitedUserSearch | LimitedUserFriend | LimitedUserInstance | User | CurrentUser
 export type WorldLike = LimitedWorld | World
 export type GroupLike = LimitedGroup | Group
@@ -80,6 +80,13 @@ export function getInstanceType(type:InstanceType, groupAccessType?: GroupAccess
     return "Group";
   }
   return "unknown";
+}
+
+export function getState(user: LimitedUserFriend): UserState | undefined {
+  if (user.status !== "offline" ) return "online"; 
+  if (user.location && user.location !== "offline") return "active"; 
+  if (user.location != "") return "offline";
+  return undefined;
 }
 
 

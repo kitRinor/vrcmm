@@ -1,4 +1,3 @@
-import { Avatar, LimitedWorld } from "@/api/vrchat";
 import GenericScreen from "@/components/layout/GenericScreen";
 import CardViewAvatar from "@/components/view/item-CardView/CardViewAvatar";
 import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
@@ -7,6 +6,7 @@ import { spacing } from "@/config/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { routeToAvatar, routeToWorld } from "@/lib/route";
+import { Avatar, LimitedWorld } from "@/vrchat/api";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";

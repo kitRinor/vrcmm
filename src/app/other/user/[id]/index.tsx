@@ -1,4 +1,3 @@
-import { User } from "@/api/vrchat";
 import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/screen/detail/DetailItemContainer";
 import LinkChip from "@/components/view/chip-badge/LinkChip";
@@ -9,6 +8,7 @@ import { CachedImage } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { getInstanceType, parseLocationString } from "@/lib/vrchatUtils";
+import { User } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";

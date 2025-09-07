@@ -1,4 +1,3 @@
-import { Avatar, FavoriteGroup, User, World } from "@/api/vrchat";
 import GenericScreen from "@/components/layout/GenericScreen";
 import CardViewAvatar from "@/components/view/item-CardView/CardViewAvatar";
 import CardViewUser from "@/components/view/item-CardView/CardViewUser";
@@ -10,6 +9,7 @@ import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { routeToAvatar, routeToUser, routeToWorld } from "@/lib/route";
+import { Avatar, FavoriteGroup, User, World } from "@/vrchat/api";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";

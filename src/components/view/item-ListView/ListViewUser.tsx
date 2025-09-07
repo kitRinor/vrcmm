@@ -1,7 +1,7 @@
-import { World } from "@/api/vrchat";
 import { radius, spacing } from "@/config/styles";
 import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { getInstanceType, getStatusColor, parseInstanceId, parseLocationString, UserLike } from "@/lib/vrchatUtils";
+import { World } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";

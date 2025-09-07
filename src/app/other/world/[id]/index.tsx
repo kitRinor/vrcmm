@@ -1,4 +1,3 @@
-import { World } from "@/api/vrchat";
 import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/screen/detail/DetailItemContainer";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
@@ -12,6 +11,7 @@ import { useVRChat } from "@/contexts/VRChatContext";
 import { formatToDateTime } from "@/lib/date";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { getAuthorTags, getWorldPlatform, parseInstanceId } from "@/lib/vrchatUtils";
+import { World } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useState } from "react";

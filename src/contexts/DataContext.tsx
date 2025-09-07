@@ -1,4 +1,4 @@
-import { CurrentUser, FavoriteGroup } from '@/api/vrchat';
+import { CurrentUser, FavoriteGroup } from '@/vrchat/api';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { useVRChat } from './VRChatContext';
@@ -71,6 +71,14 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({children}) => {
       clearAll(); // clear data on logout
     }
   }, [auth.user]);
+
+
+
+  useEffect(() => {
+    const msg = vrc.pipeline?.lastMessage;
+    if (!msg) return ;
+    console.log("Pipeline message:", msg.type);
+  }, [vrc.pipeline?.lastMessage]);
 
   return (
     <Context.Provider value={{

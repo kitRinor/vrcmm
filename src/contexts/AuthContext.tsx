@@ -1,5 +1,5 @@
-import { AuthenticationApi } from "@/api/vrchat";
 import { extractErrMsg } from "@/lib/extractErrMsg";
+import { AuthenticationApi } from "@/vrchat/api";
 import { router } from "expo-router";
 import Storage from 'expo-sqlite/kv-store';
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
@@ -46,7 +46,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
   const [user, setUser] = useState<AuthUser | undefined>(undefined)
 
   const login = async (param: LoginParam): Promise<LoginRes> => {
-    const conf = vrc.configure({
+    const conf = vrc.configureAPI({
       username: param.username,
       password: param.password
     });
@@ -75,9 +75,14 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
         Storage.setItem("auth_user_displayName", res.data.displayName);
         Storage.setItem("auth_user_icon", res.data.userIcon);
 
+        const authCookie = extractAuthCookie(res.headers?.["set-cookie"]?.[0]);
+        const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
         // [ToDo] use SecureStore of expo
-        if (res.headers?.["set-cookie"]?.[0]) {
-          Storage.setItem("auth_authCookie", res.headers?.["set-cookie"]?.[0]); 
+        if (authCookie) Storage.setItem("auth_authCookie", authCookie);
+        if (tfaCookie) Storage.setItem("auth_2faCookie", tfaCookie);
+        
+        if (authCookie) {
+          vrc.configurePipeline(authCookie); // set auth cookie to pipeline
         }
 
         setUser({
@@ -113,8 +118,10 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
       } else if (mode == "email") {
         const res = await api.verify2FA({code});
         if (res.data.verified) {
-          if (res.headers?.["set-cookie"]?.[0]) {
-            Storage.setItem("auth_2faCookie", res.headers?.["set-cookie"]?.[0]); 
+          const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
+          if (tfaCookie) {
+            // [ToDo] use SecureStore of expo
+            Storage.setItem("auth_2faCookie", tfaCookie);
           }
           return "success";
         } else if (!res.data.enabled) {
@@ -136,6 +143,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
     } catch (e) {
       console.error("Logout failed", e);
     }
+    vrc.unConfigure();
     // logout logic
     Storage.removeItem("auth_user_id")
     Storage.removeItem("auth_user_displayName")
@@ -151,12 +159,15 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const conf = vrc.configure({}); // configure VRChat client with past data
+      const conf = vrc.configureAPI({}); // configure VRChat client with past data
       const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
       const storedData = await Promise.all([
         Storage.getItem("auth_user_id"),
         Storage.getItem("auth_user_displayName"),
         Storage.getItem("auth_user_icon"),
+
+        Storage.getItem("auth_authCookie"),
+        Storage.getItem("auth_2faCookie"),
       ]);
       const storedUser = {
         id: storedData[0] || undefined,
@@ -166,7 +177,11 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
       if (storedUser.id) {  
         const verified = (await api.verifyAuthToken()).data.ok
         if (verified) {
-          setUser(storedUser); 
+          const authCookie = storedData[3];
+          if (authCookie) {
+            vrc.configurePipeline(authCookie); // set auth cookie to pipeline
+          }
+          setUser(storedUser);
           console.log(`login as ${storedUser.displayName}: ${storedUser.id}`)
           router.replace("/maintab/home"); // navigate to tabs if user is logged in
           return;
@@ -179,7 +194,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
       // router.replace("/"); // navigate to login if user is not logged in
     };
     
-    fetchData()
+    fetchData().catch(console.error);
   }, [])
 
   return (
@@ -190,6 +205,15 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
 } 
 
 
+// なんかフォーマットが変になるので、関数化しておく
+const extractAuthCookie = (string: string | undefined): string | undefined => {
+  const match = string?.match(/auth=([^;]+);/);
+  return match ? match[1] : undefined;
+}
+const extract2faCookie = (string: string | undefined): string | undefined => {
+  const match = string?.match(/twoFactorAuth=([^;]+);/);
+  return match ? match[1] : undefined;
+}
 
 export { AuthProvider, useAuth };
 

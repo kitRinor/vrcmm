@@ -11,14 +11,16 @@ run:  # run the application
 	@npx expo start
 
 
+
 .PHONY : gen-vrcapi
 gen-vrcapi:  # generate the vrcapi types
 	@rm -rf ./src/vrchat/api/* ./src/vrchat/openapi.yaml
 	@curl -fsSL https://vrchat.community/openapi.yaml -o ./src/vrchat/openapi.yaml
 	@npx @openapitools/openapi-generator-cli generate -i ./src/vrchat/openapi.yaml -g typescript-axios -o ./src/vrchat/api/
 
-gen-plugins: # generate the expo plugins
-	@cd modules/native-websocket && npx expo-module build plugin --no-watch
+gen-plugins: # configure the expo modules pligin (build the plugin code)
+	@cd modules/native-websocket && EXPO_NONINTERACTIVE=true npx expo-module build plugin
+# EXPO_NONINTERACTIVE (disable default watchmode) https://github.com/expo/expo/blob/main/packages/expo-module-scripts/bin/expo-module-build
 
 prebuild: # pre build tasks
 	@npx expo prebuild --clean

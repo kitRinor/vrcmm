@@ -1,10 +1,24 @@
 # VRChatMobileManager
-VRChat API Client for Android,iOS
+VRChat API Client App
+- [GooglePlay]() for Android 
+<!-- - [AppStore]() for iOS  -->
 
 
-#### build
-- make gen-vrcapi
-- make gen-plugins
-- make prebuild
-- make build-dev
-- make run
+
+
+#### run development
+- run `make gen-vrcapi` to generate vrcapi-client-code
+- run `make gen-plugins` to configure custom native module plugins
+- if you develop native-code, run `make prebuild` to generate native codes
+- run `make build-dev` to build dev-app apk 
+- install dev-app to your device from built apk
+- run `make run` to start dev-server
+
+#### try pre-built app
+- run `make build-pre` to build pre-app apk
+- install pre-app to your device from built apk 
+
+#### submit store and publish
+- run `make build-submit` to build prod-app aab and submit to store
+- publish from store page  
+

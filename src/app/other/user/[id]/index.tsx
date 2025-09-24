@@ -173,7 +173,7 @@ export default function UserDetail() {
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title="History">
+            <DetailItemContainer title="Info">
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>
                   {`last activity: ${user.last_activity}`}

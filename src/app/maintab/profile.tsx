@@ -64,7 +64,7 @@ export default function Profile() {
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title="Joined date">
+            <DetailItemContainer title="Info">
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>
                   {`last activity: ${currentUser.data.last_activity}`}

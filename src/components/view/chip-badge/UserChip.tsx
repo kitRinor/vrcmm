@@ -6,6 +6,7 @@ import { Text } from "@react-navigation/elements";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import IconSymbol from "../icon-components/IconView";
+import { useTheme } from "@react-navigation/native";
 
 
 
@@ -19,6 +20,7 @@ interface Props {
 }
 
 const UserChip = ({ user, optional = false, textSize, textColor, size = 32, ...rest }: Props) => {
+  const theme = useTheme()
   return (
     <View style={[styles.container, rest.style]}>
       
@@ -31,7 +33,7 @@ const UserChip = ({ user, optional = false, textSize, textColor, size = 32, ...r
         style={[styles.icon, { height: size, borderColor: getStatusColor(user)}, rest.style]}
         {...omitObject(rest, "style")}
       />
-      <Text numberOfLines={1} style={[styles.text, { color: textColor, fontSize: textSize ?? fontSize.medium }]}>{user.displayName}</Text>
+      <Text numberOfLines={1} style={[styles.text, { color: textColor ?? theme.colors.text, fontSize: textSize ?? fontSize.medium }]}>{user.displayName}</Text>
       
     </View>
   );

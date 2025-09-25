@@ -80,13 +80,13 @@ const CardViewInstanceDetail = ({ instance, onPress, onLongPress, ...rest }: Pro
       ImageStyle={styles.image}
       OverlapComponents={
         <>
-          <LinearGradient
+          {/* <LinearGradient
             colors={['transparent', 'rgba(0, 0, 0, 0.62)', 'rgba(0, 0, 0, 0.87)']}
             start={{ x: 0.0, y: 0.0 }}
             end={{ x: 1.0, y: 0.0 }}
             locations={[0.0, 0.5, 1.0]}
             style={styles.gradient}
-          />
+          /> */}
           <View style={styles.friendsContainer}>
             {friends.map((friend)=> (
               <UserChip key={friend.id} user={friend} style={styles.chip}/>
@@ -113,10 +113,10 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     left: 0,
-    aspectRatio: 1.5,
+    aspectRatio: 2,
   },
   image: {
-    aspectRatio: 1.5,
+    aspectRatio: 2,
     resizeMode: "cover",
   },
   chip: {

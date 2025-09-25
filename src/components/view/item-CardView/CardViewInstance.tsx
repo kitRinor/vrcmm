@@ -81,10 +81,10 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
       OverlapComponents={
         <>
           <LinearGradient
-            colors={['transparent', 'rgba(0, 0, 0, 0.62)', 'rgba(0, 0, 0, 0.87)']}
-            start={{ x: 0.0, y: 0.0 }}
-            end={{ x: 1.0, y: 0.0 }}
-            locations={[0.0, 0.5, 1.0]}
+            colors={['transparent', 'transparent', 'rgba(0, 0, 0, 0.6)', 'rgba(0, 0, 0, 0.8)']}
+            start={{ x: 1.0, y: 0.0 }}
+            end={{ x: 0.0, y: 0.0 }}
+            locations={[0.0, 0.3, 0.6, 1.0]}
             style={styles.gradient}
           />
           <View style={styles.friendsContainer}>
@@ -103,9 +103,9 @@ const styles = StyleSheet.create({
   friendsContainer: {
     position: "absolute",
     top: 0,
-    right: 0,
+    left: 0,
     bottom: 0,
-    width: "70%",
+    // width: "70%",
     // borderColor: "blue", borderStyle: "dotted", borderWidth: 1,
   },
   gradient: {

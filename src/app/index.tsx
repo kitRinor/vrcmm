@@ -182,6 +182,7 @@ export default function Login() {
               autoComplete="username"
               value={username}
               onChangeText={setUsername}
+              inputMode="email"
             />
             <TextInput
               ref={passwordRef}

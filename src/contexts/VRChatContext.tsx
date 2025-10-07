@@ -22,9 +22,9 @@ import {
   useRef,
   useState,
 } from "react";
-// import axios from 'axios';
-// import { CookieJar } from 'tough-cookie';
-// import { wrapper } from 'axios-cookiejar-support';
+import axios from 'axios';
+import { CookieJar } from 'tough-cookie';
+import { wrapper } from 'axios-cookiejar-support';
 
 const BASE_PIPELINE_URL = "wss://pipeline.vrchat.cloud";
 const BASE_API_URL = "https://api.vrchat.cloud/api/1";
@@ -170,12 +170,11 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   };
 
 
-  // const jar = new CookieJar();
-  // const _axios = wrapper(axios.create({
-  //   jar,
-  //   withCredentials: true, // クッキーを送受信するために重要
-  // }));
-  const _axios = undefined
+  const jar = new CookieJar();
+  const _axios = wrapper(axios.create({
+    jar,
+    withCredentials: true, // クッキーを送受信するために重要
+  }));
 
   return (
     <Context.Provider

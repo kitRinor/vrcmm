@@ -273,7 +273,7 @@ export default function UserDetail() {
         <LoadingIndicator absolute />
       )}
       <ImagePreview
-        imageUrl={[preview.imageUrl]}
+        imageUrls={[preview.imageUrl]}
         open={preview.open}
         onClose={() => setPreview({ imageUrl: "", open: false })}
       />

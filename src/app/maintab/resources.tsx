@@ -194,7 +194,7 @@ export default function Resources() {
     return (
       <View style={styles.tabpanel}>
         {isLoading && <LoadingIndicator absolute />}
-        <ImagePreview imageUrl={previewImageUrls} initialIdx={preview.idx} open={preview.open} onClose={() => setPreview({ idx: 0, open: false })} />
+        <ImagePreview imageUrls={previewImageUrls} initialIdx={preview.idx} open={preview.open} onClose={() => setPreview({ idx: 0, open: false })} />
         <FlatList
           data={prints}
           keyExtractor={(item) => item.id}

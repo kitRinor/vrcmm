@@ -94,7 +94,7 @@ export default function Profile() {
         <LoadingIndicator absolute />
       )}
       <ImagePreview
-        imageUrl={[preview.imageUrl]}
+        imageUrls={[preview.imageUrl]}
         open={preview.open}
         onClose={() => setPreview({ imageUrl: "", open: false })}
       />

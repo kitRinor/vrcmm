@@ -1,9 +1,9 @@
 import { downloadImageToCache } from "@/contexts/CacheContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EnhancedImageViewing from "react-native-image-viewing";
 
 interface Props {
-  imageUrl: string[]; // array of image URLs
+  imageUrls: string[]; // array of image URLs
   initialIdx?: number; // initial index to show
   open: boolean;
   onClose: () => void;
@@ -13,52 +13,62 @@ interface Props {
  * @returns 
  */
 const ImagePreview = ({
-  imageUrl,
+  imageUrls,
   initialIdx = 0,
   open,
   onClose,
 }: Props) => {
-  const [images, setImages] = useState<{ uri: string }[]>(imageUrl.map((uri) => ({ uri })));
-
+  const [images, setImages] = useState<{ uri: string, remoteUrl: string }[]>(imageUrls.map((uri) => ({ uri, remoteUrl: uri })));
   useEffect(() => {
     if (!open) return;
-    setImages(imageUrl.map((uri) => ({ uri })));
-    if (initialIdx >= 0 && initialIdx < imageUrl.length) {
-      // download initial image to cache
-      downloadImageToCache(imageUrl[initialIdx]).then((localUri) => {
-        if (!localUri) return;
-        setImages((prev) => {
-          const newImages = [...prev];
-          newImages[initialIdx] = { uri: localUri };
-          return newImages;
-        });
-      }).catch((e) => {
-        console.error("Error downloading image for preview:", e);
-      });
-    }
-  }, [imageUrl, initialIdx, open]);
 
-  const onImageIndexChange = (index: number) => {
-    if (index < 0 || index >= images.length) return;
-    if (images[index].uri.startsWith("file://")) return; // already local
-    // download to cache
-    downloadImageToCache(images[index].uri).then((localUri) => {
-      if (!localUri) return;
-      setImages((prev) => {
-        const newImages = [...prev];
-        newImages[index] = { uri: localUri };
-        return newImages;
+    const updateImages = async (prevImages: { uri: string, remoteUrl: string }[]) => {
+      // check if imageUrls changed
+      const newImages: { uri: string, remoteUrl: string }[] = [];
+      imageUrls.forEach((url, idx) => {
+        if (prevImages[idx] && prevImages[idx].remoteUrl === url) {
+          newImages.push(prevImages[idx]);
+        } else {
+          newImages.push({ uri: url, remoteUrl: url }); // not downloaded yet
+        }
       });
-    }).catch((e) => {
-      console.error("Error downloading image for preview:", e);
+      // if initialIdx image is not downloaded yet, download it
+      if (initialIdx >= 0 && initialIdx < newImages.length) {
+        const { uri, remoteUrl } = newImages[initialIdx]; 
+        if (!uri.startsWith("file://")) {
+          const localUri = await downloadImageToCache(remoteUrl)
+          if (localUri) {
+            newImages[initialIdx] = { uri: localUri, remoteUrl };
+          }
+        }
+      }
+      return newImages;
+    }
+    updateImages(images).then(setImages).catch((e) => {
+      console.error("Error updating images for preview:", e);
     });
-  };
+  }, [imageUrls, initialIdx, open]);
+
+  const onImageIndexChange = async (index: number) => {
+    if (index < 0 || index >= images.length) return;
+
+    const { uri, remoteUrl } = images[index];
+    // download to cache
+    if (uri.startsWith("file://")) return; // already local
+    const localUri = await downloadImageToCache(remoteUrl);
+    if (localUri) {
+      const newImages = [...images];
+      newImages[index] = { uri: localUri, remoteUrl };
+      setImages(newImages);
+    } 
+  }
 
   return (
     <EnhancedImageViewing
       images={images}
       imageIndex={initialIdx}
       onImageIndexChange={onImageIndexChange}
+      
       // swipeToCloseEnabled={false}
       visible={open}
       onRequestClose={onClose}

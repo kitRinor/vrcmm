@@ -24,11 +24,12 @@ import {
 import { Instance, LimitedUserFriend, LimitedUserInstance, World } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View } from "react-native";
 import { routeToSearch, routeToUser, routeToWorld } from "@/libs/route";
 import ListViewWorld from "@/components/view/item-ListView/ListViewWorld";
 import IconSymbol from "@/components/view/icon-components/IconView";
+import { RefreshControl } from "react-native-gesture-handler";
 
 export default function InstanceDetail() {
   const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp)) 
@@ -38,22 +39,24 @@ export default function InstanceDetail() {
   const cache = useCache();
   const theme = useTheme();
   const [instance, setInstance] = useState<Instance>();
+  const fetchingRef = useRef(false);
+  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
-  const fetchData = async () => {
+  const fetchInstance = () => {
     // instance isnot cached 
-    try {
-      const res = await vrc.instancesApi.getInstance({
-        worldId: parsedLocation?.worldId ?? "",
-        instanceId: parsedLocation?.instanceId ?? "",
-      });
-      setInstance(res.data);
-    } catch (error) {
-      console.error("Error fetching world profile:", extractErrMsg(error));
-    }
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
+    vrc.instancesApi.getInstance({
+      worldId: parsedLocation?.worldId ?? "",
+      instanceId: parsedLocation?.instanceId ?? "",
+    })
+      .then((res) => setInstance(res.data))
+      .catch((e) => console.error("Error fetching instance data:", extractErrMsg(e)))
+      .finally(() => fetchingRef.current = false);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchInstance();
   }, []);
 
   const [owner, setOwner] = useState<UserLike>();
@@ -84,7 +87,14 @@ export default function InstanceDetail() {
       {instance ? (
         <View style={{ flex: 1 }}>
           <CardViewInstanceDetail instance={instance} style={[styles.cardView]} />
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={fetchInstance}
+              />
+            }
+          >
 
             <DetailItemContainer title={owner ? "Owner & World" : "World"}>
               <View style={[styles.detailItemContent, styles.horizontal]}>

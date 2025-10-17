@@ -34,19 +34,11 @@ const DebugModal = ({ open, setOpen }: Props) => {
 
   return (
     <GenericModal
+      title="Debug Info"
       buttonItems={[{ title: "Close", onPress: () => setOpen(false), flex: 1 }]}
       open={open}
       onClose={() => setOpen(false)}
     >
-      <Text
-        style={[
-          globalStyles.header,
-          globalStyles.headerContainer,
-          { color: theme.colors.text },
-        ]}
-      >
-        Debug Info
-      </Text>
 
       <Text style={[globalStyles.text, { color: theme.colors.text }]}>
         {Object.entries(devInfo)

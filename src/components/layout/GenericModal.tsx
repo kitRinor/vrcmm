@@ -1,18 +1,19 @@
-import globalStyles, { radius, spacing } from "@/configs/styles";
+import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useTheme } from "@react-navigation/native";
 import { Modal, StyleSheet, View } from "react-native";
 import { ButtonItemForFooter } from "./type";
-import { Button } from "@react-navigation/elements";
+import { Button, Text } from "@react-navigation/elements";
 import { useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 interface Props {
   open: boolean;
   onClose: () => void;
+  title?: string;
   buttonItems?: ButtonItemForFooter[];
   children: React.ReactNode;
 }
 
-const GenericModal = ({ open, onClose, children, buttonItems }: Props) => {
+const GenericModal = ({ open, onClose, children, buttonItems, title }: Props) => {
   const theme = useTheme();
   return (
     <Modal
@@ -30,7 +31,19 @@ const GenericModal = ({ open, onClose, children, buttonItems }: Props) => {
             { backgroundColor: theme.colors.background },
             ]}
           >
-            {children}
+            {title && (
+              <Text
+                style={[
+                  styles.title,
+                  { color: theme.colors.text, backgroundColor: theme.colors.card },
+                ]}
+              >
+                {title}
+              </Text>
+            )}
+            <View style={styles.childContainer}>
+              {children}
+            </View>
             <View style={styles.footer}>
               {buttonItems?.map((item, index) => (
                 <Button
@@ -65,20 +78,30 @@ const styles = StyleSheet.create({
     width: "90%",
     maxHeight: "90%",
     minHeight: 100,
-    borderRadius: radius.medium,
-    padding: spacing.large,
+    borderRadius: radius.small,
+    overflow: "hidden",
 
     // borderColor: 'blue',
     // borderWidth: 1,
     // borderStyle: 'solid',
   },
-  childContainer: {},
+  title: {
+    fontSize: fontSize.medium,
+    fontWeight: "bold",
+    width: '100%',
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.large,
+    textAlign: "left",
+  },
+  childContainer: {
+    padding: spacing.large
+  },
   footer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: spacing.medium,
-    marginTop: spacing.medium,
+    gap: spacing.small,
+    padding: spacing.small,
   },
   footterButton: {
     borderRadius: radius.button,

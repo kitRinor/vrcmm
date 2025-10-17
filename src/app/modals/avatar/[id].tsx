@@ -9,7 +9,7 @@ import { extractErrMsg } from "@/libs/utils";
 import { Avatar, User } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { routeToUser } from "@/libs/route";
 import UserChip from "@/components/view/chip-badge/UserChip";
@@ -19,6 +19,7 @@ import TagChips from "@/components/view/chip-badge/TagChips";
 import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
+import { RefreshControl } from "react-native-gesture-handler";
 
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,6 +27,8 @@ export default function AvatarDetail() {
   const cache = useCache();
   const data = useData();
   const theme = useTheme();
+  const fetchingRef = useRef(false);
+  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const [avatar, setAvatar] = useState<Avatar>();
   const [author, setAuthor] = useState<User>();
 
@@ -33,47 +36,23 @@ export default function AvatarDetail() {
 
   const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "avatar");
 
-  const fetchData = async () => {
-    try {
-      const res = await cache.avatar.get(id, true); // fetch and force refresh cache
-      setAvatar(res);
-    } catch (error) {
-      console.error("Error fetching user profile:", extractErrMsg(error));
-    }
+  const fetchAvatar = () => {
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
+    cache.avatar.get(id, true)
+      .then(setAvatar)
+      .catch((e) => console.error("Error fetching user profile:", extractErrMsg(e)))
+      .finally(() => fetchingRef.current = false);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchAvatar();
   }, []);
 
   useEffect(() => {
     if (!avatar?.authorId) return;
     cache.user.get(avatar.authorId).then((u) => setAuthor(u)).catch(console.error)
   }, [avatar?.authorId])
-
-
-  const handleAddFavorite = (name:string) => {
-    vrc.favoritesApi.addFavorite({addFavoriteRequest: {
-      favoriteId: id,
-      type: "avatar",
-      tags: name ? [name] : [], // ex. avatars1
-    }}).then(res => {
-      if (res.status !== 200) return;
-      data.favorites.set((prev) => [...prev, res.data]); // update cache
-    }).catch(err => {
-      console.error("Error adding favorite:", extractErrMsg(err));
-    });
-  };
-  const handleRemoveFavorite = () => {
-    vrc.favoritesApi.removeFavorite({
-      favoriteId: id,
-    }).then(res => {
-      if (res.status !== 200) return;
-      data.favorites.set((prev) => prev.filter(fav => fav.favoriteId !== id)); // update cache
-    }).catch(err => {
-      console.error("Error removing favorite:", extractErrMsg(err));
-    });
-  };
 
 
   const menuItems: MenuItem[] = [
@@ -89,7 +68,14 @@ export default function AvatarDetail() {
       {avatar ? (
         <View style={{ flex: 1 }}>
           <CardViewAvatarDetail avatar={avatar} style={[styles.cardView]} />
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={fetchAvatar}
+              />
+            }
+          >
 
             <DetailItemContainer title="Platform">
               <View style={styles.detailItemContent}>

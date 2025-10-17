@@ -9,8 +9,9 @@ import { extractErrMsg } from "@/libs/utils";
 import { Group } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { RefreshControl } from "react-native-gesture-handler";
 
 export default function GroupDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -18,18 +19,20 @@ export default function GroupDetail() {
   const cache = useCache();
   const theme = useTheme();
   const [group, setGroup] = useState<Group>();
+  const fetchingRef = useRef(false);
+  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
-  const fetchData = async () => {
-    try {
-      const res = await cache.group.get(id, true); // fetch and force refresh cache
-      setGroup(res);
-    } catch (error) {
-      console.error("Error fetching user profile:", extractErrMsg(error));
-    }
+  const fetchGroup = () => {
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
+    cache.group.get(id, true)
+      .then(setGroup)
+      .catch((e) => console.error("Error fetching group data:", extractErrMsg(e)))
+      .finally(() => fetchingRef.current = false);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchGroup();
   }, []);
 
   return (
@@ -37,7 +40,14 @@ export default function GroupDetail() {
       {group ? (
         <View style={{ flex: 1 }}>
           <CardViewGroupDetail group={group} style={[styles.cardView]} />
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={fetchGroup}
+              />
+            }
+          >
             <DetailItemContainer title="Title1">
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>text1-1</Text>

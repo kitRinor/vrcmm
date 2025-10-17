@@ -11,7 +11,7 @@ import { getFriendRequestStatus, getInstanceType, getUserIconUrl, getUserProfile
 import { User } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, TouchableOpacity } from "react-native";
 import { KeyboardAvoidingView, KeyboardAvoidingViewComponent, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { routeToInstance } from "@/libs/route";
@@ -22,6 +22,7 @@ import { MenuItem } from "@/components/layout/type";
 import ChangeNoteModal from "@/components/features/detail/user/ChangeNoteModal";
 import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
 import ChangeFriendModal from "@/components/features/detail/user/ChangeFriendModal";
+import { RefreshControl } from "react-native-gesture-handler";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -30,6 +31,8 @@ export default function UserDetail() {
   const data = useData();
   const theme = useTheme();
   const [user, setUser] = useState<User>();
+    const fetchingRef = useRef(false);
+    const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const [locationInfo, setLocationInfo] = useState<{
     wId?: string;
     iId?: string;
@@ -48,9 +51,12 @@ export default function UserDetail() {
   const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "friend");
 
   const fetchUser = () => {
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
     cache.user.get(id, true) // force latest data
-    .then(setUser)
-    .catch(console.error);
+      .then(setUser)
+      .catch((e) => console.error("Error fetching user profile:", extractErrMsg(e)))
+      .finally(() => fetchingRef.current = false);
   }
 
   const fetchLocationInfo = async () => {
@@ -143,7 +149,14 @@ export default function UserDetail() {
             onPressIcon={() => user && setPreview({imageUrl: getUserIconUrl(user, true), open: true})}
             style={[styles.cardView]} 
           />
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={fetchUser}
+              />
+            }
+          >
 
             <DetailItemContainer title="Location">
               {locationInfo ? (

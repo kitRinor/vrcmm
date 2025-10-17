@@ -18,7 +18,8 @@ const lightTheme = {
     // text colors
     text: "#000000ff",
     subText: "#4d4d4dff",
-
+    // border
+    border: "#686868ff",
     // backgrounds
     card: "#afafafff",
     paper: "#dfdfdfff",
@@ -38,12 +39,12 @@ const darkTheme = {
     // text colors
     text: "#ffffffff",
     subText: "#9f9f9fff",
-
+    // border
+    border: "#5a5a5aff",
     // backgrounds
     card: "#313131ff",
     paper: "#222222ff",
-    background: "#000000ff",
-  
+    background: "#101010ff",
   },
 };
 

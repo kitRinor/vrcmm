@@ -60,19 +60,11 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
 
   return (
     <GenericModal
+      title="Database Management"
       buttonItems={[{ title: "Close", onPress: () => setOpen(false), flex: 1 }]}
       open={open}
       onClose={() => setOpen(false)}
     >
-      <Text
-        style={[
-          globalStyles.header,
-          globalStyles.headerContainer,
-          { color: theme.colors.text },
-        ]}
-      >
-        Database Management
-      </Text>
       <Text style={[globalStyles.subheader, { color: theme.colors.text }]}>
         Database Backup
       </Text>

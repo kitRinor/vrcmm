@@ -16,9 +16,13 @@ import { useCache } from "./CacheContext";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useSetting } from "./SettingContext";
 import Storage from "expo-sqlite/kv-store";
+import { useQuery } from "@tanstack/react-query";
+
 
 // Store VRCAPI Data Globally
 
+
+// [Todo] use Tanstanck Query for better data management?
 interface DataWrapper<T> {
   data: T;
   isLoading: boolean;

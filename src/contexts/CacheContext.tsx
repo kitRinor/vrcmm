@@ -20,20 +20,31 @@ import React, {
 } from "react";
 import { Image } from "react-native";
 import { useVRChat } from "./VRChatContext";
-import { TableWrapper, useDB } from "./DBContext";
-import { SQLiteTableWithColumns } from "drizzle-orm/sqlite-core";
+import { useQueries } from "@tanstack/react-query";
 
 // Image Cache in Storage
 interface Cache<T> {
   expiredAt: string; // ISO formated date, if empty-string, never expire
   value: T;
 }
-interface CacheWrapper<T> {
+
+type CacheMode = "byId" | "single"; // list: get-list & cache-list, id: get-byId & cache-list, single: get-single & cache-single 
+
+interface CacheOption {
+  expiration: number; // in milliseconds
+  encrypt: boolean;
+  type: "json" | "raw";
+}
+
+type CacheGetterFunc<T, M extends CacheMode = "byId"> = M extends "single"
+  ? () => Promise<T>
+  : (id: string) => Promise<T>;
+
+type CacheWrapper<T, M extends CacheMode = "byId"> = M extends "single" ? {
   get: (forceFetch?: boolean) => Promise<T>;
   set: (data: T) => Promise<void>;
   del: () => Promise<void>;
-}
-interface CacheByIdWrapper<T> {
+} : {
   get: (id: string, forceFetch?: boolean) => Promise<T>;
   set: (id: string, data: T) => Promise<void>;
   del: (id: string) => Promise<void>;
@@ -43,13 +54,13 @@ interface CacheContextType {
   clearCache: () => Promise<void>;
   getCacheInfo: () => Promise<{ size: number; count: number }>;
   //
-  currentUser: CacheWrapper<CurrentUser>;
-  favoriteLimits: CacheWrapper<FavoriteLimits>;
+  currentUser: CacheWrapper<CurrentUser, "single">;
+  favoriteLimits: CacheWrapper<FavoriteLimits, "single">;
   // by id (list-data)
-  user: CacheByIdWrapper<User>;
-  world: CacheByIdWrapper<World>;
-  group: CacheByIdWrapper<Group>;
-  avatar: CacheByIdWrapper<Avatar>;
+  user: CacheWrapper<User, "byId">;
+  world: CacheWrapper<World, "byId">;
+  group: CacheWrapper<Group, "byId">;
+  avatar: CacheWrapper<Avatar, "byId">;
 }
 
 const Context = createContext<CacheContextType | undefined>(undefined);
@@ -59,7 +70,7 @@ const cacheRootDir = `${FileSystem.cacheDirectory}`; // root-directory for cache
 // get local file uri from key (id or url), subDirName must end with /
 const getLocalUri = async (
   key: string,
-  subDirName: string = "",
+  subDirName: string,
   encryptKey?: boolean
 ) => {
   if (encryptKey) {
@@ -80,6 +91,7 @@ const useCache = () => {
 const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const initTrigger = useRef(0);
   const vrc = useVRChat();
+
   // create cache dir if not exist
   useEffect(() => {
     FileSystem.getInfoAsync(cacheRootDir)
@@ -106,6 +118,7 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const getAvatar = async (id: string) =>
     (await vrc.avatarsApi.getAvatar({ avatarId: id })).data;
 
+
   // Initialize caches (called when clear cache and on mount)
   useEffect(() => {
     // for images
@@ -114,14 +127,13 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const wrappers = useMemo(
     () => ({
       // only used for DataContext, use useData(),currentUser instaead of this, 
-      currentUser: useCacheWrapper<CurrentUser>("currentUser", getCurrentUser, { expiration: 1000 }), // expire with 1 second, basically, 
-      // for other data
-      favoriteLimits: useCacheWrapper<FavoriteLimits>("favoriteLimits", getFavoriteLimits, { expiration: 30 * 24 * 60 * 60 * 1000 }), // expire with 30 days
+      currentUser: useCacheWrapper<CurrentUser, "single">("single", "currentUser/", getCurrentUser, { expiration: 1000 }), // expire with 1 second, basically, 
+      favoriteLimits: useCacheWrapper<FavoriteLimits, "single">("single", "favoriteLimits/", getFavoriteLimits, { expiration: 60 * 60 * 1000 }), // expire with 1 hour
       // by id (basiccally, use for name lookup)
-      user: useCacheByIdWrapper<User>("users/", getUser, { expiration: 1 * 24 * 60 * 60 * 1000 }), // expire with 1 day
-      world: useCacheByIdWrapper<World>("worlds/", getWorld, {expiration: 7 * 24 * 60 * 60 * 1000}), // expire with 7 days
-      group: useCacheByIdWrapper<Group>("groups/", getGroup, { expiration: 7 * 24 * 60 * 60 * 1000 }), // expire with 7 days
-      avatar: useCacheByIdWrapper<Avatar>("avatars/", getAvatar, {expiration: 7 * 24 * 60 * 60 * 1000}), // expire with 7 days
+      user: useCacheWrapper<User, "byId">("byId", "users/", getUser, { expiration: 1 * 24 * 60 * 60 * 1000 }), // expire with 1 day
+      world: useCacheWrapper<World, "byId">("byId", "worlds/", getWorld, {expiration: 7 * 24 * 60 * 60 * 1000}), // expire with 7 days
+      group: useCacheWrapper<Group, "byId">("byId", "groups/", getGroup, { expiration: 7 * 24 * 60 * 60 * 1000 }), // expire with 7 days
+      avatar: useCacheWrapper<Avatar, "byId">("byId", "avatars/", getAvatar, {expiration: 7 * 24 * 60 * 60 * 1000}), // expire with 7 days
     }),
     [initTrigger.current, vrc.config]
   );
@@ -170,138 +182,25 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     </Context.Provider>
   );
 };
-/** DB-based-Cache-Wrapper */
-function useDBbasedCacheByIdWrapper<T = any, D extends SQLiteTableWithColumns<any> = any>(  subDir: string, // sub-directory name, must end with /
-  getter: CacheByIdWrapper<T>["get"],
-  tableWrapper: TableWrapper<D>,
-  converter: (data: T) => D["$inferSelect"],
-  options?: {
-    expiration?: number; // in milliseconds
-    encrypt?: boolean;
-    type?: "json" | "raw";
-  }
-): CacheByIdWrapper<T> {
-  const opt = {
-    expiration: options?.expiration ?? 24 * 60 * 60 * 1000, // default: 24 hours, if set to 0, never expire
-    encrypt: options?.encrypt ?? false, // default: no encrypt, use raw key as filename
-    type: options?.type ?? "json", // default: json
-  };
-  const { expiration, encrypt, type } = opt;
-
-  if (type !== "json") throw new Error("not-implemented cache type: " + type);
-
-  const get = async (id: string, forceFetch: boolean = false): Promise<T> => {
-    const dbData = await tableWrapper.get(id as any);
-    if (!forceFetch && dbData) {
-      if (new Date(dbData.updatedAt) > new Date(Date.now() - expiration)) {
-        return dbData.rawData as T;
-      }
-    }
-    // no-cached or cached-but-expired, get and set with new data
-    const data = await getter(id);
-    if (dbData) {
-      tableWrapper.create(converter(data)); // upsert
-    } else {
-      tableWrapper.update(id as any, converter(data)); // upsert
-    }
-    return data;
-  };
-  const set = async (id: string, data: T) => {
-    const localUri = await getLocalUri(id, subDir, encrypt);
-    const newCache: Cache<T> = {
-      expiredAt:
-        expiration > 0 ? new Date(Date.now() + expiration).toISOString() : "",
-      value: data,
-    };
-    await FileSystem.writeAsStringAsync(localUri, JSON.stringify(newCache));
-  };
-  const del = async (id: string) => {
-    const localUri = await getLocalUri(id, subDir, encrypt);
-    await FileSystem.deleteAsync(localUri, { idempotent: true });
-  };
-  return { get, set, del };
-}
-
 
 /** Cache Initializers */
-
-function useCacheWrapper<T = any>(
-  path: string, //directry filename
-  getter: CacheWrapper<T>["get"],
-  options?: {
-    expiration?: number; // in milliseconds
-    type?: "json" | "raw";
-  }
-): CacheWrapper<T> {
-  const opt = {
-    expiration: options?.expiration ?? 24 * 60 * 60 * 1000, // default: 24 hours, if set to 0, never expire
-    type: options?.type ?? "json", // default: json
-  };
-  const { expiration, type } = opt;
-
-  if (path.startsWith("/") || path.endsWith("/"))
-    throw new Error("path must not start or end with /: " + path);
-  if (type !== "json") throw new Error("not-implemented cache type: " + type);
-
-  const get = async (forceFetch: boolean = false): Promise<T> => {
-    const localUri = await getLocalUri(path);
-    const fileInfo = await FileSystem.getInfoAsync(localUri);
-    if (fileInfo.exists) {
-      const fileContent = await FileSystem.readAsStringAsync(localUri);
-      const cache: Cache<T> = JSON.parse(fileContent);
-      if (
-        !forceFetch &&
-        (cache.expiredAt == "" || new Date() < new Date(cache.expiredAt))
-      ) {
-        return cache.value;
-      }
-    }
-    // no-cached or cached-but-expired, get and set with new data
-    const data = await getter();
-    const newCache: Cache<T> = {
-      expiredAt:
-        expiration > 0 ? new Date(Date.now() + expiration).toISOString() : "",
-      value: data,
-    };
-    await FileSystem.writeAsStringAsync(localUri, JSON.stringify(newCache));
-    return data;
-  };
-  const set = async (data: T) => {
-    const localUri = await getLocalUri(path);
-    const newCache: Cache<T> = {
-      expiredAt:
-        expiration > 0 ? new Date(Date.now() + expiration).toISOString() : "",
-      value: data,
-    };
-    await FileSystem.writeAsStringAsync(localUri, JSON.stringify(newCache));
-  };
-  const del = async () => {
-    const localUri = await getLocalUri(path);
-    await FileSystem.deleteAsync(localUri, { idempotent: true });
-  };
-  return { get, set, del };
-}
-function useCacheByIdWrapper<T = any>(
+function useCacheWrapper<T = any, M extends CacheMode = any>(
+  mode: M,
   subDir: string, // sub-directory name, must end with /
-  getter: CacheByIdWrapper<T>["get"],
-  options?: {
-    expiration?: number; // in milliseconds
-    encrypt?: boolean;
-    type?: "json" | "raw";
-  }
-): CacheByIdWrapper<T> {
-  const opt = {
+  getter: CacheGetterFunc<T, M>,
+  options?: Partial<CacheOption>
+): CacheWrapper<T, M> {
+  const opt: CacheOption = {
     expiration: options?.expiration ?? 24 * 60 * 60 * 1000, // default: 24 hours, if set to 0, never expire
     encrypt: options?.encrypt ?? false, // default: no encrypt, use raw key as filename
     type: options?.type ?? "json", // default: json
   };
-  const { expiration, encrypt, type } = opt;
 
   if (subDir.startsWith("/") || !subDir.endsWith("/"))
     throw new Error(
       "subDir must not start with / and must end with /: " + subDir
     );
-  if (type !== "json") throw new Error("not-implemented cache type: " + type);
+  if (opt.type !== "json") throw new Error("not-implemented cache type: " + opt.type);
 
   // initiate cache sub-directory
   FileSystem.getInfoAsync(cacheRootDir + subDir)
@@ -318,8 +217,8 @@ function useCacheByIdWrapper<T = any>(
       );
     });
 
-  const get = async (id: string, forceFetch: boolean = false): Promise<T> => {
-    const localUri = await getLocalUri(id, subDir, encrypt);
+  const get = async (id: string, opt: CacheOption, forceFetch: boolean = false): Promise<T> => {
+    const localUri = await getLocalUri(id, subDir, opt.encrypt);
     const fileInfo = await FileSystem.getInfoAsync(localUri);
     if (fileInfo.exists) {
       const fileContent = await FileSystem.readAsStringAsync(localUri);
@@ -335,26 +234,40 @@ function useCacheByIdWrapper<T = any>(
     const data = await getter(id);
     const newCache: Cache<T> = {
       expiredAt:
-        expiration > 0 ? new Date(Date.now() + expiration).toISOString() : "",
+        opt.expiration > 0 ? new Date(Date.now() + opt.expiration).toISOString() : "",
       value: data,
     };
     await FileSystem.writeAsStringAsync(localUri, JSON.stringify(newCache));
     return data;
   };
-  const set = async (id: string, data: T) => {
-    const localUri = await getLocalUri(id, subDir, encrypt);
+  const set = async (id: string, data: T, opt: CacheOption) => {
+    const localUri = await getLocalUri(id, subDir, opt.encrypt);
     const newCache: Cache<T> = {
       expiredAt:
-        expiration > 0 ? new Date(Date.now() + expiration).toISOString() : "",
+        opt.expiration > 0 ? new Date(Date.now() + opt.expiration).toISOString() : "",
       value: data,
     };
     await FileSystem.writeAsStringAsync(localUri, JSON.stringify(newCache));
   };
-  const del = async (id: string) => {
-    const localUri = await getLocalUri(id, subDir, encrypt);
+  const del = async (id: string, opt: CacheOption,) => {
+    const localUri = await getLocalUri(id, subDir, opt.encrypt);
     await FileSystem.deleteAsync(localUri, { idempotent: true });
   };
-  return { get, set, del };
+   
+  // return based on mode
+  if (mode === "single") 
+    return {
+      get: (forceFetch: boolean = false) => get("data", opt, forceFetch),
+      set: (data: T) => set("data", data, opt),
+      del: () => del("data", opt),
+    } as CacheWrapper<T, M>;
+  else {
+    return {
+      get: (id: string, forceFetch: boolean = false) => get(id, opt, forceFetch),
+      set: (id: string, data: T) => set(id, data, opt),
+      del: (id: string) => del(id, opt),
+    } as CacheWrapper<T, M>;
+  }
 }
 
 // Cached Image Component, use this instead of Default Image Component,

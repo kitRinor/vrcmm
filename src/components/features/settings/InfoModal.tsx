@@ -15,7 +15,7 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-const DebugModal = ({ open, setOpen }: Props) => {
+const InfoModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
 
   const devInfo = {
@@ -33,8 +33,9 @@ const DebugModal = ({ open, setOpen }: Props) => {
 
   return (
     <GenericModal
-      title="Debug Info"
-      buttonItems={[{ title: "Close", onPress: () => setOpen(false), flex: 1 }]}
+      title="App Information"
+      showCloseButton
+      size="large"
       open={open}
       onClose={() => setOpen(false)}
     >
@@ -49,4 +50,4 @@ const DebugModal = ({ open, setOpen }: Props) => {
   );
 };
 
-export default DebugModal;
+export default InfoModal;

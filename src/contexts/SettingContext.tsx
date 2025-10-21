@@ -1,24 +1,29 @@
 import AsyncStorage from "expo-sqlite/kv-store";
 import { createContext, useContext, useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system";
+import { vrcColors } from "@/configs/vrchat";
 
 const documentDirectory = FileSystem.documentDirectory;
 
 // provide user settings globally,
 // all data stored in async storage with prefix: "setting_"
 
-type HomeTabMode = "default" | "friend-locations" | "feeds"| "calendar" ;
-interface SearchOption {
-  worlds: {sort?: string, order?: "asc" | "desc"};
-  avatars: {sort?: string, order?: "asc" | "desc"};
-  users: {sort?: string, order?: "asc" | "desc"};
-}
-interface ColorOption {
-  useUserColor: boolean; 
-  userColors: {[userId: string]: string}; // disabled if useUserColor is false
-  useFriendColor: boolean;
-  friendColor: string | undefined; // disabled if useFriendColor is false
-  favoriteFriendsColors: {[favoriteGroupId: string]: string};// disabled if useFriendColor is false
+
+//
+interface UIOption { // layout, color schema
+  layouts: {
+    homeTabMode: "default" | "friend-locations" | "feeds" | "calendar";
+    // CardViewColumns: 1 | 2 | 3 | 4;
+  };
+  theme: {
+    colorSchema: "light" | "dark" | "system";
+    accentColor: string | undefined; 
+  };
+  user: {
+    friendColor: string | undefined; 
+    favoriteFriendsColors: { [favoriteGroupId: string]: string }; // override friend color for favorite groups
+    // useFriendOrder: boolean;
+  };
 }
 interface NotificationOption {
   usePushNotification: boolean;
@@ -26,29 +31,32 @@ interface NotificationOption {
 }
 interface PipelineOption {
   keepMsgNum:  number; // how many feeds to keep, default 100
+  enableOnBackground: boolean;
+}
+interface OtherOption {
+  sendDebugLogs: boolean;
 }
 
 interface Setting {
-  homeTabMode: HomeTabMode;
-  searchOptions: SearchOption;
-  colorOptions: ColorOption;
+  uiOptions: UIOption;
   notificationOptions: NotificationOption;
   pipelineOptions: PipelineOption;
+  otherOptions: OtherOption;
 }
 
 const defaultSettings: Setting = {
-  homeTabMode: "default",
-  searchOptions: {
-    worlds: {},
-    avatars: {},
-    users: {},
-  },
-  colorOptions: {
-    useUserColor: false,
-    userColors: {},
-    useFriendColor: false,
-    friendColor: undefined,
-    favoriteFriendsColors: {},
+  uiOptions: {
+    layouts: {
+      homeTabMode: "default",
+    },
+    theme: {
+      colorSchema: "system",
+      accentColor: undefined,
+    },
+    user: {
+      friendColor: vrcColors.friend,
+      favoriteFriendsColors: {},
+    },
   },
   notificationOptions: {
     usePushNotification: false,
@@ -56,11 +64,16 @@ const defaultSettings: Setting = {
   },
   pipelineOptions: {
     keepMsgNum: 100,
+    enableOnBackground: false,
+  },
+  otherOptions: {
+    sendDebugLogs: false,
   },
 }
 
 interface SettingContextType {
   settings: Setting;
+  defaultSettings: Setting;
   saveSettings: (newSettings: Partial<Setting>) => Promise<void>;
   loadSettings: () => Promise<Setting>;
 }
@@ -78,11 +91,9 @@ const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
   const [settings, setSettings] = useState<Setting>(defaultSettings);
   useEffect(() => {
     // Load settings from async storage on mount
-    loadSettings().then(loadedSettings => {
-      setSettings(loadedSettings);
-    });
+    loadSettings().then(setSettings);
   }, []);
-  
+
   const saveSettings = async (newSettings: Partial<Setting>) => {
     const updatedSettings = { ...settings, ...newSettings };
     setSettings(updatedSettings);
@@ -96,25 +107,35 @@ const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
 
   const loadSettings = async (): Promise<Setting> => {
     // Load settings from async storage
-    const storedSettings = await AsyncStorage.multiGet([
-      "setting_homeTabMode",
-      "setting_searchOptions",
-      "setting_colorOptions",
-      "setting_notificationOptions",
-    ]);
+    const storedSettings = await AsyncStorage.multiGet(
+      Object.keys(defaultSettings).map(key => `setting_${key}`)
+    );
     const newSettings = { ...defaultSettings };
     storedSettings.forEach(([key, value]) => {
       if (value !== null) {
         const settingKey = key.replace("setting_", "") as keyof Setting;
-        newSettings[settingKey] = JSON.parse(value);
+        newSettings[settingKey] = { ...recursiveApply(newSettings[settingKey], JSON.parse(value)) };
       }
     });
+    // console.log("Loaded settings:", JSON.stringify(newSettings, null, 2));
     return newSettings;
+  }
+
+  const recursiveApply = (base: any, apply: any) => {
+    for (const key in base) {
+      if (typeof base[key] === "object" && !Array.isArray(base[key])) {
+        if (apply[key] !== undefined) recursiveApply(base[key], apply[key]);
+      } else {
+        base[key] = apply[key];
+      }
+    }
+    return base;
   }
 
   return (
     <Context.Provider value={{
       settings,
+      defaultSettings,
       saveSettings,
       loadSettings,
     }}>

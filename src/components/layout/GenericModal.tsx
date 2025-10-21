@@ -4,16 +4,21 @@ import { Modal, StyleSheet, View } from "react-native";
 import { ButtonItemForFooter } from "./type";
 import { Button, Text } from "@react-navigation/elements";
 import { useMemo } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import IconButton from "../view/icon-components/IconButton";
+import { hide } from "expo-router/build/utils/splash";
 interface Props {
   open: boolean;
   onClose: () => void;
   title?: string;
+  showCloseButton?: boolean;
+  scrollable?: boolean;
   buttonItems?: ButtonItemForFooter[];
+  size?: "small" | "normal" | "large" | "full";
   children: React.ReactNode;
 }
 
-const GenericModal = ({ open, onClose, children, buttonItems, title }: Props) => {
+const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseButton = false, scrollable=false, size = "normal" }: Props) => {
   const theme = useTheme();
   return (
     <Modal
@@ -28,22 +33,39 @@ const GenericModal = ({ open, onClose, children, buttonItems, title }: Props) =>
           <View
             style={[
               styles.modalContainer,
+              (
+                size === "small" ? styles.modalSizeSmall
+                : size === "normal" ? styles.modalSizeNormal
+                : size === "large" ? styles.modalSizeLarge
+                : size === "full" ? styles.modalSizeFull
+                : {}),
             { backgroundColor: theme.colors.background },
             ]}
-          >
-            {title && (
-              <Text
-                style={[
-                  styles.title,
-                  { color: theme.colors.text, backgroundColor: theme.colors.card },
-                ]}
-              >
-                {title}
-              </Text>
+          > 
+            { (showCloseButton || title)  && (
+              <View style={[styles.titleContainer, {backgroundColor: theme.colors.card}]}>
+                {showCloseButton && (
+                  <IconButton
+                    style={{ paddingRight: spacing.large }}
+                    name="chevron-left"
+                    onPress={onClose}
+                  />
+                )}
+                {title && (
+                  <Text
+                    style={[
+                      styles.title,
+                      { color: theme.colors.text },
+                    ]}
+                  >
+                    {title}
+                  </Text>
+                )}
+              </View>
             )}
-            <View style={styles.childContainer}>
+            <ChildContainer scrollable={scrollable}>
               {children}
-            </View>
+            </ChildContainer>
             <View style={styles.footer}>
               {buttonItems?.map((item, index) => (
                 <Button
@@ -67,6 +89,26 @@ const GenericModal = ({ open, onClose, children, buttonItems, title }: Props) =>
   );
 };
 
+const ChildContainer = ({ scrollable, children }: { scrollable: boolean; children: React.ReactNode }) => {
+  if (scrollable) {
+    return (
+      <ScrollView
+        contentContainerStyle={styles.childContainer}
+      >
+        {children}
+      </ScrollView>
+    );
+  } else {
+    return (
+      <View 
+        style={styles.childContainer}
+      >
+        {children}
+      </View>
+    );
+  }
+};
+
 const styles = StyleSheet.create({
   modalRoot: {
     // attach to Root-View in Modal
@@ -74,10 +116,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  modalContainer: {
-    width: "90%",
-    maxHeight: "90%",
+  modalSizeSmall: {
+    width: "80%",
+    maxHeight: "50%",
     minHeight: 100,
+  },
+  modalSizeNormal: {
+    width: "90%",
+    maxHeight: "75%",
+    minHeight: 100,
+  },
+  modalSizeLarge: {
+    width: "98%",
+    maxHeight: "90%",
+    minHeight: 150,
+  },
+  modalSizeFull: {
+    width: "100%",
+    height: "100%",
+  },
+  modalContainer: {
     borderRadius: radius.small,
     overflow: "hidden",
 
@@ -85,12 +143,17 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: 'solid',
   },
-  title: {
-    fontSize: fontSize.medium,
-    fontWeight: "bold",
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     width: '100%',
     paddingVertical: spacing.small,
-    paddingHorizontal: spacing.large,
+    paddingHorizontal: spacing.small,
+  },
+  title: {
+    paddingHorizontal: spacing.small,
+    fontSize: fontSize.medium,
+    fontWeight: "bold",
     textAlign: "left",
   },
   childContainer: {

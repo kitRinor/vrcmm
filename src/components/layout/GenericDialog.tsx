@@ -78,9 +78,9 @@ const styles = StyleSheet.create({
     maxWidth: "90%",
     minWidth: 200,
     maxHeight: "90%",
-    minHeight: 150,
+    minHeight: 100,
     borderRadius: radius.medium,
-    padding: spacing.large,
+    padding: spacing.medium,
     justifyContent: "center",
     alignItems: "center",
 
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: spacing.medium,
+    padding: spacing.small,
     borderRadius: radius.small,
   },
   dialogButton: {

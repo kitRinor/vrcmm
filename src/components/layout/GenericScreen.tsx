@@ -9,14 +9,17 @@ import { Text } from "@react-navigation/elements";
 import { useCallback, useEffect } from "react";
 import IconSymbol from "../view/icon-components/IconView";
 import { MenuItem } from "./type";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface Props {
   menuItems?: MenuItem[];
+  scrollable?: boolean;
   children: React.ReactNode;
 }
 
 const GenericScreen = ({
   menuItems,
+  scrollable = false,
   children,
 }: Props) => {
   const theme = useTheme();
@@ -42,17 +45,37 @@ const GenericScreen = ({
             <DrawerContent menuItems={menuItems} setOpenMenu={setOpenMenu} />
           )}
         >
-          <View style={styles.screenContainer}>{children}</View>
+          <ChildContainer scrollable={scrollable}>{children}</ChildContainer>
         </Drawer>
       </View>
     );
   } else {
     return (
       <View style={styles.screenRoot}>
-        <View style={styles.screenContainer}>{children}</View>
+        <ChildContainer scrollable={scrollable}>{children}</ChildContainer>
       </View>
     );
   } 
+};
+
+const ChildContainer = ({ scrollable, children }: { scrollable: boolean; children: React.ReactNode }) => {
+  if (scrollable) {
+    return (
+      <ScrollView
+        contentContainerStyle={styles.screenContainer}
+      >
+        {children}
+      </ScrollView>
+    );
+  } else {
+    return (
+      <View 
+        style={styles.screenContainer}
+      >
+        {children}
+      </View>
+    );
+  }
 };
 
 const DrawerContent = ({

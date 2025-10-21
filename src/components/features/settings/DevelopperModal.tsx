@@ -12,7 +12,8 @@ const DevelopperModal = ({ open, setOpen }: Props) => {
   return (
     <GenericModal
       title="Developper Options"
-      buttonItems={[{ title: "Close", onPress: () => setOpen(false), flex: 1 }]}
+      showCloseButton
+      size="large"
       open={open}
       onClose={() => setOpen(false)}
     >

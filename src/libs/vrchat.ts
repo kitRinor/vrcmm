@@ -1,3 +1,4 @@
+import { vrcColors, vrcTexts } from "@/configs/vrchat";
 import { Avatar, AvatarPerformance, CurrentUser, FavoritedWorld, Group, GroupAccessType, Instance, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, UserState, UserStatus, World } from "@/vrchat/api";
 export type UserLike = LimitedUserSearch | LimitedUserFriend | LimitedUserInstance | User | CurrentUser
 export type WorldLike = LimitedWorld | FavoritedWorld | World
@@ -6,7 +7,6 @@ export type AvatarLike = Avatar
 export type InstanceLike = MinInstance | Instance
 
 
-export type TrustRank = "legend" | "trusted" | "known" | "user" | "new_user" | "visitor" | "nuisance";
 
 type StatusGettableUser = Exclude<UserLike, LimitedUserInstance>
 
@@ -129,17 +129,17 @@ export function parseInstanceId(instanceId: string | undefined): {
 
 // Get instance type with DisplayName (ex.Friends+) 
 export function getInstanceType(type:InstanceType, groupAccessType?: GroupAccessType) {
-  if (type === "public") return "Public";
-  if (type === "hidden") return "Friends+";
-  if (type === "friends") return "Friends";
-  if (type === "private") return "Private"; // Invite or Invite+
+  if (type === "public") return vrcTexts.instanceType.public;
+  if (type === "hidden") return vrcTexts.instanceType.friends_plus;
+  if (type === "friends") return vrcTexts.instanceType.friends;
+  if (type === "private") return vrcTexts.instanceType.private; // Invite or Invite+
   if (type === "group") {// GroupOnly or Group+ or GroupPublic
-    if (groupAccessType === "members") return "Group";
-    if (groupAccessType === "plus") return "Group+";
-    if (groupAccessType === "public") return "GroupPublic";
-    return "Group";
+    if (groupAccessType === "members") return vrcTexts.instanceType.group;
+    if (groupAccessType === "plus") return vrcTexts.instanceType.group_plus;
+    if (groupAccessType === "public") return vrcTexts.instanceType.group_public;
+    return vrcTexts.instanceType.group;
   }
-  return "unknown";
+  return vrcTexts.instanceType.private;
 }
 
 export function getState(user: LimitedUserFriend): UserState | undefined {
@@ -152,41 +152,41 @@ export function getState(user: LimitedUserFriend): UserState | undefined {
 
 export function getStatusColor(userOrStr: StatusGettableUser | string ): string {
   const status = typeof userOrStr === "string" ? userOrStr : userOrStr.status;
-  if (status == "join me") return "#00bbffff" // join me
-  if (status == "active") return "#59ff00ff" // online
-  if (status == "ask me") return "#ff7b00ff" // ask me
-  if (status == "busy") return "#b10000ff" // don't disturb
-  if (status == "offline") return "#595959ff" // offline
-  return "#000000ff";
+  if (status == "join me") return vrcColors.userStatus.join_me; // join me
+  if (status == "active") return vrcColors.userStatus.online; // online
+  if (status == "ask me") return vrcColors.userStatus.ask_me; // ask me
+  if (status == "busy") return vrcColors.userStatus.busy; // busy
+  if (status == "offline") return vrcColors.userStatus.offline; // offline
+  return vrcColors.userStatus.offline;
 }
 
 // get trust rank color (and friend color)
 export function getTrustRankColor(user: UserLike, useFriendColor: boolean = false, useRankColor: boolean = true): string {
-  if (useFriendColor && user.isFriend) return "#ffee00ff"; // friend
+  if (useFriendColor && user.isFriend) return vrcColors.friend; // friend
   if (useRankColor) {
     const tags = user.tags;
-    if (tags.includes("system_troll")) return "#363636ff"; // Nuisance
+    if (tags.includes("system_troll")) return vrcColors.trustRank.nuisance; // Nuisance
 
-    if (tags.includes("system_trust_legend")) return "#ff0101ff"; // legend (unused?)
-    if (tags.includes("system_trust_veteran")) return "#aa01ffff"; // trusted
-    if (tags.includes("system_trust_trusted")) return "#ff8800ff"; // known
-    if (tags.includes("system_trust_known")) return "#26ff00ff"; // User
-    if (tags.includes("system_trust_basic")) return "#004cffff"; // NewUser
+    if (tags.includes("system_trust_legend")) return vrcColors.trustRank.legend; // legend (unused?)
+    if (tags.includes("system_trust_veteran")) return vrcColors.trustRank.trusted; // trusted
+    if (tags.includes("system_trust_trusted")) return vrcColors.trustRank.known; // known
+    if (tags.includes("system_trust_known")) return vrcColors.trustRank.user; // User
+    if (tags.includes("system_trust_basic")) return vrcColors.trustRank.new_user; // NewUser
   }
-  return "#ffffffff"; // Visitor
+  return vrcColors.trustRank.visitor; // Visitor
 }
 
 
 // get trust rank string from Tags
-export function getTrustRank(user: UserLike): TrustRank {
+export function getTrustRank(user: UserLike) {
   const tags = user.tags;
-  if (tags.includes("system_troll")) return "nuisance";
-  if (tags.includes("system_trust_legend")) return "legend"; // (unused?)
-  if (tags.includes("system_trust_veteran")) return "trusted";
-  if (tags.includes("system_trust_trusted")) return "known";
-  if (tags.includes("system_trust_known")) return "user";
-  if (tags.includes("system_trust_basic")) return "new_user";
-  return "visitor";
+  if (tags.includes("system_troll")) return vrcTexts.trustRank.nuisance;
+  if (tags.includes("system_trust_legend")) return vrcTexts.trustRank.legend;
+  if (tags.includes("system_trust_veteran")) return vrcTexts.trustRank.trusted;
+  if (tags.includes("system_trust_trusted")) return vrcTexts.trustRank.known;
+  if (tags.includes("system_trust_known")) return vrcTexts.trustRank.user;
+  if (tags.includes("system_trust_basic")) return vrcTexts.trustRank.new_user;
+  return vrcTexts.trustRank.visitor;
 }
 
 // VRC+ Subscriber
@@ -212,9 +212,9 @@ export function getAuthorTags(data: AvatarLike | WorldLike): string[] {
 
 
 export function getReleaseStatusColor(data: AvatarLike | WorldLike) {
-  if (data.releaseStatus == "public") return "rgba(95, 164, 255, 1)"; // public
-  if (data.releaseStatus == "private") return "#ff8636ff"; // private
-  if (data.releaseStatus == "hidden") return "#3d3c3cff"; // hidden
+  if (data.releaseStatus == "public") return vrcColors.releaseStatus.public; // public
+  if (data.releaseStatus == "private") return vrcColors.releaseStatus.private; // private
+  if (data.releaseStatus == "hidden") return vrcColors.releaseStatus.hidden; // hidden
   return "#000000ff";
 }
 

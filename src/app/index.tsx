@@ -228,6 +228,7 @@ export default function Login() {
 
         {/* 2fa modal */}
         <GenericModal
+          title="Two-Factor Authentication"
           buttonItems={[
             { title: "Close", onPress: () => setOpenTFA(false)},
             { title: "Verify", onPress: handleVerify, flex: 1 }
@@ -235,15 +236,6 @@ export default function Login() {
           open={openTFA}
           onClose={() => setOpenTFA(false)}
         >
-          <Text
-            style={[
-              styles.header,
-              styles.headerContainer,
-              { color: theme.colors.text },
-            ]}
-          >
-            Two-Factor Authentication
-          </Text>
           <Text style={[styles.text, { color: theme.colors.text }]}>
             {modeTFA === "totp"
               ? "Enter the code from your authenticator app"
@@ -265,19 +257,11 @@ export default function Login() {
 
         {/* links to vrchat modal */}
         <GenericModal
+          title="is there any problem?"
           buttonItems={[{ title: "Close", onPress: () => setOpenLinks(false), flex: 1 }]}
           open={openLinks}
           onClose={() => setOpenLinks(false)}
         >
-          <Text
-            style={[
-              styles.header,
-              styles.headerContainer,
-              { color: theme.colors.text },
-            ]}
-          >
-            Having trouble logging in?
-          </Text>
           <View
             style={[
               styles.containerVertical,

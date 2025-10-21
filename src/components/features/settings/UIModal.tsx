@@ -10,6 +10,7 @@ import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { StyleSheet, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import SettingItem, { SettingItemProps } from "./components/SettingItem";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface Props {
   open: boolean;
@@ -24,19 +25,30 @@ interface SectionProps {
 const UIModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const setting = useSetting();
-  const { homeTabMode, colorOptions } = setting.settings;
+  const { uiOptions } = setting.settings;
 
   const sectionItems: SectionProps[] = [
     {
-      title: "Home Tab",
+      title: "Theme",
       items: [
         {
-          icon: "home-work",
-          title: "Layout mode",
-          description: "Select the mode for the home tab",
+          icon: "theme-light-dark",
+          title: "Dark Mode",
+          description: "Select your color schema",
           leading: (
             <Text style={[globalStyles.text, { color: theme.colors.text }]}>
-              {homeTabMode}
+              {uiOptions.theme.colorSchema}
+            </Text>
+          ),
+          onPress: () => {}
+        },
+        {
+          icon: "colorize",
+          title: "Accent Color",
+          description: "Select your color schema",
+          leading: (
+            <Text style={[globalStyles.text, { color: theme.colors.text }]}>
+              {uiOptions.theme.accentColor || "Default"}
             </Text>
           ),
           onPress: () => {}
@@ -44,53 +56,71 @@ const UIModal = ({ open, setOpen }: Props) => {
       ]
     },
     {
-      title: "Color Options",
+      title: "Layout",
       items: [
         {
-          icon: "palette",
-          title: "Favorite Color",
-          description: "Select your favorite color theme",
-          leading: <></>
+          icon: "page-layout-body",
+          title: "Home Tab",
+          description: "Select layout modes for the home tab",
+          leading: (
+            <Text style={[globalStyles.text, { color: theme.colors.text }]}>
+              {uiOptions.layouts.homeTabMode} 
+            </Text>
+          ),
+          onPress: () => {}
+        }
+      ]
+    },
+    {
+      title: "Color",
+      items: [
+        {
+          icon: "account",
+          title: "Friend Color",
+          description: "Select your friends color theme",
+          leading: <Text style={[globalStyles.text, { color: theme.colors.text }]}>{uiOptions.user.friendColor}</Text>
         },
         {
-          icon: "palette",
-          title: "User Color",
-          description: "Select your user color theme",
-          leading: <></>
+          icon: "group",
+          title: "Favorite Friend Color",
+          description: "Select your favorite-friends color theme",
+          leading: <Text style={[globalStyles.text, { color: theme.colors.text }]}>{Object.values(uiOptions.user.favoriteFriendsColors).join(", ") || "Default"}</Text>,
         },
       ]
-    }
+    },
   ]
 
   return (
     <GenericModal
       title="UI Settings"
-      buttonItems={[{ title: "Close", onPress: () => setOpen(false), flex: 1 }]}
+      size="large"
+      showCloseButton
+      scrollable
       open={open}
       onClose={() => setOpen(false)}
     >
-      {sectionItems.map((section, index) => (
-        <View key={`section-${index}`}>
-          <View style={styles.sectionHeaderContainer}>
-            <Text style={[styles.sectionHeaderText, { color: theme.colors.text }]}>
-              {section.title}
-            </Text>
-            <View style={[styles.sectionHeaderDivider, { borderBottomColor: theme.colors.border}]} />
+        {sectionItems.map((section, index) => (
+          <View key={`section-${index}`}>
+            <View style={styles.sectionHeaderContainer}>
+              <Text style={[styles.sectionHeaderText, { color: theme.colors.text }]}>
+                {section.title}
+              </Text>
+              <View style={[styles.sectionHeaderDivider, { borderBottomColor: theme.colors.border}]} />
+            </View>
+            <View style={styles.settingItemContainer}>
+              {section.items.map((item, idx) => (
+                <SettingItem 
+                  style={[styles.settingItem, { borderBottomColor: theme.colors.border }]}
+                  key={`section-${index}-item-${idx}`}
+                  icon={item.icon}
+                  title={item.title}
+                  description={item.description}
+                  leading={item.leading}
+                />
+              ))}
+            </View>
           </View>
-          <View style={styles.settingItemContainer}>
-            {section.items.map((item) => (
-              <SettingItem 
-                style={[styles.settingItem, { borderBottomColor: theme.colors.border }]}
-                key={item.title}
-                icon={item.icon}
-                title={item.title}
-                description={item.description}
-                leading={item.leading}
-              />
-            ))}
-          </View>
-        </View>
-      ))}
+        ))}
     </GenericModal>
   );
 };

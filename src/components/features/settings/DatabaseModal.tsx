@@ -60,7 +60,8 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
   return (
     <GenericModal
       title="Database Management"
-      buttonItems={[{ title: "Close", onPress: () => setOpen(false), flex: 1 }]}
+      showCloseButton
+      size="large"
       open={open}
       onClose={() => setOpen(false)}
     >

@@ -13,7 +13,8 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import { navigate } from "expo-router/build/global-state/routing";
-import DebugModal from "@/components/features/settings/DebugModal";
+import InfoModal from "@/components/features/settings/InfoModal";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface SettingItem {
   icon: SupportedIconNames;
@@ -27,20 +28,12 @@ export default function Settings() {
   const theme = useTheme();
   const [openLogout, setOpenLogout] = useState(false);
   const [openDevelopper, setOpenDevelopper] = useState(false);
-  const [openDebug, setOpenDebug] = useState(false);
+  const [openInfo, setOpenInfo] = useState(false);
   const [openDatabase, setOpenDatabase] = useState(false);
   const [openUI, setOpenUI] = useState(false);
 
   const settingContents: Record<string, SettingItem[]> = {
     general: [
-      {
-        icon: "info",
-        title: "Info",
-        description: "View information about this app",
-        onPress: () => {
-          console.log("Info pressed");
-        },
-      },
       {
         icon: "imagesearch-roller",
         title: "UI",
@@ -62,6 +55,12 @@ export default function Settings() {
     ],
     other: [
       {
+        icon: "info",
+        title: "Information",
+        description: "View information about this app",
+        onPress: () => setOpenInfo(true),
+      },
+      {
         icon: "help",
         title: "Help",
         description: "Get help and support",
@@ -74,12 +73,6 @@ export default function Settings() {
         onPress: () => setOpenDevelopper(true),
       },
       ...(Constants.expoConfig?.extra?.vrcmm.buildProfile == "development" ? [
-        {
-          icon: "bug" as SupportedIconNames,
-          title: "debug",
-          description: "(only in development mode)",
-          onPress: () => setOpenDebug(true),
-        },
         {
           icon: "routes" as SupportedIconNames,
           title: "sitemap",
@@ -99,7 +92,8 @@ export default function Settings() {
   };
 
   return (
-    <GenericScreen>
+    <GenericScreen scrollable>
+      <ScrollView>
       {Object.entries(settingContents).map(([category, items]) => (
         <View key={category} style={styles.categoryContainer}>
           <Text style={[globalStyles.header, { color: theme.colors.text }]}>
@@ -132,6 +126,8 @@ export default function Settings() {
           ))}
         </View>
       ))}
+      </ScrollView>
+
 
       {/* dialog and modals */}
       <GenericDialog
@@ -149,7 +145,7 @@ export default function Settings() {
       <DatabaseModal open={openDatabase} setOpen={setOpenDatabase} />
       <UIModal open={openUI} setOpen={setOpenUI} />
       <DevelopperModal open={openDevelopper} setOpen={setOpenDevelopper} />
-      <DebugModal open={openDebug} setOpen={setOpenDebug} />
+      <InfoModal open={openInfo} setOpen={setOpenInfo} />
     </GenericScreen>
   );
 }

@@ -2,6 +2,7 @@
 import {
   AuthenticationApi,
   AvatarsApi,
+  CalendarApi,
   Configuration,
   FavoritesApi,
   FriendsApi,
@@ -42,18 +43,28 @@ export interface VRChatContextType {
   }) => Configuration;
   configurePipeline: (url: string) => void;
   unConfigure: () => void;
-  // apis
+  /** APIs */
   authenticationApi: AuthenticationApi;
   worldsApi: WorldsApi;
   avatarsApi: AvatarsApi;
   usersApi: UsersApi;
+  calendarApi: CalendarApi;
+  // economyApi: EconomyApi;
   favoritesApi: FavoritesApi;
+  // filesApi: FilesApi;
   friendsApi: FriendsApi;
   groupsApi: GroupsApi;
   instancesApi: InstancesApi;
+  // inventoryApi: InventoryApi;
   inviteApi: InviteApi;
+  // jamsApi: JamsApi;
+  // notificationsApi: NotificationsApi;
+  // playermoderationApi: PlayerModerationApi;
   printsApi: PrintsApi;
-  // pipeline
+  // propsApi: PropsApi;
+  // miscellaneousApi: MiscellaneousApi;
+
+  /** Pipelines */
   pipeline: Pipeline;
 }
 const Context = createContext<VRChatContextType | undefined>(undefined);
@@ -181,6 +192,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         worldsApi: new WorldsApi(config, BASE_API_URL, _axios),
         avatarsApi: new AvatarsApi(config, BASE_API_URL, _axios),
         usersApi: new UsersApi(config, BASE_API_URL, _axios),
+        calendarApi: new CalendarApi(config, BASE_API_URL, _axios),
         favoritesApi: new FavoritesApi(config, BASE_API_URL, _axios),
         friendsApi: new FriendsApi(config, BASE_API_URL, _axios),
         groupsApi: new GroupsApi(config, BASE_API_URL, _axios),

@@ -25,17 +25,3 @@ export default function Tmp() {
     </GenericScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: spacing.mini,
-    // borderStyle:"dotted", borderColor:"red",borderWidth:1
-  },
-  feed: {
-    width: "100%",
-  },
-  cardView: {
-    width: "50%",
-  },
-});

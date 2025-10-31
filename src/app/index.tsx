@@ -4,6 +4,7 @@ import { Atag } from "@/components/view/Atag";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, spacing } from "@/configs/styles";
 import { useAuth } from "@/contexts/AuthContext";
+import { MiscellaneousApi } from "@/vrchat/api";
 import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import Constants from "expo-constants";
@@ -101,6 +102,7 @@ export default function Login() {
   };
 
   const logoAnim = useRef(new Animated.Value(0)).current; //
+  const [ logoMsg, setLogoMsg ] = useState<string | null>(null);
   const onPressInLogo = () => {
     Animated.timing(logoAnim, {
       toValue: 1,
@@ -119,7 +121,15 @@ export default function Login() {
     if (Constants.expoConfig?.extra?.vrcmm.buildProfile === "development") {
       navigate("/_sitemap"); // navigate to sitemap on logo press (for debug)
     } else {
-      // [ToDO] funny easter egg?
+      new MiscellaneousApi().getCurrentOnlineUsers()
+        .then((res) => {
+          const msg = `There are ${res.data} users online now on VRChat!`;
+          setLogoMsg(msg);
+          setTimeout(() => setLogoMsg(null), 5000);
+        })
+        .catch((err) => {
+          console.log("Failed to get online users:", err);
+        });
     }
   };
 

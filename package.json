@@ -9,6 +9,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~5.0.5",
     "@expo/vector-icons": "^15.0.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
@@ -54,9 +55,8 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
-    "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "undefined": "@expo/vector-icons:latest"
+    "react-native-web": "^0.20.0",
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

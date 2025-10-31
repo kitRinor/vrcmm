@@ -9,7 +9,7 @@ import { VRChatProvider } from "@/contexts/VRChatContext";
 import { ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "react-native";
+import { Platform, useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

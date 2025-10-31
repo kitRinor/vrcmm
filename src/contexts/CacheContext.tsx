@@ -18,9 +18,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image } from "react-native";
+import { Image, Platform } from "react-native";
 import { useVRChat } from "./VRChatContext";
 import { useQueries } from "@tanstack/react-query";
+import { deleteAsync, downloadAsync, getInfoAsync, makeDirectoryAsync, readAsStringAsync, writeAsStringAsync } from "@/libs/file";
 
 // Image Cache in Storage
 interface Cache<T> {
@@ -63,9 +64,12 @@ interface CacheContextType {
   avatar: CacheWrapper<Avatar, "byId">;
 }
 
+const isNative = Platform.OS !== "web";
+
 const Context = createContext<CacheContextType | undefined>(undefined);
 
-const cacheRootDir = `${FileSystem.cacheDirectory}`; // root-directory for cache
+// root-directory for cache, only-use on native 
+const cacheRootDir = isNative ? `${FileSystem.cacheDirectory}` : "cache"; 
 
 // get local file uri from key (id or url), subDirName must end with /
 const getLocalUri = async (
@@ -97,10 +101,10 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
 
   // create cache dir if not exist
   useEffect(() => {
-    FileSystem.getInfoAsync(cacheRootDir)
+    getInfoAsync(cacheRootDir)
       .then((dirInfo) => {
         if (!dirInfo.exists)
-          FileSystem.makeDirectoryAsync(cacheRootDir, { intermediates: true });
+          makeDirectoryAsync(cacheRootDir);
       })
       .catch((error) => {
         console.error("Error creating cache directory:", error);
@@ -143,34 +147,39 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
 
   const clearCache = async () => {
     // delete all files in cache root-dir and recreate it
-    await FileSystem.deleteAsync(cacheRootDir, { idempotent: true });
-    await FileSystem.makeDirectoryAsync(cacheRootDir, { intermediates: true });
+    await deleteAsync(cacheRootDir);
+    await makeDirectoryAsync(cacheRootDir);
     // re-initiate all cache wrappers (with creating sub directories)
     initTrigger.current += 1;
   };
   const getCacheInfo = async () => {
-    // recursively get total size and count of files in cache root-dir
-    const countFileRecursive = async (dir: string): Promise<number> => {
-      let totalCount = 0;
-      const items = await FileSystem.readDirectoryAsync(dir);
-      for (const item of items) {
-        const itemPath = dir + item;
-        const info = await FileSystem.getInfoAsync(itemPath);
-        if (info.isDirectory) {
-          const subDirTotal = await countFileRecursive(itemPath + "/");
-          totalCount += subDirTotal;
-        } else {
-          totalCount += 1;
+    if (isNative) {
+      // recursively get total size and count of files in cache root-dir
+      const countFileRecursive = async (dir: string): Promise<number> => {
+        let totalCount = 0;
+        const items = await FileSystem.readDirectoryAsync(dir);
+        for (const item of items) {
+          const itemPath = dir + item;
+          const info = await FileSystem.getInfoAsync(itemPath);
+          if (info.isDirectory) {
+            const subDirTotal = await countFileRecursive(itemPath + "/");
+            totalCount += subDirTotal;
+          } else {
+            totalCount += 1;
+          }
         }
-      }
-      return totalCount;
-    };
-    const rootInfo = await FileSystem.getInfoAsync(cacheRootDir);
-    const rootSize = rootInfo.exists ? rootInfo.size || 0 : 0;
-    const rootCount = rootInfo.exists
-      ? await countFileRecursive(cacheRootDir)
-      : 0;
-    return { size: rootSize, count: rootCount };
+        return totalCount;
+      };
+      const rootInfo = await FileSystem.getInfoAsync(cacheRootDir);
+      const rootSize = rootInfo.exists ? rootInfo.size || 0 : 0;
+      const rootCount = rootInfo.exists
+        ? await countFileRecursive(cacheRootDir)
+        : 0;
+      return { size: rootSize, count: rootCount };
+    } else {
+      // on web, get total size and count of files in indexeddb under the cacheRootDir
+      return { size: 0, count: 0 };
+    }
   };
 
   return (
@@ -206,25 +215,27 @@ function useCacheWrapper<T = any, M extends CacheMode = any>(
   if (opt.type !== "json") throw new Error("not-implemented cache type: " + opt.type);
 
   // initiate cache sub-directory
-  FileSystem.getInfoAsync(cacheRootDir + subDir)
-    .then((dirInfo) => {
-      if (!dirInfo.exists)
-        FileSystem.makeDirectoryAsync(cacheRootDir + subDir, {
-          intermediates: true,
-        });
-    })
-    .catch((error) => {
-      console.error(
-        `Error creating cache sub-dir: ${cacheRootDir + subDir}`,
-        error
-      );
-    });
+  if (isNative) {
+    FileSystem.getInfoAsync(cacheRootDir + subDir)
+      .then((dirInfo) => {
+        if (!dirInfo.exists)
+          FileSystem.makeDirectoryAsync(cacheRootDir + subDir, {
+            intermediates: true,
+          });
+      })
+      .catch((error) => {
+        console.error(
+          `Error creating cache sub-dir: ${cacheRootDir + subDir}`,
+          error
+        );
+      });
+  }
 
   const get = async (id: string, opt: CacheOption, forceFetch: boolean = false): Promise<T> => {
     const localUri = await getLocalUri(id, subDir, opt.encrypt);
-    const fileInfo = await FileSystem.getInfoAsync(localUri);
+    const fileInfo = await getInfoAsync(localUri);
     if (fileInfo.exists) {
-      const fileContent = await FileSystem.readAsStringAsync(localUri);
+      const fileContent = await readAsStringAsync(localUri);
       const cache: Cache<T> = JSON.parse(fileContent);
       if (
         !forceFetch &&
@@ -240,7 +251,7 @@ function useCacheWrapper<T = any, M extends CacheMode = any>(
         opt.expiration > 0 ? new Date(Date.now() + opt.expiration).toISOString() : "",
       value: data,
     };
-    await FileSystem.writeAsStringAsync(localUri, JSON.stringify(newCache));
+    await writeAsStringAsync(localUri, JSON.stringify(newCache));
     return data;
   };
   const set = async (id: string, data: T, opt: CacheOption) => {
@@ -250,11 +261,11 @@ function useCacheWrapper<T = any, M extends CacheMode = any>(
         opt.expiration > 0 ? new Date(Date.now() + opt.expiration).toISOString() : "",
       value: data,
     };
-    await FileSystem.writeAsStringAsync(localUri, JSON.stringify(newCache));
+    await writeAsStringAsync(localUri, JSON.stringify(newCache));
   };
   const del = async (id: string, opt: CacheOption,) => {
     const localUri = await getLocalUri(id, subDir, opt.encrypt);
-    await FileSystem.deleteAsync(localUri, { idempotent: true });
+    await deleteAsync(localUri);
   };
    
   // return based on mode
@@ -278,13 +289,12 @@ function useCacheWrapper<T = any, M extends CacheMode = any>(
 const imageCacheSubDir = "images/"; // must end with /
 
 function initCachedImage() {
+  if (!isNative) return;
   // create sub-directory for images
-  FileSystem.getInfoAsync(cacheRootDir + imageCacheSubDir)
+  getInfoAsync(cacheRootDir + imageCacheSubDir)
     .then((dirInfo) => {
       if (!dirInfo.exists)
-        FileSystem.makeDirectoryAsync(cacheRootDir + imageCacheSubDir, {
-          intermediates: true,
-        });
+        makeDirectoryAsync(cacheRootDir + imageCacheSubDir);
     })
     .catch((error) => {
       console.error(
@@ -295,14 +305,15 @@ function initCachedImage() {
 }
 
 async function downloadImageToCache (remoteUri: string): Promise<string | undefined> {
+  if (!isNative) return;
   try {
     if (remoteUri.startsWith("file://")) return remoteUri; // local file, no need to cache
     const localUri = await getLocalUri(remoteUri, imageCacheSubDir, true);
-    const fileInfo = await FileSystem.getInfoAsync(localUri);
+    const fileInfo = await getInfoAsync(localUri);
     if (fileInfo.exists) {
       return localUri
     } else {
-      const { uri } = await FileSystem.downloadAsync(remoteUri, localUri, {
+      const { uri } = await downloadAsync(remoteUri, localUri, {
         headers: {'User-Agent': getUserAgent()},
       });
       return uri;
@@ -323,6 +334,7 @@ const CachedImage = ({
 }) => {
   const [src, setSrc] = useState<string | undefined>();
   const load = async () => {
+    if (!isNative) return;
     const localUri = await downloadImageToCache(remoteUri);
     if (localUri) {
       setSrc(localUri);
@@ -333,16 +345,29 @@ const CachedImage = ({
     }
   };
   useEffect(() => {
+    if (!isNative) return; // no caching on web
     if (remoteUri.length > 0) load();
   }, [remoteUri]);
-  return (
-    <Image
-      source={{ uri: src }}
-      progressiveRenderingEnabled={true}
-      style={[{ resizeMode: "cover" }, rest.style]}
-      {...omitObject(rest, "style")}
-    />
-  );
+
+  if (isNative) {
+    return (
+      <Image
+        source={{ uri: src }}
+        progressiveRenderingEnabled={true}
+        style={[{ resizeMode: "cover" }, rest.style]}
+        {...omitObject(rest, "style")}
+      />
+    );
+  } else {
+    // on web, use default Image component
+    return (
+      <Image
+        source={{ uri: remoteUri }}
+        style={[{ resizeMode: "cover" }, rest.style]}
+        {...omitObject(rest, "style")}
+      />
+    );
+  }
 };
 
 export { CachedImage, downloadImageToCache, CacheProvider, useCache };

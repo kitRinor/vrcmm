@@ -12,11 +12,6 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { persistQueryClient } from '@tanstack/query-persist-client-core';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import AsyncStorage from "expo-sqlite/kv-store";
-import * as Constants from "expo-constants";
 
 function RootLayout() {
   return (
@@ -30,15 +25,15 @@ function RootLayout() {
 }
 
 export default function Root() {
-  const queryClient = new QueryClient();
-  const asyncStoragePersister = createAsyncStoragePersister({
-    storage: AsyncStorage
-  });
-  persistQueryClient({
-    queryClient: queryClient,
-    persister: asyncStoragePersister,
-    buster: Constants.default.expoConfig?.version
-  });
+  // const queryClient = new QueryClient();
+  // const asyncStoragePersister = createAsyncStoragePersister({
+  //   storage: AsyncStorage
+  // });
+  // persistQueryClient({
+  //   queryClient: queryClient,
+  //   persister: asyncStoragePersister,
+  //   buster: Constants.default.expoConfig?.version
+  // });
   return (
     <SettingProvider>
       {/* <DBProvider> */}

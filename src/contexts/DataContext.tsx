@@ -16,7 +16,6 @@ import { convertToLimitedUserFriend } from "@/libs/vrchat";
 import { useCache } from "./CacheContext";
 import { useSetting } from "./SettingContext";
 import Storage from "expo-sqlite/kv-store";
-import { useQueries, useQuery } from "@tanstack/react-query";
 
 
 // Store VRCAPI Data Globally

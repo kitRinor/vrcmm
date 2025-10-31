@@ -1,14 +1,10 @@
 import AsyncStorage from "expo-sqlite/kv-store";
 import { createContext, useContext, useEffect, useState } from "react";
-import * as FileSystem from "expo-file-system";
 import { vrcColors } from "@/configs/vrchat";
 import { mergeWithDefaults } from "@/libs/utils";
 
-const documentDirectory = FileSystem.documentDirectory;
-
 // provide user settings globally,
 // all data stored in async storage with prefix: "setting_"
-
 
 //
 interface UIOption { // layout, color schema

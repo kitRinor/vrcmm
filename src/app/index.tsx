@@ -141,6 +141,7 @@ export default function Login() {
           <Pressable
             style={{
               width: "80%",
+              maxHeight: "70%",
               aspectRatio: 1.2,
               marginBottom: spacing.large,
               alignItems: "center",
@@ -157,7 +158,7 @@ export default function Login() {
               style={{
                 height: "100%",
                 aspectRatio: 1, 
-                resizeMode: "cover",
+                resizeMode: "center",
                 transform: [
                   {
                     scale: logoAnim.interpolate({

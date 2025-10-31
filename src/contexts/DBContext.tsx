@@ -7,7 +7,6 @@ import { and, eq, like, not, sql, SQL } from "drizzle-orm";
 import { avatarsTable, favoriteGroupsTable, groupsTable, usersTable, worldsTable } from "@/db/schema";
 import { migrations } from "@/db/migration";
 import Storage from "expo-sqlite/kv-store";
-import * as FileSystem from "expo-file-system";
 // provide db access globally
 
 

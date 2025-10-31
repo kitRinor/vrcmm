@@ -4,20 +4,20 @@ import IconButton from "@/components/view/icon-components/IconButton";
 import SearchBox from "@/components/view/SearchBox";
 import { spacing } from "@/configs/styles";
 import { routeToSearch } from "@/libs/route";
+import { getTintedColor } from "@/libs/utils";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
 import { Tabs } from "expo-router";
-import { push } from "expo-router/build/global-state/routing";
 import React from "react";
 import { Image, Platform, useColorScheme, View } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: theme.colors.primary,
         headerShown: true,
         tabBarButton: HapticTab,
         // tabBarBackground: TabBarBackground,

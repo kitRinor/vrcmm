@@ -1,4 +1,3 @@
-import AsyncStorage from "expo-sqlite/kv-store";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 // provide menu state globally

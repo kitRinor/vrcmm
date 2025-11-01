@@ -1,3 +1,0 @@
-
-
-// term of service

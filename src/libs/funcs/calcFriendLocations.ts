@@ -5,7 +5,6 @@ import { sortFriendWithStatus } from "./sortFriendWithStatus";
 type LocationData = {
   location: string;
   friends?: LimitedUserFriend[];
-  friendsCount?: number;
   hasFavoriteFriends?: boolean;
 }
 // overload signatures
@@ -27,7 +26,7 @@ function calcFriendsLocations(
   onlyHasFavorites: boolean,
   withUnlocatable:boolean = false,
 ): InstanceLike[] | {instances: InstanceLike[], unlocatableFriends: LimitedUserFriend[]} {
-    if (!friends) return [];
+    if (!friends) return withUnlocatable ? {instances: [], unlocatableFriends: []} : [];
     // create favoriteMap for quick lookup
     const favoriteMap: Record<string, boolean> = {};
     if (favorites) {
@@ -48,10 +47,9 @@ function calcFriendsLocations(
         continue;
       }
       if (!map[location]) {
-        map[location] = { location, friends: [], friendsCount: 0, hasFavoriteFriends: false }
+        map[location] = { location, friends: [], hasFavoriteFriends: false }
       };
       map[location].friends?.push(friend);
-      map[location].friendsCount = (map[location].friendsCount ?? 0) + 1;
       if (favoriteMap[friend.id]) map[location].hasFavoriteFriends = true;
 
     }
@@ -77,7 +75,7 @@ function calcFriendsLocations(
           name: parsedInstance?.name ?? "",
           // for sort, not from MinInstance interface
           hasFavoriteFriends: locData.hasFavoriteFriends ?? false,
-          friendsCount: locData.friendsCount ?? 0,
+          friendsCount: locData.friends?.length ?? 0,
         };
         instanceFriends.push(instance);
       }

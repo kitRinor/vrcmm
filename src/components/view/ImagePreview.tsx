@@ -72,7 +72,8 @@ const ZoomableImageItem = ({ uri, headers, index, rotate, zoomEnabled }: Zoomabl
           <Animated.View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <AnimatedExpoImage
               source={{ uri, headers }}
-              style={[{ width, height, resizeMode: "contain" }, animatedStyle]}
+              contentFit="contain"
+              style={[{ width, height }, animatedStyle]}
             />
           </Animated.View>
         </PinchGestureHandler>

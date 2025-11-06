@@ -11,7 +11,7 @@ import { routeToInstance, routeToUser } from "@/libs/route";
 import { InstanceLike } from "@/libs/vrchat";
 import { LimitedUserFriend } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
@@ -32,51 +32,59 @@ export default function FriendLocations() {
     return calcFriendsLocations(friends.data, favorites.data, false, true);
   }, [friends.data, favorites.data]);
 
-  
+
+  const renderInstItem = useCallback(({ item, index }: { item: InstanceLike[], index: number }) => (
+      <View style={styles.chunk}>
+      {item.map((instance: InstanceLike) => (
+        <CardViewInstance key={instance.id} instance={instance} style={styles.cardView} onPress={() => routeToInstance(instance.worldId, instance.instanceId)} />
+      ))}
+      </View>
+    ), []);
+  const renderUnlocItem = useCallback(({ item, index }: { item: LimitedUserFriend[], index: number }) => (
+      <View style={styles.chunk}>
+      {item.map((friend: LimitedUserFriend) => (
+        <TouchableOpacity key={friend.id} style={styles.userChip} onPress={() => routeToUser(friend.id)} activeOpacity={0.7}>
+          <UserChip user={friend} />
+        </TouchableOpacity>
+      ))}
+      </View>
+    ), []);
+  const renderSecHeader = useCallback(({ section: { title } }: { section: { title: string } }) => (
+    <View style={[styles.sectionHeader, {borderBottomColor: theme.colors.border}]}>
+      <Text style={{fontWeight: "bold", color: theme.colors.text}}>{title}</Text>
+    </View>
+  ), [theme.colors.border, theme.colors.text]);
+
+  const chunkInstances = useMemo(() => chunkArray(instances, 2), [instances]);
+  const chunkUnlocatableFriends = useMemo(() => chunkArray(unlocatableFriends, 3), [unlocatableFriends]);
+
+  const sections: { 
+    title: string; 
+    data: any[]; 
+    keyExtractor: (item: any, index: number) => string;
+    renderItem: ({ item, index }: { item: any, index: number }) => React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | null 
+  }[] = useMemo(() => [
+    { 
+      title: `Friends in Instances `, 
+      data: chunkInstances, 
+      renderItem: renderInstItem,
+      keyExtractor: (_, index) => `friend-instance-chunk-${index}`
+    },
+    { 
+      title: `Private Friends`, 
+      data: chunkUnlocatableFriends, 
+      renderItem: renderUnlocItem,
+      keyExtractor: (_, index) => `private-friend-chunk-${index}`
+    },
+  ], [chunkInstances, chunkUnlocatableFriends]);
 
   return (
     <GenericScreen>
       <View style={styles.container} >
         {friends.isLoading && (<LoadingIndicator absolute />)}
         <SectionList
-          sections={[
-            { 
-              title: `Friends in Instances `, 
-              data: chunkArray(instances, 2), // 2 columns
-              renderItem: ({ item, index }) => (
-                <View style={styles.chunk}>
-                {item.map((instance: InstanceLike) => (
-                  <CardViewInstance key={instance.id} instance={instance} style={styles.cardView} onPress={() => routeToInstance(instance.worldId, instance.instanceId)} />
-                ))}
-                </View>
-              ),
-              keyExtractor: (item, index) => `friend-instance-chunk-${index}`
-            },
-            { 
-              title: `Private Friends`, 
-              data: chunkArray(unlocatableFriends, 3), // 3 columns
-              renderItem: ({ item, index }) => (
-                <View style={styles.chunk}>
-                  {item.map((friend: LimitedUserFriend) => (
-                    <TouchableOpacity key={friend.id} style={styles.userChip} onPress={() => routeToUser(friend.id)} activeOpacity={0.7}>
-                      <UserChip user={friend} />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ),
-              keyExtractor: (item, index) => `private-friend-chunk-${index}`
-            },
-          ] as { 
-            title: string; 
-            data: any[]; 
-            keyExtractor: (item: any, index: number) => string;
-            renderItem: ({ item, index }: { item: any, index: number }) => React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | null 
-          }[]}
-          renderSectionHeader={({ section: { title } }) => (
-            <View style={[styles.sectionHeader, {borderBottomColor: theme.colors.border}]}>
-              <Text style={{fontWeight: "bold", color: theme.colors.text}}>{title}</Text>
-            </View>
-          )}
+          sections={sections}
+          renderSectionHeader={renderSecHeader}
           contentContainerStyle={styles.listInner}
           refreshing={isLoading}
           onRefresh={refresh}

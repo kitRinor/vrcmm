@@ -73,13 +73,13 @@ const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => voi
     return () => clearTimeout(timer);
   }, []);
 
-  const backgroundColor = toast.type === "success" ? theme.colors.success 
+  const typeColor = toast.type === "success" ? theme.colors.success 
     : toast.type === "error" ? theme.colors.error
     : toast.type === "info" ? theme.colors.info
     : theme.colors.text;
 
   return (
-    <Animated.View style={[styles.toast, { backgroundColor, transform: [{ translateY }] }]}>
+    <Animated.View style={[styles.toast, { borderColor: typeColor, backgroundColor: theme.colors.card, transform: [{ translateY }] }]}>
       <TouchableOpacity onPress={onClose}>
         <Text style={[styles.title, {color: theme.colors.text}]}>{toast.title}</Text>
         <Text style={[styles.message, {color: theme.colors.text}]}>{toast.message}</Text>
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     top: spacing.large,
+    paddingTop: spacing.small,
     minWidth: "75%",
     maxWidth: "90%",
     alignSelf: "center",
@@ -102,7 +103,9 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     paddingHorizontal: spacing.medium,
     paddingVertical: spacing.small,
-    borderRadius: radius.medium,
+    borderRadius: radius.small,
+    borderWidth: 1,
+    borderLeftWidth: 6,
     width: "100%",
   },
   title: {

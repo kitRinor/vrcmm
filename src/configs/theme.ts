@@ -11,10 +11,10 @@ const lightTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: "#11acd2ff",
-    error: "#ff2020ff",
-    success: "#70ff50ff",
-    warning: "#ffcc00ff",
-    info: "#3a72a3ff",
+    error: "#ac3535ff",
+    success: "#51a63dff",
+    warning: "#fadb61ff",
+    info: "#4385bfff",
 
     // text colors
     text: "#000000ff",
@@ -33,10 +33,10 @@ const darkTheme = {
   colors: {
     ...DarkTheme.colors,
     primary: "#19c6ffff",
-    error: "#ff2020ff",
-    success: "#70ff50ff",
-    warning: "#ffcc00ff",
-    info: "#3a72a3ff",
+    error: "#ac3535ff",
+    success: "#51a63dff",
+    warning: "#fadb61ff",
+    info: "#4385bfff",
 
     // text colors
     text: "#ffffffff",

@@ -57,7 +57,8 @@ export default function Settings() {
         title: "Notifications",
         description: "Manage Push Notifications",
         onPress: () => {
-          showToast("info", "test", `${new Date().getTime()}`);
+          const type = ["info", "success", "error"][Math.floor(Math.random() * 3)] as "info" | "success" | "error";
+          showToast(type, "test", `${new Date().getTime()}`);
         },
       },
     ],

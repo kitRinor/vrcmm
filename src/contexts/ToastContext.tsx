@@ -32,8 +32,8 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
   const showToast = useCallback(
     (type: "info" | "success" | "error", title: string, message?: string, duration: number = 3000) => {
+      const id = Date.now().toString();
       setToasts((prev) => {
-        const id = Date.now().toString();
         let newToasts = [...prev, { id, type, title, message, duration }];
         if (newToasts.length > 3) {
           newToasts = newToasts.slice(newToasts.length - 3);
@@ -42,7 +42,6 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       // 自動で消す
-      const id = Date.now().toString();
       setTimeout(() => removeToast(id), duration);
     },
     [removeToast]

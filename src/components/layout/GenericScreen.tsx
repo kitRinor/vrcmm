@@ -89,6 +89,9 @@ const DrawerContent = ({
   return (
     <View>
       {menuItems?.map((item, index) => {
+        if (item.hidden) { // skip hidden items
+          return null;
+        }
         // handle divider
         if (item.type === "divider") {
           return (
@@ -143,6 +146,8 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // alignItems: "center",
     paddingHorizontal: spacing.small,
+
+    // borderColor: "blue", borderStyle: "dashed", borderWidth: 1,
   },
 });
 

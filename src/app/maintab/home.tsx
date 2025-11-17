@@ -15,6 +15,8 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import { Setting, useSetting } from "@/contexts/SettingContext";
 import { CalendarEvent, PaginatedCalendarEventList } from "@/vrchat/api";
+import { useToast } from "@/contexts/ToastContext";
+import { extractErrMsg } from "@/libs/utils";
 
 export default function Home() {
   const theme = useTheme();
@@ -119,6 +121,7 @@ const CalendarArea = memo(({ style }: {
 }) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { showToast } = useToast();
   const [ events, setEvents ] = useState<CalendarEvent[]>([]);
   const offset = useRef(0);
   const fetchingRef = useRef(false);
@@ -143,7 +146,7 @@ const CalendarArea = memo(({ style }: {
       }
     } catch (e) {
       fetchingRef.current = false;
-      console.error("Error fetching calendar events:", e);
+      showToast("error", "Error fetching calendar events", extractErrMsg(e));
     }
   };
 
@@ -153,7 +156,13 @@ const CalendarArea = memo(({ style }: {
     void fetchEvents();
   };
   return (
-    <></>
+    <>
+    {events.map((event) => (
+      <Text key={event.id} style={{ color: theme.colors.text, marginBottom: spacing.mini }}>
+        {event.category}{event.type}:{event.title} - {new Date(event.startsAt ?? "").toLocaleString()} to {new Date(event.endsAt ?? "").toLocaleString()}
+      </Text>
+    ))}
+    </>  
   );
 } );
 

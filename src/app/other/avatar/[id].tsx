@@ -2,7 +2,7 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/features/detail/DetailItemContainer";
 import CardViewAvatarDetail from "@/components/view/item-CardView/detail/CardViewAvatarDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, radius, spacing } from "@/configs/styles";
+import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
@@ -20,10 +20,13 @@ import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
 import { RefreshControl } from "react-native-gesture-handler";
+import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import ChangeAvatarModal from "@/components/features/detail/avatar/ChangeAvatarModal";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const vrc = useVRChat();
+  const { showToast } = useToast();
   const cache = useCache();
   const data = useData();
   const theme = useTheme();
@@ -32,7 +35,9 @@ export default function AvatarDetail() {
   const [avatar, setAvatar] = useState<Avatar>();
   const [author, setAuthor] = useState<User>();
 
+  const [openJson, setOpenJson] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
+  const [openChangeAvatar, setOpenChangeAvatar] = useState(false);
 
   const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "avatar");
 
@@ -41,7 +46,7 @@ export default function AvatarDetail() {
     fetchingRef.current = true;
     cache.avatar.get(id, true)
       .then(setAvatar)
-      .catch((e) => console.error("Error fetching user profile:", extractErrMsg(e)))
+      .catch((e) => showToast("error", "Error fetching avatar data", extractErrMsg(e)))
       .finally(() => fetchingRef.current = false);
   };
 
@@ -51,9 +56,11 @@ export default function AvatarDetail() {
 
   useEffect(() => {
     if (!avatar?.authorId) return;
-    cache.user.get(avatar.authorId).then((u) => setAuthor(u)).catch(console.error)
+    cache.user.get(avatar.authorId).then((u) => setAuthor(u)).catch((e) => showToast("error", "Error fetching author data", extractErrMsg(e)));
   }, [avatar?.authorId])
 
+
+  const isCurrentAvatar = data.currentUser.data?.currentAvatar === avatar?.id;
 
   const menuItems: MenuItem[] = [
     {
@@ -61,6 +68,22 @@ export default function AvatarDetail() {
       title: isFavorite ? "Edit Favorite Group" : "Add Favorite Group",
       onPress: () => setOpenChangeFavorite(true),
     },
+    { 
+      type: "divider"
+    },
+    {
+      icon: isCurrentAvatar ? "tshirt-crew-outline" : "tshirt-crew",
+      title: isCurrentAvatar ? "Now Using This Avatar" : "Change to This Avatar",
+      onPress: () => !isCurrentAvatar && setOpenChangeAvatar(true),
+    },
+    { 
+      type: "divider"
+    },
+    {
+      icon: "code-json",
+      title: "Json Data",
+      onPress: () => setOpenJson(true),
+    }, 
   ];
 
   return (
@@ -69,6 +92,7 @@ export default function AvatarDetail() {
         <View style={{ flex: 1 }}>
           <CardViewAvatarDetail avatar={avatar} style={[styles.cardView]} />
           <ScrollView
+            contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
                 refreshing={isLoading}
@@ -108,9 +132,6 @@ export default function AvatarDetail() {
               )}
             </DetailItemContainer>
 
-            <Text style={{ color: "gray" }}>
-              {JSON.stringify(avatar, null, 2)}
-            </Text>
           </ScrollView>
         </View>
       ) : (
@@ -127,11 +148,21 @@ export default function AvatarDetail() {
         type="avatar"
         onSuccess={data.favorites.fetch}
       />
+      <ChangeAvatarModal
+        open={openChangeAvatar}
+        setOpen={setOpenChangeAvatar}
+        avatar={avatar}
+        onSuccess={data.currentUser.fetch}
+      />
+      <JsonDataModal open={openJson} setOpen={setOpenJson} data={avatar} />
     </GenericScreen>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingBottom: navigationBarHeight,
+  },
   cardView: {
     position: "relative",
     paddingVertical: spacing.medium,

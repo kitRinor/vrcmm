@@ -13,6 +13,7 @@ import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Props {
   open: boolean;
@@ -22,6 +23,7 @@ interface Props {
 const ChangeStatusModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { showToast } = useToast();
   const { currentUser } = useData();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,8 +53,7 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
       currentUser.fetch();
       setOpen(false);
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Failed to update status.");
+      showToast("error", "Failed to update status.");
     } finally {
       setIsLoading(false);
     }

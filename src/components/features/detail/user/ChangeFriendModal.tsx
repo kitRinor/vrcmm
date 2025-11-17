@@ -2,6 +2,7 @@ import GenericModal from "@/components/layout/GenericModal";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
+import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getFriendRequestStatus } from "@/libs/vrchat";
 import { User, UserStatus } from "@/vrchat/api";
@@ -20,6 +21,7 @@ interface Props {
 const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const friReqStatus = user ? getFriendRequestStatus(user) : "null"; // "null" | "outgoing" | "completed"
@@ -47,8 +49,7 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
       onSuccess?.();
       setOpen(false);
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Failed to update note.");
+      showToast("error", "Failed to update friend status.");
     } finally {
       setIsLoading(false);
     }

@@ -3,7 +3,7 @@ import DetailItemContainer from "@/components/features/detail/DetailItemContaine
 import LinkChip from "@/components/view/chip-badge/LinkChip";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, radius, spacing } from "@/configs/styles";
+import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
@@ -23,12 +23,15 @@ import ChangeNoteModal from "@/components/features/detail/user/ChangeNoteModal";
 import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
 import ChangeFriendModal from "@/components/features/detail/user/ChangeFriendModal";
 import { RefreshControl } from "react-native-gesture-handler";
+import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
   const data = useData();
+  const { showToast } = useToast();
   const theme = useTheme();
   const [user, setUser] = useState<User>();
     const fetchingRef = useRef(false);
@@ -44,6 +47,7 @@ export default function UserDetail() {
 
   const [preview, setPreview] = useState({ imageUrl: "", open: false });
 
+  const [openJson, setOpenJson] = useState(false);
   const [openChangeNote, setOpenChangeNote] = useState(false);
   const [openChangeFriend, setOpenChangeFriend] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
@@ -55,7 +59,7 @@ export default function UserDetail() {
     fetchingRef.current = true;
     cache.user.get(id, true) // force latest data
       .then(setUser)
-      .catch((e) => console.error("Error fetching user profile:", extractErrMsg(e)))
+      .catch((e) => showToast("error", "Error fetching user profile", extractErrMsg(e)))
       .finally(() => fetchingRef.current = false);
   }
 
@@ -93,7 +97,7 @@ export default function UserDetail() {
           });
         }
       } catch (error) {
-        console.error("Error fetching current location:", extractErrMsg(error));
+        showToast("error", "Error fetching current location", extractErrMsg(error));
       }
     } else {
       setLocationInfo({
@@ -121,25 +125,41 @@ export default function UserDetail() {
       icon: isFavorite ? "heart" : "heart-plus",
       title: isFavorite ? "Edit Favorite Group" : "Add Favorite Group",
       onPress: () => setOpenChangeFavorite(true),
-    },
-    { 
-      type: "divider"
-    }, 
-    {
-      icon: "hanger",
-      title: "Current Avatar",
-      onPress: () => console.log("go to current avatar"),
+      hidden: freReqStatus !== "completed"
     },
     {
       icon: "note-edit-outline",
       title: "Edit Note",
       onPress: () => setOpenChangeNote(true),
     },
+    { 
+      type: "divider",
+      hidden: freReqStatus !== "completed"
+    }, 
+    {
+      icon: "question-mark",
+      title: "Request Invite",
+      // onPress: () => {},
+      hidden: freReqStatus !== "completed"
+    },
+    {
+      icon: "question-mark",
+      title: "Send Invite",
+      // onPress: () => {},
+      hidden: freReqStatus !== "completed"
+    },
+    { 
+      type: "divider"
+    },
+    {
+      icon: "code-json",
+      title: "Json Data",
+      onPress: () => setOpenJson(true),
+    }, 
 
   ];
 
   return (
-    <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
     <GenericScreen menuItems={menuItems}>
       {user ? (
         <View style={{ flex: 1 }}>
@@ -150,6 +170,7 @@ export default function UserDetail() {
             style={[styles.cardView]} 
           />
           <ScrollView
+            contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
                 refreshing={isLoading}
@@ -234,9 +255,6 @@ export default function UserDetail() {
               </View>
             </DetailItemContainer>
 
-            <Text style={{ color: "gray" }}>
-              {JSON.stringify(user, null, 2)}
-            </Text>
           </ScrollView>
         </View>
       ) : (
@@ -244,6 +262,7 @@ export default function UserDetail() {
       )}
 
       {/* dialog and modals */}
+      <JsonDataModal open={openJson} setOpen={setOpenJson} data={user} />
       <ImagePreview
         imageUrls={[preview.imageUrl]}
         open={preview.open}
@@ -269,11 +288,13 @@ export default function UserDetail() {
         onSuccess={fetchUser}
       />
     </GenericScreen>
-    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingBottom: navigationBarHeight,
+  },
   cardView: {
     position: "relative",
     paddingVertical: spacing.medium,

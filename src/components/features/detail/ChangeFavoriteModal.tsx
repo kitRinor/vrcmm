@@ -4,6 +4,7 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
+import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getTintedColor } from "@/libs/utils";
 import { Avatar, FavoriteGroup, FavoriteType, User, UserStatus, World } from "@/vrchat/api";
@@ -24,6 +25,7 @@ interface Props {
 const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { showToast } = useToast();
   const {favoriteGroups, favorites} = useData();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,8 +67,7 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
       onSuccess?.();
       setOpen(false);
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Failed to update note.");
+      showToast("error", "Failed to update favorite.");
     } finally {
       setIsLoading(false);
     }

@@ -118,19 +118,20 @@ export default function Login() {
     }).start();
   };
   const onLongPressLogo = () => {
-    if (Constants.expoConfig?.extra?.vrcmm.buildProfile === "development") {
-      navigate("/_sitemap"); // navigate to sitemap on logo press (for debug)
-    } else {
-      new MiscellaneousApi().getCurrentOnlineUsers()
-        .then((res) => {
-          const msg = `There are ${res.data} users online now on VRChat!`;
-          setLogoMsg(msg);
-          setTimeout(() => setLogoMsg(null), 5000);
-        })
-        .catch((err) => {
-          console.log("Failed to get online users:", err);
-        });
-    }
+    // if (Constants.expoConfig?.extra?.vrcmm.buildProfile === "development") {
+    //   navigate("/_sitemap"); // navigate to sitemap on logo press (for debug)
+    //   return;
+    // }
+    new MiscellaneousApi().getCurrentOnlineUsers()
+      .then((res) => {
+        const msg = `There are ${res.data} users online now on VRChat!`;
+        setLogoMsg(msg);
+        setTimeout(() => setLogoMsg(null), 5000);
+      })
+      .catch((err) => {
+        console.log("Failed to get online users:", err);
+      });
+  
   };
 
   return (

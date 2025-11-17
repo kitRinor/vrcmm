@@ -13,6 +13,7 @@ import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import BaseListView from "./BaseListView";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Props {
   user: UserLike;
@@ -47,6 +48,7 @@ const extractSubtitles = (data: UserLike, world?: World) => {
 
 const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
   const theme = useTheme();
+  const { showToast } = useToast();
   const { world } = useCache();
   const [subtitles, setSubtitles] = useState<string[]>(extractSubtitles(user));
   // ワールド情報をキャッシュから取得してサブタイトルを更新
@@ -60,9 +62,7 @@ const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
         setSubtitles(extractSubtitles(user, world));
       })
       .catch((e) => {
-        console.error(
-          `Err fetching world on ListViewUser: ${parsedLocation.worldId}`
-        );
+        showToast("error", `Err fetching world on ListViewUser: ${parsedLocation.worldId}`);
       });
   }, [Object(user).location]);
   return (

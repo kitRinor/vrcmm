@@ -14,6 +14,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, SectionList, StyleSheet, View } from "react-native";
 import { Text } from "@react-navigation/elements";
 import { sortFriendWithStatus } from "@/libs/funcs/sortFriendWithStatus";
+import { useToast } from "@/contexts/ToastContext";
 
 interface FriendsByState {
   online: LimitedUserFriend[];
@@ -65,6 +66,7 @@ export default function Friends() {
 
 const FavoriteFriendsTab = memo(() => {
   const theme = useTheme();
+  const { showToast } = useToast();
   const { friends, favorites, favoriteGroups } = useData();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
@@ -73,7 +75,7 @@ const FavoriteFriendsTab = memo(() => {
     fetchingRef.current = true;
     friends
       .fetch()
-      .catch(console.error)
+      .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
       .finally(() => (fetchingRef.current = false));
   };
 
@@ -139,6 +141,7 @@ const FavoriteFriendsTab = memo(() => {
 
 const StateFriendsTab = memo(({filterState}: {filterState: "online" | "active" | "offline"}) => {
   const { friends } = useData();
+  const { showToast } = useToast();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const refresh = () => {
@@ -146,7 +149,7 @@ const StateFriendsTab = memo(({filterState}: {filterState: "online" | "active" |
     fetchingRef.current = true;
     friends
       .fetch()
-      .catch(console.error)
+      .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
       .finally(() => (fetchingRef.current = false));
   };
 

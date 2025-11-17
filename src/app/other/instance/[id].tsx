@@ -8,7 +8,7 @@ import CardViewWorldDetail from "@/components/view/item-CardView/detail/CardView
 import ListViewInstance from "@/components/view/item-ListView/ListViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
-import { fontSize, radius, spacing } from "@/configs/styles";
+import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
@@ -30,17 +30,26 @@ import { routeToSearch, routeToUser, routeToWorld } from "@/libs/route";
 import ListViewWorld from "@/components/view/item-ListView/ListViewWorld";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { RefreshControl } from "react-native-gesture-handler";
+import { MenuItem } from "@/components/layout/type";
+import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function InstanceDetail() {
   const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp)) 
   const { parsedLocation } = parseLocationString(id);
   const vrc = useVRChat();
+  const { showToast } = useToast();
   const { friends: allFriends } = useData();
   const cache = useCache();
   const theme = useTheme();
   const [instance, setInstance] = useState<Instance>();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+
+  const [owner, setOwner] = useState<UserLike>();
+  const [friends, setFriends] = useState<(LimitedUserFriend | LimitedUserInstance)[]>([]);
+
+  const [openJson, setOpenJson] = useState(false);
 
   const fetchInstance = () => {
     // instance isnot cached 
@@ -51,7 +60,7 @@ export default function InstanceDetail() {
       instanceId: parsedLocation?.instanceId ?? "",
     })
       .then((res) => setInstance(res.data))
-      .catch((e) => console.error("Error fetching instance data:", extractErrMsg(e)))
+      .catch((e) => showToast("error", "Error fetching instance data", extractErrMsg(e)))
       .finally(() => fetchingRef.current = false);
   };
 
@@ -59,8 +68,6 @@ export default function InstanceDetail() {
     fetchInstance();
   }, []);
 
-  const [owner, setOwner] = useState<UserLike>();
-  const [friends, setFriends] = useState<(LimitedUserFriend | LimitedUserInstance)[]>([]);
   useEffect(() => {
     if (!instance) return;
     let foundOwner = false;
@@ -76,18 +83,31 @@ export default function InstanceDetail() {
     setFriends(friendList);
     if (!foundOwner && instance.ownerId) {
       // not found in friends, fetch owner data
-      cache.user.get(instance.ownerId).then(setOwner).catch(console.error);
+      cache.user.get(instance.ownerId).then(setOwner).catch((e) => {
+        showToast("error", "Error fetching owner profile", extractErrMsg(e));
+      });
     }
   }, [instance, instance?.users, instance?.ownerId]);
 
 
+  const menuItems: MenuItem[] = [
+    { 
+      type: "divider"
+    },
+    {
+      icon: "code-json",
+      title: "Json Data",
+      onPress: () => setOpenJson(true),
+    }, 
+  ];
 
   return (
-    <GenericScreen>
+    <GenericScreen menuItems={menuItems}>
       {instance ? (
         <View style={{ flex: 1 }}>
           <CardViewInstanceDetail instance={instance} style={[styles.cardView]} />
           <ScrollView
+            contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
                 refreshing={isLoading}
@@ -151,15 +171,15 @@ export default function InstanceDetail() {
               </View>
             </DetailItemContainer>
 
-            <Text style={{ color: "gray" }}>
-              {JSON.stringify(instance, null, 2)}
-            </Text>
           </ScrollView>
 
         </View>
       ) : (
         <LoadingIndicator absolute />
       )}
+
+      {/* Modals */}
+      <JsonDataModal open={openJson} setOpen={setOpenJson} data={instance} />
     </GenericScreen>
   );
 }
@@ -174,6 +194,9 @@ const chunkArray = <T,>(array: T[], size: number): T[][] => {
 };
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingBottom: navigationBarHeight,
+  },
   horizontal: {
     flexDirection: "row",
     flexWrap: "wrap",

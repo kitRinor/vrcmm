@@ -20,4 +20,5 @@ export interface MenuItem {
   title?: string;
   onPress?: () => void;
   type?: "button" | "divider";
+  hidden?: boolean;
 }

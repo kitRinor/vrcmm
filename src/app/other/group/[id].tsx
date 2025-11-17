@@ -2,7 +2,7 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/features/detail/DetailItemContainer";
 import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, radius, spacing } from "@/configs/styles";
+import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
@@ -12,22 +12,29 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
+import { MenuItem } from "@/components/layout/type";
+import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function GroupDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
   const theme = useTheme();
+  const { showToast } = useToast();
   const [group, setGroup] = useState<Group>();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+
+  const [openJson, setOpenJson] = useState(false);
+
 
   const fetchGroup = () => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
     cache.group.get(id, true)
       .then(setGroup)
-      .catch((e) => console.error("Error fetching group data:", extractErrMsg(e)))
+      .catch((e) => showToast("error", "Error fetching group data", extractErrMsg(e)))
       .finally(() => fetchingRef.current = false);
   };
 
@@ -35,12 +42,24 @@ export default function GroupDetail() {
     fetchGroup();
   }, []);
 
+  const menuItems: MenuItem[] = [
+    { 
+      type: "divider"
+    },
+    {
+      icon: "code-json",
+      title: "Json Data",
+      onPress: () => setOpenJson(true),
+    }, 
+  ];
+
   return (
-    <GenericScreen>
+    <GenericScreen menuItems={menuItems}>
       {group ? (
         <View style={{ flex: 1 }}>
           <CardViewGroupDetail group={group} style={[styles.cardView]} />
           <ScrollView
+            contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
                 refreshing={isLoading}
@@ -64,19 +83,23 @@ export default function GroupDetail() {
               </View>
             </DetailItemContainer>
 
-            <Text style={{ color: "gray" }}>
-              {JSON.stringify(group, null, 2)}
-            </Text>
           </ScrollView>
         </View>
       ) : (
         <LoadingIndicator absolute />
       )}
+
+      {/* Modals */}
+      <JsonDataModal open={openJson} setOpen={setOpenJson} data={group} />
+
     </GenericScreen>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingBottom: navigationBarHeight,
+  },
   cardView: {
     position: "relative",
     paddingVertical: spacing.medium,

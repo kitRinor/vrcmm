@@ -16,6 +16,7 @@ import CardViewPrint from "@/components/view/item-CardView/CardViewPrint";
 import { CachedImage } from "@/contexts/CacheContext";
 import ImagePreview from "@/components/view/ImagePreview";
 import { useSetting } from "@/contexts/SettingContext";
+import { useToast } from "@/contexts/ToastContext";
 // user's avatar, world, and other uploaded resources
 export default function Resources() {
   const theme = useTheme();
@@ -53,6 +54,7 @@ export default function Resources() {
 
 const AvatarsTab = memo(() => {
   const vrc = useVRChat();
+  const { showToast } = useToast();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
   const NumPerReq = 50;
@@ -80,7 +82,7 @@ const AvatarsTab = memo(() => {
         offset.current += NumPerReq;
       }
     } catch (e) {
-      console.error("Error fetching own avatars:", extractErrMsg(e));
+      showToast("error", "Error fetching own avatars", extractErrMsg(e));
     } finally {
       fetchingRef.current = false;
     }
@@ -124,6 +126,7 @@ const AvatarsTab = memo(() => {
 
 const WorldsTab = memo(() => {
   const vrc = useVRChat();
+  const { showToast } = useToast();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
   const NumPerReq = 50;
@@ -152,7 +155,7 @@ const WorldsTab = memo(() => {
         offset.current += NumPerReq;
       }
     } catch (e) {
-      console.error("Error fetching own worlds:", extractErrMsg(e));
+      showToast("error", "Error fetching own worlds", extractErrMsg(e));
     } finally {
       fetchingRef.current = false;
     }
@@ -196,6 +199,7 @@ const WorldsTab = memo(() => {
 const PrintsTab = memo(() => {
   const vrc = useVRChat();
   const theme = useTheme();
+  const { showToast } = useToast();
   const { currentUser } = useData();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
@@ -232,7 +236,7 @@ const PrintsTab = memo(() => {
         offset.current += NumPerReq;
       }
     } catch (e) {
-      console.error("Error fetching own prints:", extractErrMsg(e));
+      showToast("error", "Error fetching own prints", extractErrMsg(e));
     } finally {
       fetchingRef.current = false;
     }

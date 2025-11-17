@@ -5,7 +5,7 @@ import LinkChip from "@/components/view/chip-badge/LinkChip";
 import RegionBadge from "@/components/view/chip-badge/RegionBadge";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { radius, spacing } from "@/configs/styles";
+import { navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { useTheme } from "@react-navigation/native";
@@ -24,12 +24,15 @@ import ChangeStatusModal from "@/components/features/profile/ChangeStatusModal";
 import { MenuItem } from "@/components/layout/type";
 import ChangeBioModal from "@/components/features/profile/ChangeBioModal";
 import ChangeBioLinksModal from "@/components/features/profile/ChangeBioLinksModal";
+import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import { routeToAvatar } from "@/libs/route";
 
 export default function Profile() {
   const vrc = useVRChat();
   const theme = useTheme();
   const { currentUser } = useData();
   const [preview, setPreview] = useState({ imageUrl: "", open: false });
+  const [openJson, setOpenJson] = useState(false);
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [openChangeBio, setOpenChangeBio] = useState(false);
   const [openChangeBioLinks, setOpenChangeBioLinks] = useState(false);
@@ -50,11 +53,27 @@ export default function Profile() {
       title: "Change Status",
       onPress: () => setOpenChangeStatus(true),
     },
+    { 
+      type: "divider"
+    },
+    {
+      icon: "hanger",
+      title: "Open Current Avatar",
+      onPress: () => currentUser.data?.currentAvatar && routeToAvatar(currentUser.data.currentAvatar),
+    },
+    { 
+      type: "divider"
+    },
+    {
+      icon: "code-json",
+      title: "Json Data",
+      onPress: () => setOpenJson(true),
+    }, 
   ];
   return (
     <GenericScreen menuItems={menuItems}>
       {currentUser.data ? (
-        <View>
+        <View style={{ height: "100%" }}>
           <CardViewUserDetail
             user={currentUser.data}
             style={[styles.cardView]}
@@ -106,11 +125,6 @@ export default function Profile() {
               </View>
             </DetailItemContainer>
 
-            <View style={{ padding: spacing.large, marginTop: spacing.large }}>
-              <Text style={{ color: theme.colors.subText }}>
-                {JSON.stringify(currentUser.data, null, 2)}
-              </Text>
-            </View>
           </ScrollView>
         </View>
       ) : (
@@ -118,6 +132,7 @@ export default function Profile() {
       )}
 
       {/* dialog and modals */}
+      <JsonDataModal open={openJson} setOpen={setOpenJson} data={currentUser.data} />
       <ImagePreview
         imageUrls={[preview.imageUrl]}
         open={preview.open}

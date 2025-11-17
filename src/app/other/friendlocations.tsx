@@ -13,18 +13,21 @@ import { LimitedUserFriend } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useToast } from "@/contexts/ToastContext";
+import { extractErrMsg } from "@/libs/utils";
 
 
 
 export default function FriendLocations() {
   const theme = useTheme();
+  const { showToast } = useToast();
   const { friends, favorites } = useData();
   const [isLoading, setIsLoading] = useState(false);
   const refresh = () => {
     setIsLoading(true);
     friends
       .fetch()
-      .catch(console.error)
+      .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
       .finally(() => setIsLoading(false));
   };
 

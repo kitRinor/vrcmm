@@ -23,10 +23,12 @@ import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function Search() {
   const vrc = useVRChat();
   const theme = useTheme();
+  const { showToast } = useToast();
   const initialParams = useLocalSearchParams<{ search?: string }>();
   const [search, setSearch] = useState(initialParams.search || "");
   const limit = 50; // Number of items to fetch per request
@@ -56,7 +58,7 @@ export default function Search() {
         setWorlds((prev) => [...prev, ...res.data]);
         offset.current += limit;
       } catch (error) {
-        console.error("Error searching worlds:", extractErrMsg(error));
+        showToast("error", "Error searching worlds", extractErrMsg(error));
       } finally {
         fetchingRef.current = false;
       }
@@ -102,7 +104,7 @@ export default function Search() {
         setUsers((prev) => [...prev, ...res.data]);
         offset.current += limit;
       } catch (error) {
-        console.error("Error searching users:", extractErrMsg(error));
+        showToast("error", "Error searching users", extractErrMsg(error));
       } finally {
         fetchingRef.current = false;
       }
@@ -150,7 +152,7 @@ export default function Search() {
         setGroups((prev) => [...prev, ...res.data]);
         offset.current += limit;
       } catch (error) {
-        console.error("Error searching groups:", extractErrMsg(error));
+        showToast("error", "Error searching groups", extractErrMsg(error));
       } finally {
         fetchingRef.current = false;
       }

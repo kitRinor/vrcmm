@@ -30,12 +30,15 @@ import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
 import { RefreshControl } from "react-native-gesture-handler";
+import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
   const data = useData();
+  const { showToast } = useToast();
   const theme = useTheme();
   const [world, setWorld] = useState<World>();
   const fetchingRef = useRef(false);
@@ -43,6 +46,7 @@ export default function WorldDetail() {
   const [author, setAuthor] = useState<User>();
   const [mode, setMode] = useState<"info" | "instance">("info");
 
+  const [openJson, setOpenJson] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
   
   const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "world");
@@ -52,7 +56,7 @@ export default function WorldDetail() {
     fetchingRef.current = true;
     cache.world.get(id, true)
       .then(setWorld)
-      .catch((e) => console.error("Error fetching user profile:", extractErrMsg(e)))
+      .catch((e) => showToast("error", "Error fetching user profile", extractErrMsg(e)))
       .finally(() => fetchingRef.current = false);
   };
 
@@ -63,7 +67,9 @@ export default function WorldDetail() {
 
   useEffect(() => {
     if (!world?.authorId) return;
-    cache.user.get(world.authorId).then((u) => setAuthor(u)).catch(console.error)
+    cache.user.get(world.authorId).then((u) => setAuthor(u)).catch((e) => {
+      showToast("error", "Error fetching author profile", extractErrMsg(e));
+    })
   }, [world?.authorId])
 
   const formatAndSortInstances = (
@@ -102,6 +108,14 @@ export default function WorldDetail() {
       title: isFavorite ? "Edit Favorite Group" : "Add Favorite Group",
       onPress: () => setOpenChangeFavorite(true),
     },
+    { 
+      type: "divider"
+    },
+    {
+      icon: "code-json",
+      title: "Json Data",
+      onPress: () => setOpenJson(true),
+    }, 
   ];
 
   return (
@@ -118,6 +132,7 @@ export default function WorldDetail() {
 
           {mode === "info" && (
             <ScrollView
+              contentContainerStyle={styles.scrollContent}
               refreshControl={
                 <RefreshControl
                   refreshing={isLoading}
@@ -158,7 +173,7 @@ export default function WorldDetail() {
                 <View style={styles.detailItemContent}>
                   <Text
                     style={{ color: theme.colors.text }}
-                  >{`capacity: ${world.capacity}`}</Text>
+                  >{`capacity: ${world.capacity} (recommended: ${world.recommendedCapacity})`}</Text>
                   <Text
                     style={{ color: theme.colors.text }}
                   >{`visits: ${world.visits}`}</Text>
@@ -171,9 +186,6 @@ export default function WorldDetail() {
                 </View>
               </DetailItemContainer>
 
-              <Text style={{ color: "gray" }}>
-                {JSON.stringify(world, null, 2)}
-              </Text>
             </ScrollView>
           )}
 
@@ -205,6 +217,7 @@ export default function WorldDetail() {
 
       {/* dialog and modals */}
       
+      <JsonDataModal open={openJson} setOpen={setOpenJson} data={world} />
       <ChangeFavoriteModal
         open={openChangeFavorite}
         setOpen={setOpenChangeFavorite}
@@ -217,6 +230,9 @@ export default function WorldDetail() {
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingBottom: navigationBarHeight,
+  },
   cardView: {
     position: "relative",
     paddingVertical: spacing.medium,

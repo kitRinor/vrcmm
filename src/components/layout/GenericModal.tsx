@@ -12,7 +12,7 @@ interface Props {
   onClose: () => void;
   title?: string;
   showCloseButton?: boolean;
-  scrollable?: boolean;
+  scrollable?: boolean | "horizontal" | "vertical" | "both"; // if true, vertical only, if "both", horizontal and vertical
   buttonItems?: ButtonItemForFooter[];
   size?: "small" | "normal" | "large" | "full";
   children: React.ReactNode;
@@ -91,10 +91,23 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
   );
 };
 
-const ChildContainer = ({ scrollable, children }: { scrollable: boolean; children: React.ReactNode }) => {
-  if (scrollable) {
+const ChildContainer = ({ scrollable, children }: { 
+  scrollable: boolean | "horizontal" | "vertical" | "both"; 
+  children: React.ReactNode 
+}) => {
+
+  if (scrollable === "both") {
+    return (
+      <ScrollView horizontal>
+        <ScrollView contentContainerStyle={styles.childContainer}>
+          {children}
+        </ScrollView>
+      </ScrollView>
+    );
+  } else if (scrollable) {
     return (
       <ScrollView
+        horizontal={scrollable === "horizontal"}
         contentContainerStyle={styles.childContainer}
       >
         {children}
@@ -165,7 +178,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: spacing.small,
     paddingHorizontal: spacing.small,
-    paddingBottom: spacing.small,
+    paddingVertical: spacing.small,
   },
   footterButton: {
     borderRadius: radius.button,

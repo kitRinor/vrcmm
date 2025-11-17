@@ -21,10 +21,12 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function Favorites() {
   const vrc = useVRChat();
   const theme = useTheme();
+  const { showToast } = useToast();
   const { favoriteGroups } = useData();
 
   const MaterialTab = createMaterialTopTabNavigator();
@@ -73,7 +75,7 @@ export default function Favorites() {
       setIsLoading(true);
       worldsData
         .fetch()
-        .catch(console.error)
+        .catch((e) => showToast("error", "Error refreshing favorite worlds", extractErrMsg(e)))
         .finally(() => setIsLoading(false));
     };
 
@@ -140,7 +142,7 @@ export default function Favorites() {
       setIsLoading(true);
       friendsData
         .fetch()
-        .catch(console.error)
+        .catch((e) => showToast("error", "Error refreshing favorite friends", extractErrMsg(e)))
         .finally(() => setIsLoading(false));
     };
 
@@ -207,7 +209,7 @@ export default function Favorites() {
       setIsLoading(true);
       avatarsData
         .fetch()
-        .catch(console.error)
+        .catch((e) => showToast("error", "Error refreshing favorite avatars", extractErrMsg(e)))
         .finally(() => setIsLoading(false));
     };
 

@@ -2,7 +2,7 @@ import { extractErrMsg } from "@/libs/utils";
 import { AuthenticationApi } from "@/vrchat/api";
 import { router } from "expo-router";
 import Storage from "expo-sqlite/kv-store";
-import SecureStore from "expo-secure-store";
+import * as SecureStore from "expo-secure-store";
 import {
   createContext,
   ReactNode,
@@ -85,6 +85,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
           return "error"; // no supported 2FA method
         }
       } else if (res.data.id) {
+        console.log("Login successful");
         // save user data to storage
         Storage.setItem("auth_user_id", res.data.id);
         Storage.setItem("auth_user_displayName", res.data.displayName);
@@ -92,8 +93,8 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
 
         if (param.saveSecret) {
           await Promise.all([
-            SecureStore.setItemAsync("auth_secret_username", param.username),
-            SecureStore.setItemAsync("auth_secret_password", param.password ),
+            SecureStore.setItem("auth_secret_username", param.username),
+            SecureStore.setItem("auth_secret_password", param.password ),
           ]);
           await Promise.all([
             SecureStore.deleteItemAsync("auth_secret_username"),

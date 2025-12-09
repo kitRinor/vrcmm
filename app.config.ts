@@ -3,14 +3,19 @@ import { ConfigContext } from "@expo/config";
 interface ProfileSwitch<T = any> {development: T; preview: T; production: T;}
 
 const appIdentifier: ProfileSwitch<string> = {
-  development: "dev.ktrn.vrcmm.dev",
-  preview: "dev.ktrn.vrcmm.pre",
-  production: "dev.ktrn.vrcmm"
+  development: "dev.ktrn.vrcp.dev",
+  preview: "dev.ktrn.vrcp.pre",
+  production: "dev.ktrn.vrcp"
 }
 const appName: ProfileSwitch<string> = {
-  development: "VRCMM(dev)",
-  preview: "VRCMM(pre)",
-  production: "VRCMM"
+  development: "VRCP-dev",
+  preview: "VRCP-pre",
+  production: "VRCP"
+}
+const appIcon: ProfileSwitch<string> = {
+  development: "./src/assets/images/icon-dev.png",
+  preview: "./src/assets/images/icon.png",
+  production: "./src/assets/images/icon.png"
 }
 const contact: ProfileSwitch<string> = {
   development: "dev@ktrn.dev",
@@ -22,11 +27,11 @@ const profile = (process.env.BUILD_PROFILE || "development") as keyof ProfileSwi
 
 export default ({ config }: ConfigContext) => ({
     name: appName[profile],
-    slug: "vrcmm",
+    slug: "vrcp",
     version: "0.0.1",
     orientation: "portrait",
-    icon: "./src/assets/images/icon.png",
-    scheme: "vrcmm", // This is used for deep linking (ex. schema://internal/link)
+    icon: appIcon[profile],
+    scheme: "vrcp", // This is used for deep linking (ex. schema://internal/link)
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     owner: "ktrn-dev",
@@ -36,7 +41,7 @@ export default ({ config }: ConfigContext) => ({
         contact: contact[profile],  
       },
       eas: {
-        projectId: "acd8a179-f1e0-4dc6-aad8-b201b899ce14"
+        projectId: "5dcb6ea7-b710-4155-9dc5-e4c5a9ce160d"
       },
     },
     ios: {

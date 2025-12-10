@@ -1,7 +1,6 @@
 import Constants from "expo-constants";
 import { Storage } from "expo-sqlite/kv-store";
 import rawVersions from '@/../versions.json'; 
-import { store } from "expo-router/build/global-state/router-store";
 
 
 // object 
@@ -59,7 +58,7 @@ export function extractErrMsg (error: any): string {
 
 // user agent
 export function getUserAgent (): string {
-  const name = Constants.expoConfig?.slug + Constants.expoConfig?.extra?.vrcp?.buildProfile;
+  const name = Constants.expoConfig?.name || "VRCP";
   const version = Constants.expoConfig?.version || "0.0.0-dev";
   const contact = Constants.expoConfig?.extra?.vrcp?.contact || "dev@ktrn.dev";
   return `${name}/${version} ${contact}`;

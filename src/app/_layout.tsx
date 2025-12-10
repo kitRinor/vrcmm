@@ -16,6 +16,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 
+import '@/configs/i18n'; // i18n 初期化
+
 function RootLayout() {
   return (
     <Stack initialRouteName="index" screenOptions={{ headerShown: false, gestureEnabled: true }}>

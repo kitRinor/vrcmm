@@ -97,6 +97,7 @@ export default ({ config }: ConfigContext) => ({
       "expo-secure-store",
       "expo-sqlite",
       "expo-font",
+      "expo-localization",
       [
         "expo-splash-screen",
         {

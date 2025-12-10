@@ -85,7 +85,7 @@ export function isNewVersion(): boolean {
   const currentVersionKey = `${currentVersion.nativeVersion}:${currentVersion.updates?.[0].date}`;
   return storedVersionKey !== currentVersionKey;
 } 
-export function updateStoredVersion(): void {
+export function updateLastVersion(): void {
   const currentVersion = rawVersions.versions?.[0];
   if (!currentVersion) return;
   const currentVersionKey = `${currentVersion.nativeVersion}:${currentVersion.updates?.[0].date}`;

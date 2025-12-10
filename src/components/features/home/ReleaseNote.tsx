@@ -5,7 +5,7 @@ import { useTheme } from '@react-navigation/native';
 // ルートの json を読み込み
 import rawVersions from '@/../versions.json'; 
 import GenericModal from '@/components/layout/GenericModal';
-import { isNewVersion, updateStoredVersion } from '@/libs/utils';
+import { isNewVersion, updateLastVersion } from '@/libs/utils';
 import { radius, spacing } from '@/configs/styles';
 
 export default function ReleaseNote() {
@@ -19,7 +19,7 @@ export default function ReleaseNote() {
 
   const handleClose = () => {
     setOpen(false);
-    updateStoredVersion();
+    updateLastVersion();
   }
 
   // 最新のバージョンブロック（配列の先頭）を取得

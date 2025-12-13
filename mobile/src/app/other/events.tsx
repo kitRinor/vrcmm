@@ -105,18 +105,6 @@ export default function Events () {
     return res;
   }, [eventsByDate]);
 
-  const viewabilityConfig = useRef({
-    itemVisiblePercentThreshold: 50, // アイテムが50%見えたら「表示された」とみなす
-    minimumViewTime: 100, // ちらつき防止のため少し待機
-  }).current;
-
-  const onViewableItemsChanged = useRef(({ viewableItems, changed }: { viewableItems: ViewToken[], changed: ViewToken[] }) => {
-    const changedDate = changed.filter(item => item.isViewable).map(item => restoreDateKey(item.section?.key ?? ""));
-    if (changedDate.length > 0) {
-      console.log("Visible dates changed:", changedDate);
-    }
-  }).current;
-
   const onSelectDate = (date: Date) => {
     setSelectedDate(date);
     // Find the section index (first section with after or equal date)
@@ -190,8 +178,6 @@ export default function Events () {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={emptyComponent}
-        viewabilityConfig={viewabilityConfig}
-        onViewableItemsChanged={onViewableItemsChanged}
         ref={sectionListRef}
         contentContainerStyle={styles.scrollViewContentContainer}
       />

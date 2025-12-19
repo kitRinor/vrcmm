@@ -1,4 +1,4 @@
-name: mobile - Publish Update
+name: mobile - EAS Update
 
 on:
   # # on changes to versions.json in main branch

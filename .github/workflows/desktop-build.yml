@@ -1,0 +1,65 @@
+name: desktop - Build .exe
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    defaults:
+      run:
+        working-directory: ./desktop
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './desktop/src-tauri -> target'
+
+      - name: install frontend dependencies
+        run: npm install
+
+      # バージョン情報を取得 (Node.jsのワンライナーを使用)
+      - name: Extract Version
+        id: version
+        shell: bash
+        run: |
+          # tauri.conf.json からバージョンを取得 (v2のパスに合わせて調整)
+          VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
+          
+          # Artifact受け渡し用にファイルにも書き出す
+          mkdir -p build_assets
+          echo "$VERSION" > build_assets/version.txt
+
+      # ビルド実行 (Tauri Actionを使わず直接叩く)
+      - name: Build Tauri App
+        run: npm run tauri build
+
+      # 生成された .exe を探して build_assets にコピー
+      # ※ Tauri v2 の標準的な出力パス: src-tauri/target/release/bundle/nsis/*.exe
+      - name: Collect Artifacts
+        shell: bash
+        run: |
+          find src-tauri/target/release/bundle/nsis -name "*.exe" -exec cp {} build_assets/ \;
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-build-artifacts
+          path: ./desktop/build_assets/
+          retention-days: 3

@@ -1,0 +1,56 @@
+name: mobile - Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Build Workflow Run ID (Optional: leave empty for latest successful run)'
+        required: false
+
+jobs:
+  release:
+    name: Publish to GitHub Releases
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write 
+
+    steps:
+
+      - name: Download Artifacts from Build Workflow
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: mobile-build.yml # ビルド用ワークフローのファイル名
+          name: mobile-build-artifacts
+          run_id: ${{ inputs.run_id }} # 入力がなければ最新の成功したビルドを取得
+          path: ./assets
+
+      - name: Load Release Info
+        id: load_info
+        run: |
+          # 保存しておいたファイルから情報を読み込む
+          NATIVE_VER=$(cat ./assets/version.txt)
+          
+          # リリース本文を環境変数にセット (複数行対応)
+          echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
+          cat ./assets/body.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "NATIVE_VER=$NATIVE_VER" >> $GITHUB_ENV
+          
+          # APKファイル名を特定 (ワイルドカードで取得)
+          APK_PATH=$(find ./assets -name "*.apk")
+          echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ format('v{0}', env.NATIVE_VER) }}
+          name: VRCP ${{ env.NATIVE_VER }}
+          body: ${{ env.RELEASE_BODY }}
+          files: ${{ env.APK_PATH }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

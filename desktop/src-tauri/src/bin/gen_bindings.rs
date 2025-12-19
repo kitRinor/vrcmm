@@ -14,7 +14,7 @@ fn main() {
         .export(
             Typescript::default()
                 .formatter(specta_typescript::formatter::prettier)
-                .header("/* eslint-disable */"),
+                .header("// @ts-nocheck\n/* eslint-disable */"),
             "../src/lib/bindings.ts"
         )
         .expect("Failed to export typescript bindings");

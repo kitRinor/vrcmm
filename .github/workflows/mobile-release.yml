@@ -50,7 +50,7 @@ jobs:
           name: VRCP ${{ env.NATIVE_VER }}
           body: ${{ env.RELEASE_BODY }}
           files: ${{ env.APK_PATH }}
-          draft: false
+          draft: true
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

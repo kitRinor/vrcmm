@@ -48,8 +48,14 @@ jobs:
           echo "$VERSION" > build_assets/version.txt
 
       # ビルド実行 (Tauri Actionを使わず直接叩く)
-      - name: Build Tauri App
-        run: npx tauri build
+      - name: Build Tauri App 
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30  # Set a generous timeout for the build
+          max_attempts: 3      # Retry up to 3 times
+          retry_wait_seconds: 10 # Wait 10s between retries
+          command: |
+            npx tauri build
 
       # 生成された .exe を探して build_assets にコピー
       # ※ Tauri v2 の標準的な出力パス: src-tauri/target/release/bundle/nsis/*.exe

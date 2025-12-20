@@ -66,10 +66,14 @@ jobs:
           APP_VERSION: ${{ env.NATIVE_VER }}
 
           EXPO_PUBLIC_DISCORD_WEBHOOK_URL: ${{ secrets.EXPO_PUBLIC_DISCORD_WEBHOOK_URL }}
-        run: |
-          FILENAME="vrcp-${{ env.NATIVE_VER }}.apk"
-          # APKをビルドして build_assets フォルダに出力
-          eas build --platform android --profile prod-apk --non-interactive --local --output "./build_assets/$FILENAME"
+        
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 45  # Set a generous timeout for the build
+          max_attempts: 3      # Retry up to 3 times
+          retry_wait_seconds: 10 # Wait 10s between retries
+          command: |
+            eas build --platform android --profile prod-apk --non-interactive --local --output "./build_assets/vrcp-${{ env.NATIVE_VER }}.apk"
 
       # APKとメタデータ(バージョン情報など)をアーティファクトとしてアップロード
       - name: Upload Artifacts

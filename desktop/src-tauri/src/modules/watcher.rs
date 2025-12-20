@@ -12,7 +12,7 @@ use specta::Type;
 pub struct LogEntry {
     pub timestamp: String, // "2025.12.13 15:30:00"
     pub log_type: String,  // "Log" or "Warning" etc
-    pub content: String,   // "[Player] Riku Joined"
+    pub content: String,   // "[Player] XXXXXX Joined"
 }
 
 // 2. ログ監視クラス

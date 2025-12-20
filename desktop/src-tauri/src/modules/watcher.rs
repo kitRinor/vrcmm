@@ -125,7 +125,7 @@ mod tests {
         {
             let mut file = File::create(&test_file_path).unwrap();
             // 正しい形式の行
-            writeln!(file, "2025.12.13 15:00:00 Log        -  [Player] Riku Joined").unwrap();
+            writeln!(file, "2025.12.13 15:00:00 Log        -  [Player] XXXXXX Joined").unwrap();
             // 無視されるべき行（ゴミデータ）
             writeln!(file, "Invalid Line Data").unwrap();
             // 別のログ
@@ -143,7 +143,7 @@ mod tests {
         // 1行目のチェック
         assert_eq!(entries[0].timestamp, "2025.12.13 15:00:00");
         assert_eq!(entries[0].log_type, "Log");
-        assert_eq!(entries[0].content, "[Player] Riku Joined");
+        assert_eq!(entries[0].content, "[Player] XXXXXX Joined");
 
         // 2行目のチェック
         assert_eq!(entries[1].log_type, "Warning");

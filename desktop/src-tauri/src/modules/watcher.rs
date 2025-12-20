@@ -196,20 +196,12 @@ impl LogManager {
 // ▼▼▼ パス解決系 (変更なし) ▼▼▼
 
 pub fn get_default_vrchat_dir() -> Option<PathBuf> {
-    #[cfg(target_os = "windows")]
-    {
-        dirs::home_dir().map(|path| {
-            path.join("AppData")
-                .join("LocalLow") // ← ここが重要！
-                .join("VRChat")
-                .join("VRChat")
-        })
-    }
-    // Mac/Linux 共通
-    #[cfg(not(target_os = "windows"))]
-    {
-        dirs::data_local_dir().map(|path| path.join("VRChat/VRChat"))
-    }
+    dirs::home_dir().map(|path| {
+        path.join("AppData")
+            .join("LocalLow")
+            .join("VRChat")
+            .join("VRChat")
+    })
 }
 
 pub fn find_latest_log(dir: &PathBuf) -> Option<PathBuf> {

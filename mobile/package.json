@@ -1,6 +1,7 @@
 {
   "name": "mobile",
   "main": "./src/index",
+  "private": true,
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
@@ -93,6 +94,5 @@
   "overrides": {
     "glob": "^11.0.4",
     "esbuild": "^0.25.1"
-  },
-  "private": true
+  }
 }

@@ -15,14 +15,26 @@ run-tauri:  # run the tauri application (ts-front and rust-backend)
 .PHONY : gen-bindings
 gen-bindings:  # generate the bindings for commands-wrapper
 	@cd src-tauri && cargo run --bin gen_bindings
+
 .PHONY : gen-icons
-gen-icons:  # generate the icons for the application, from PNG image (1024x1024) 
+gen-icons:  # generate the icons for the application, from PNG image (1024x1024)
 	@npm run tauri icon src/assets/icon.png
 	@echo "removing unused icons..."
 	@rm -r src-tauri/icons/android src-tauri/icons/ios  # remove mobile icons
 	@rm src-tauri/icons/Square*.png src-tauri/icons/StoreLogo.png  # remove AppX/MS Store icon
 	@echo "for detail,  https://tauri.app/develop/icons/"
-.PHONY: lint 
+
+
+.PHONY : version-bump/major version-bump/minor version-bump/patch
+version-bump/major:  # generate draft of versions.json with major bump
+	@npx tsx ./tools/version-bump.ts major
+version-bump/minor:  # generate draft of versions.json with minor bump
+	@npx tsx ./tools/version-bump.ts minor
+version-bump/patch:  # generate draft of versions.json with patch bump
+	@npx tsx ./tools/version-bump.ts patch
+
+
+.PHONY: lint
 lint: # lint the codebase
 # @npx eslint . --fix
 	@npx prettier --write "**/*.tsx"

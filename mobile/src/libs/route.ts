@@ -10,11 +10,13 @@ export const routeToWorld = (id:string) => push(`/details/world/${id}`);
 export const routeToAvatar = (id:string) => push(`/details/avatar/${id}`);
 export const routeToGroup = (id:string) => push(`/details/group/${id}`);
 export const routeToInstance = (wrldId:string, instId: string) => push(`/details/instance/${wrldId}:${instId}`);
+export const routeToEvent = (grpId:string, calId:string) => push(`/details/event/${grpId}:${calId}`);
 
 // Settings routes
 export const routeToAppearanceSettings = () => push(`/settings/appearance`);
 export const routeToDatabaseSettings = () => push(`/settings/database`);
 export const routeToNotificationSettings = () => push(`/settings/notifications`);
+export const routeToLanguageSettings = () => push(`/settings/language`);
 
 // Others routes
 export const routeToSearch = (search?:string) => {
@@ -25,6 +27,6 @@ export const routeToSearch = (search?:string) => {
 export const routeToFavorites = () => push(`/others/favorites`);
 export const routeToResources = () => push(`/others/resources`);
 export const routeToFriendLocations = () => push(`/others/friendlocations`);
-export const routeToEvents = () => push(`/others/events`);
+export const routeToCalendar = () => push(`/others/calendar`);
 export const routeToFeeds = () => push(`/others/feeds`);
 export const routeToNotifications = () => push(`/others/notifications`);

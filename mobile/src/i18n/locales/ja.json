@@ -4,7 +4,10 @@
     "dateFormats": {
       "date": "yyyy年MM月dd日",
       "time": "HH:mm",
-      "dateTime": "yyyy年MM月dd日 HH:mm"
+      "dateTime": "yyyy年MM月dd日 HH:mm",
+      "dateTimeRange_diffDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, yyyy/MM/dd HH:mm}}",
+      "dateTimeRange_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}",
+      "timeRange": "{{start, HH:mm}} ~ {{end, HH:mm}}"
     },
     "message": {
       "loading": "読み込み中...",
@@ -68,6 +71,8 @@
       "itemDescription_database": "データベースやキャッシュを管理します。",
       "itemLabel_notifications": "通知",
       "itemDescription_notifications": "プッシュ通知やアラートを管理します。",
+      "itemLabel_language": "言語",
+      "itemDescription_language": "アプリの言語を選択します。",
       "groupLabel_other": "その他",
       "itemLabel_about": "アプリ情報",
       "itemDescription_about": "アプリ情報やクレジットを表示します。",
@@ -84,20 +89,18 @@
     },
     "setting_appearance": {
       "label": "表示設定",
-      "groupLabel_appearance": "外観",
+      "groupLabel_app": "アプリ",
       "itemLabel_theme": "テーマ",
       "itemDescription_theme": "アプリのライト/ダークテーマを選択します。",
-      "itemLabel_friendColor": "フレンドの色",
-      "itemDescription_friendColor": "フレンドのカラーテーマを選択します。",
-      "itemLabel_favoriteFriendsColors": "お気に入りフレンドの色",
-      "itemDescription_favoriteFriendsColors": "お気に入りフレンドのカラーテーマを選択します。",
       "itemLabel_homeTabLayout": "ホーム画面レイアウト",
       "itemDescription_homeTabLayout": "ホーム画面でデフォルト表示する機能を選択します。",
       "itemLabel_cardViewColumns": "カード表示の列数",
       "itemDescription_cardViewColumns": "カード表示時の列数を選択します。",
-      "groupLabel_others": "その他",
-      "itemLabel_language": "言語",
-      "itemDescription_language": "アプリの言語を選択します。",
+      "groupLabel_friends": "フレンド",
+      "itemLabel_friendColor": "フレンドの色",
+      "itemDescription_friendColor": "フレンドのカラーテーマを選択します。",
+      "itemLabel_favoriteFriendsColors": "お気に入りフレンドの色",
+      "itemDescription_favoriteFriendsColors": "お気に入りフレンドのカラーテーマを選択します。",
       "innerModals": {
         "theme": {
           "button_apply": "適用",
@@ -139,6 +142,9 @@
     },
     "setting_notifications": {
       "label": "通知設定"
+    },
+    "setting_language": {
+      "label": "言語設定"
     },
     "detail_user": {
       "label": "ユーザー詳細",
@@ -199,16 +205,16 @@
     "detail_instance": {
       "label": "インスタンス詳細",
       "menuLabel_json": "JSONデータ",
-      "sectionLabel_ownerAndWorld": "オーナー & ワールド",
-      "sectionLabel_World": "ワールド",
-      "sectionLabel_users": "ユーザー",
       "section_users_more_user_count_one": "+ 他 {{count}} 人のユーザー",
       "section_users_more_user_count_other": "+ 他 {{count}} 人のユーザー",
       "sectionLabel_platform": "プラットフォーム",
       "sectionLabel_tags": "タグ",
       "sectionLabel_info": "情報",
       "section_info_capacity": "定員: {{capacity}}",
-      "section_info_ageGated": "年齢制限: {{ageGated}}"
+      "section_info_ageGated": "年齢制限: {{ageGated}}",
+      "sectionLabel_owner": "オーナー",
+      "sectionLabel_usersInInstance": "インスタンス内のユーザー",
+      "sectionLabel_world": "ワールド"
     },
     "detail_group": {
       "label": "グループ詳細",
@@ -237,15 +243,6 @@
       "no_avatars": "アバターがありません。",
       "no_worlds": "ワールドがありません。",
       "no_prints": "プリントがありません。"
-    },
-    "events": {
-      "label": "イベント",
-      "no_events": "イベントがありません。",
-      "calendar_month_label": "{{date, yyyy年MM月}}",
-      "calendar_date_event_count_one": "{{count}} 件",
-      "calendar_date_event_count_other": "{{count}} 件",
-      "selected_month_events": "{{date, yyyy年MM月}} のイベント",
-      "selected_month_events_day_label": "{{date, dd日 (EEE)}}"
     },
     "friendlocations": {
       "label": "フレンドインスタンス",
@@ -290,6 +287,21 @@
       "linksModal_text2": "パスワードを忘れましたか？\n",
       "linksModal_passwordLinkText": "パスワードリセット",
       "linksModal_emailLinkText": "メールアドレスの確認"
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} 件",
+      "calendar_date_event_count_other": "{{count}} 件",
+      "label": "イベント",
+      "calendar_month_label": "{{date, yyyy MMMM}}",
+      "no_events": "イベントがありません",
+      "selected_month_events": "{{date, yyyy/MM}} のイベント",
+      "selected_month_events_day_label": "{{date, dd日 (EEE)}}"
+    },
+    "detail_event": {
+      "label": "イベント詳細",
+      "sectionLabel_description": "説明",
+      "menuLabel_json": "JSONデータ",
+      "sectionLabel_owner": "オーナー"
     }
   },
   "components": {

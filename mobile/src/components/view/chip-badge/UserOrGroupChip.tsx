@@ -1,7 +1,7 @@
 import { fontSize, radius, spacing } from "@/configs/styles";
 import { CachedImage } from "@/contexts/CacheContext";
 import { omitObject } from "@/libs/utils";
-import { getStatusColor, getTrustRankColor, getUserIconUrl, UserLike } from "@/libs/vrchat";
+import { getStatusColor, getTrustRankColor, getUserIconUrl, GroupLike, isGroupLike, UserLike } from "@/libs/vrchat";
 import { Text } from "@react-navigation/elements";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -10,9 +10,8 @@ import { useTheme } from "@react-navigation/native";
 import { SupportedIconNames } from "../icon-components/utils";
 
 
-
 interface Props {
-  user: UserLike;
+  data: UserLike | GroupLike;
   size?: number; // default 32
   textSize?: number;
   textColor?: string;
@@ -21,21 +20,31 @@ interface Props {
   [key: string]: any;
 }
 
-const UserChip = ({ user, icon, textSize, textColor, size = 32, IconStyle, ...rest }: Props) => {
+const UserOrGroupChip = ({ data, icon, textSize, textColor, size = 32, IconStyle, ...rest }: Props) => {
   const theme = useTheme()
+  const isGroupData = isGroupLike(data);
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style", "IconStyle")}>
-      
+
       {icon && (
         <IconSymbol name={icon} size={size/2} style={styles.option} />
       )}
 
       <CachedImage
-        src={getUserIconUrl(user)}
-        style={[styles.icon, { height: size, borderColor: getStatusColor(user)}, IconStyle]}
+        src={isGroupData ? data.iconUrl ?? "" : getUserIconUrl(data)}
+        style={[
+          isGroupData ? styles.squareIcon : styles.icon,
+          {
+            height: size,
+            borderColor: isGroupData ? theme.colors.text : getStatusColor(data)
+          },
+          IconStyle
+        ]}
       />
-      <Text numberOfLines={1} style={[styles.text, { color: textColor ?? theme.colors.text, fontSize: textSize ?? fontSize.medium }]}>{user.displayName}</Text>
-      
+      <Text numberOfLines={1} style={[styles.text, { color: textColor ?? theme.colors.text, fontSize: textSize ?? fontSize.medium }]}>
+        {isGroupData ? data.name : data.displayName}
+      </Text>
+
     </View>
   );
 }
@@ -58,6 +67,12 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     margin: spacing.small
   },
+  squareIcon : {
+    borderRadius: radius.mini,
+    borderWidth: 1.5,
+    aspectRatio: 1,
+    margin: spacing.small
+  },
   option: {
     position: "absolute",
     top: 0,
@@ -66,4 +81,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.memo(UserChip);
+export default React.memo(UserOrGroupChip);

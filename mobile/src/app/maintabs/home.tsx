@@ -7,7 +7,7 @@ import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import SeeMoreContainer from "@/components/features/home/SeeMoreContainer";
 import { calcFriendsLocations } from "@/libs/funcs/calcFriendLocations";
-import { routeToEvents, routeToFeeds, routeToFriendLocations, routeToInstance, routeToWorld } from "@/libs/route";
+import { routeToCalendar, routeToEvent, routeToFeeds, routeToFriendLocations, routeToInstance, routeToWorld } from "@/libs/route";
 import { InstanceLike } from "@/libs/vrchat";
 import { PipelineMessage } from "@/vrchat/pipline/type";
 import { useLocale, useTheme } from "@react-navigation/native";
@@ -19,7 +19,6 @@ import { useToast } from "@/contexts/ToastContext";
 import { extractErrMsg } from "@/libs/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import ListViewEvent from "@/components/view/item-ListView/ListViewEvent";
-import EventDetailModal from "@/components/features/events/EventDetailModal";
 import ReleaseNote from "@/components/features/home/ReleaseNote";
 import { useTranslation } from "react-i18next";
 import { isSameDay } from "date-fns";
@@ -28,7 +27,7 @@ export default function Home() {
   const theme = useTheme();
   const { settings } = useSetting();
   const { homeTabTopVariant, homeTabBottomVariant, homeTabSeparatePos, cardViewColumns } = settings.uiOptions.layouts;
-  
+
   if ( homeTabSeparatePos <= 0 || homeTabSeparatePos >= 100) {
     const singleVariant = homeTabSeparatePos >= 100 ? homeTabTopVariant : homeTabBottomVariant;
     return (
@@ -55,7 +54,7 @@ export default function Home() {
       ) : homeTabTopVariant === 'events' ? (
         <EventsArea style={{ maxHeight: `${homeTabSeparatePos}%` }} />
       ) : null}
-  
+
       {homeTabBottomVariant === 'feeds' ? (
         <FeedArea style={{ maxHeight: `${100 - homeTabSeparatePos}%` }} />
       ) : homeTabBottomVariant === 'friend-locations' ? (
@@ -151,7 +150,7 @@ const EventsArea = memo(({ style }: {
   const fetchingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const npr = 60;
-  
+
   const [ eventDetailModal, setEventDetailModal ] = useState<{ open: boolean; event: CalendarEvent | null }>({ open: false, event: null });
 
 
@@ -200,10 +199,10 @@ const EventsArea = memo(({ style }: {
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
     return (
-      <ListViewEvent style={styles.listview} event={item} onPress={() => setEventDetailModal({ open: true, event: item })} />
+      <ListViewEvent style={styles.listview} event={item} onPress={() => item.ownerId && routeToEvent(item.ownerId, item.id)} />
     );
   }, []);
-  
+
   const emptyComponent = useCallback(() => (
     <View style={{ alignItems: "center", marginTop: spacing.large }}>
       <Text style={{ color: theme.colors.text }}>{t("pages.home.no_events")}</Text>
@@ -213,7 +212,7 @@ const EventsArea = memo(({ style }: {
   return (
     <SeeMoreContainer
       title={t("pages.home.events_area")}
-      onPress={() => routeToEvents()}
+      onPress={() => routeToCalendar()}
       style={style}
     >
       <FlatList
@@ -226,7 +225,6 @@ const EventsArea = memo(({ style }: {
         refreshing={isLoading}
       />
 
-      <EventDetailModal event={eventDetailModal.event} open={eventDetailModal.open} setOpen={(v) => setEventDetailModal((prev) => ({ ...prev, open: v }))} />
     </SeeMoreContainer>
   );
 });

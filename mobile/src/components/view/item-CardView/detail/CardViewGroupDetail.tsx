@@ -33,7 +33,7 @@ const CardViewGroupDetail = ({
 
 const styles = StyleSheet.create({
   image: {
-    aspectRatio: 16 / 7,
+    aspectRatio: 3 / 1,
   },
 });
 export default CardViewGroupDetail;

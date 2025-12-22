@@ -2,9 +2,12 @@
   "app": "VRCP",
   "common": {
     "dateFormats": {
-      "date": "yyyy/MM/DD",
+      "date": "yyyy/MM/dd",
       "time": "HH:mm",
-      "dateTime": "yyyy/MM/DD HH:mm"
+      "dateTime": "yyyy/MM/dd HH:mm",
+      "timeRange": "{{start, HH:mm}} ~ {{end, HH:mm}}",
+      "dateTimeRange_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}",
+      "dateTimeRange_diffDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, yyyy/MM/dd HH:mm}}"
     },
     "message": {
       "loading": "Loading...",
@@ -68,6 +71,8 @@
       "itemDescription_database": "Manage database settings and storage options.",
       "itemLabel_notifications": "Notifications",
       "itemDescription_notifications": "Manage Push notifications and alerts.",
+      "itemLabel_language": "Language",
+      "itemDescription_language": "Select the language for the application.",
       "groupLabel_other": "Other",
       "itemLabel_about": "About",
       "itemDescription_about": "View application information and credits.",
@@ -84,20 +89,18 @@
     },
     "setting_appearance": {
       "label": "Appearance Settings",
-      "groupLabel_appearance": "Appearance",
+      "groupLabel_app": "App",
       "itemLabel_theme": "Theme",
       "itemDescription_theme": "Select light or dark theme for the application.",
-      "itemLabel_friendColor": "Friend Color",
-      "itemDescription_friendColor": "Select your friends color theme.",
-      "itemLabel_favoriteFriendsColors": "Favorite Friend Colors",
-      "itemDescription_favoriteFriendsColors": "Select your favorite-friends color theme.",
       "itemLabel_homeTabLayout": "Home Tab Layout",
       "itemDescription_homeTabLayout": "Select which tab to show by default on the Home page.",
       "itemLabel_cardViewColumns": "Card View Columns",
       "itemDescription_cardViewColumns": "Select the number of columns to display in card views.",
-      "groupLabel_others": "Others",
-      "itemLabel_language": "Language",
-      "itemDescription_language": "Select the language for the application.",
+      "groupLabel_friends": "Friends",
+      "itemLabel_friendColor": "Friend Color",
+      "itemDescription_friendColor": "Select your friends color theme.",
+      "itemLabel_favoriteFriendsColors": "Favorite Friend Colors",
+      "itemDescription_favoriteFriendsColors": "Select your favorite-friends color theme.",
       "innerModals": {
         "theme": {
           "button_apply": "Apply",
@@ -139,6 +142,9 @@
     },
     "setting_notifications": {
       "label": "Notification Settings"
+    },
+    "setting_language": {
+      "label": "Language Settings"
     },
 
     "detail_user": {
@@ -200,9 +206,9 @@
     "detail_instance": {
       "label": "Instance Details",
       "menuLabel_json": "Raw JSON Data",
-      "sectionLabel_ownerAndWorld": "Owner & World",
-      "sectionLabel_World": "World",
-      "sectionLabel_users": "Users",
+      "sectionLabel_owner": "Owner",
+      "sectionLabel_usersInInstance": "Users in Instance",
+      "sectionLabel_world": "World",
       "section_users_more_user_count_one": "+ {{count}} more user",
       "section_users_more_user_count_other": "+ {{count}} more users",
       "sectionLabel_platform": "Platform",
@@ -216,6 +222,14 @@
       "menuLabel_json": "Raw JSON Data",
       "sectionLabel_info": "Info"
     },
+    "detail_event": {
+      "label": "Event Details",
+      "menuLabel_json": "Raw JSON Data",
+      "sectionLabel_owner": "Owner",
+      "sectionLabel_description": "Description"
+    },
+
+
     "search": {
       "label": "Search Results",
       "searchbox_placeholder": "Search for worlds, groups, or users",
@@ -239,7 +253,7 @@
       "no_worlds": "No worlds available.",
       "no_prints": "No prints available."
     },
-    "events": {
+    "calendar": {
       "label": "Events",
       "no_events": "No events available.",
       "calendar_month_label": "{{date, yyyy MMMM}}",

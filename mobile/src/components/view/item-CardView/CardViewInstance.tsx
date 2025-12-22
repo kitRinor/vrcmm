@@ -5,14 +5,14 @@ import { StyleSheet, Text, View } from "react-native";
 import BaseCardView from "./BaseCardView";
 import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/libs/vrchat";
 import { useCache } from "@/contexts/CacheContext";
-import UserChip from "../chip-badge/UserChip";
+import UserOrGroupChip from "../chip-badge/UserOrGroupChip";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 
 
 interface Props {
-  instance: InstanceLike; 
+  instance: InstanceLike;
   onPress?: () => void;
   onLongPress?: () => void;
   [key: string]: any;
@@ -72,7 +72,7 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
     fetchWorld();
   }, [instance.world]);
 
-  
+
   return (
     <BaseCardView
       data={instance}
@@ -93,7 +93,7 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
           />
           <View style={styles.friendsContainer}>
             {friends.slice(0, 3).map((friend)=> (
-              <UserChip key={friend.id} user={friend} size={fontSize.large * 1.2} textSize={fontSize.medium}/>
+              <UserOrGroupChip key={friend.id} data={friend} size={fontSize.large * 1.2} textSize={fontSize.medium}/>
             ))}
             {friends.length > 3 &&
               <Text style={[styles.moreText, { color: theme.colors.text }]}>{t("pages.home.friendLocation.more_friends_count", { count: friends.length - 3 })}</Text>
@@ -133,5 +133,5 @@ const styles = StyleSheet.create({
     marginLeft: spacing.medium,
   },
 });
- 
+
 export default React.memo(CardViewInstance);

@@ -6,13 +6,13 @@ import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, Us
 import { useCache } from "@/contexts/CacheContext";
 import { LinearGradient } from 'expo-linear-gradient';
 import BaseCardView from "../BaseCardView";
-import UserChip from "../../chip-badge/UserChip";
+import UserOrGroupChip from "../../chip-badge/UserOrGroupChip";
 import IconButton from "../../icon-components/IconButton";
 import { routeToWorld } from "@/libs/route";
 
 
 interface Props {
-  instance: InstanceLike; 
+  instance: InstanceLike;
   onPress?: () => void;
   onLongPress?: () => void;
   [key: string]: any;
@@ -60,7 +60,7 @@ const CardViewInstanceDetail = ({ instance, onPress, onLongPress, ...rest }: Pro
     fetchWorld();
   }, [instance.world]);
 
-  
+
   return (
     <BaseCardView
       data={instance}
@@ -91,5 +91,5 @@ const styles = StyleSheet.create({
     marginVertical: spacing.mini,
   },
 });
- 
+
 export default React.memo(CardViewInstanceDetail);

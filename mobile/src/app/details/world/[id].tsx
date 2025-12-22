@@ -1,5 +1,5 @@
 import GenericScreen from "@/components/layout/GenericScreen";
-import DetailItemContainer from "@/components/features/detail/DetailItemContainer";
+import DetailItemContainer from "@/components/features/DetailItemContainer";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
 import CardViewWorldDetail from "@/components/view/item-CardView/detail/CardViewWorldDetail";
@@ -23,13 +23,13 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native";
-import UserChip from "@/components/view/chip-badge/UserChip";
+import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { routeToSearch, routeToUser } from "@/libs/route";
 import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
-import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
+import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";
 import { RefreshControl } from "react-native-gesture-handler";
-import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 
@@ -49,7 +49,7 @@ export default function WorldDetail() {
 
   const [openJson, setOpenJson] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
-  
+
   const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "world");
 
   const fetchWorld = async () => {
@@ -64,7 +64,7 @@ export default function WorldDetail() {
   useEffect(() => {
     fetchWorld();
   }, []);
-  
+
 
   useEffect(() => {
     if (!world?.authorId) return;
@@ -109,17 +109,17 @@ export default function WorldDetail() {
       title: isFavorite ? t("pages.detail_world.menuLabel_favoriteGroup_edit") : t("pages.detail_world.menuLabel_favoriteGroup_add"),
       onPress: () => setOpenChangeFavorite(true),
     },
-    { 
+    {
       type: "divider"
     },
     {
       icon: "code-json",
       title: t("pages.detail_world.menuLabel_json"),
       onPress: () => setOpenJson(true),
-    }, 
+    },
   ];
 
-  const tabItems: { 
+  const tabItems: {
     label: string;
     value: typeof mode,
   }[] = [
@@ -180,7 +180,7 @@ export default function WorldDetail() {
                 {author && (
                   <View style={styles.detailItemContent}>
                     <TouchableOpacity onPress={() => routeToUser(author.id)} activeOpacity={0.7}>
-                      <UserChip user={author} textColor={getTrustRankColor(author, true, false)}/>
+                      <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)}/>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -233,7 +233,7 @@ export default function WorldDetail() {
       )}
 
       {/* dialog and modals */}
-      
+
       <JsonDataModal open={openJson} setOpen={setOpenJson} data={world} />
       <ChangeFavoriteModal
         open={openChangeFavorite}

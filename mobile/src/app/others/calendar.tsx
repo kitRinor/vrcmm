@@ -1,4 +1,3 @@
-import EventDetailModal from "@/components/features/events/EventDetailModal";
 import GenericScreen from "@/components/layout/GenericScreen";
 import MonthlyCalendarView from "@/components/view/calendarView/MonthlyColendarView";
 import ListViewEvent from "@/components/view/item-ListView/ListViewEvent";
@@ -8,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getDateKey, restoreDateKey } from "@/libs/date";
+import { routeToEvent } from "@/libs/route";
 import { extractErrMsg } from "@/libs/utils";
 import { CalendarEvent, PaginatedCalendarEventList } from "@/vrchat/api";
 import { Text } from "@react-navigation/elements";
@@ -20,7 +20,7 @@ import { FlatList, RefreshControl, ScrollView, SectionList, StyleSheet, View, Vi
 
 
 
-export default function Events () {
+export default function EventCalendar () {
   const auth = useAuth();
   const theme = useTheme();
   const vrc = useVRChat();
@@ -36,8 +36,6 @@ export default function Events () {
   const fetchingRef = useRef(false); // to all fetch
   const [isLoading, setIsLoading] = useState(false);
   const npr = 60;
-
-  const [ eventDetailModal, setEventDetailModal ] = useState<{ open: boolean; event: CalendarEvent | null }>({ open: false, event: null });
 
   const groupEventsByDate = (events: CalendarEvent[]) => {
     const grouped: Record<string, CalendarEvent[]> = {};
@@ -94,7 +92,7 @@ export default function Events () {
     reload();
   },[auth.user, selectedMonth]);
 
-  
+
   const sections = useMemo(() => {
     const res = Object.entries(eventsByDate)
       .filter(([key, _]) => (isSameMonth(restoreDateKey(key), selectedMonth)))
@@ -128,7 +126,7 @@ export default function Events () {
       if (events.length > 0) {
         return (
           <Text style={{ fontSize: 10, color: theme.colors.warning, paddingHorizontal: spacing.mini }}>
-            {t("pages.events.calendar_date_event_count", { count: events.length })}
+            {t("pages.calendar.calendar_date_event_count", { count: events.length })}
           </Text>
         );
       }
@@ -138,21 +136,26 @@ export default function Events () {
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
     return (
-      <ListViewEvent style={styles.listview} event={item} onPress={() => setEventDetailModal({ open: true, event: item })} />
+      <ListViewEvent
+        style={styles.listview}
+        event={item}
+        onPress={() => item.ownerId && routeToEvent(item.ownerId, item.id)}
+        // onPress={() => setEventDetailModal({ open: true, event: item })}
+      />
     );
   }, []);
-  
+
   const renderSectionHeader = useCallback(({section}: { section: { key: string; data: CalendarEvent[] } }) => (
     <View >
       <Text style={[styles.sectionHeader, { color: (section.key === getDateKey(selectedDate)) ? theme.colors.primary : theme.colors.text }]}>
-        {t("pages.events.selected_month_events_day_label", { date: restoreDateKey(section.key ?? "") })}
+        {t("pages.calendar.selected_month_events_day_label", { date: restoreDateKey(section.key ?? "") })}
       </Text>
     </View>
   ), [selectedDate]);
 
   const emptyComponent = useCallback(() => (
     <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>{t("pages.events.no_events")}</Text>
+      <Text style={{ color: theme.colors.text }}>{t("pages.calendar.no_events")}</Text>
     </View>
   ), [theme.colors.text, t]);
 
@@ -169,9 +172,9 @@ export default function Events () {
         />
       </View>
       <Text style={[{ marginTop: spacing.medium, marginLeft: spacing.small, color: theme.colors.text, fontWeight: "bold", fontSize: 16 }]}>
-        {t("pages.events.selected_month_events", { date: selectedMonth })}
+        {t("pages.calendar.selected_month_events", { date: selectedMonth })}
       </Text>
-      
+
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}
@@ -182,7 +185,6 @@ export default function Events () {
         contentContainerStyle={styles.scrollViewContentContainer}
       />
 
-      <EventDetailModal event={eventDetailModal.event} open={eventDetailModal.open} setOpen={(v) => setEventDetailModal((prev) => ({ ...prev, open: v }))} />
     </GenericScreen>
   );
 }

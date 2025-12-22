@@ -1,5 +1,5 @@
 import GenericScreen from "@/components/layout/GenericScreen";
-import DetailItemContainer from "@/components/features/detail/DetailItemContainer";
+import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewAvatarDetail from "@/components/view/item-CardView/detail/CardViewAvatarDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
@@ -12,16 +12,16 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { routeToUser } from "@/libs/route";
-import UserChip from "@/components/view/chip-badge/UserChip";
+import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { getAuthorTags, getPlatform, getTrustRankColor } from "@/libs/vrchat";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
 import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
-import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
+import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";
 import { RefreshControl } from "react-native-gesture-handler";
-import JsonDataModal from "@/components/features/detail/JsonDataModal";
-import ChangeAvatarModal from "@/components/features/detail/avatar/ChangeAvatarModal";
+import JsonDataModal from "@/components/modals/JsonDataModal";
+import ChangeAvatarModal from "@/components/modals/ChangeAvatarModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 
@@ -70,7 +70,7 @@ export default function AvatarDetail() {
       title: isFavorite ? t("pages.detail_avatar.menuLabel_favoriteGroup_edit") : t("pages.detail_avatar.menuLabel_favoriteGroup_add"),
       onPress: () => setOpenChangeFavorite(true),
     },
-    { 
+    {
       type: "divider"
     },
     {
@@ -78,14 +78,14 @@ export default function AvatarDetail() {
       title: isCurrentAvatar ? t("pages.detail_avatar.menuLabel_avatar_nowUsing") : t("pages.detail_avatar.menuLabel_avatar_changeTo"),
       onPress: () => !isCurrentAvatar && setOpenChangeAvatar(true),
     },
-    { 
+    {
       type: "divider"
     },
     {
       icon: "code-json",
       title: t("pages.detail_avatar.menuLabel_json"),
       onPress: () => setOpenJson(true),
-    }, 
+    },
   ];
 
   return (
@@ -123,12 +123,12 @@ export default function AvatarDetail() {
               </View>
             </DetailItemContainer>
 
-            
+
             <DetailItemContainer title={t("pages.detail_avatar.sectionLabel_author")}>
               {author && (
                 <View style={styles.detailItemContent}>
                   <TouchableOpacity onPress={() => routeToUser(author.id)} activeOpacity={0.7}>
-                    <UserChip user={author} textColor={getTrustRankColor(author, true, false)}/>
+                    <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)}/>
                   </TouchableOpacity>
                 </View>
               )}
@@ -140,9 +140,9 @@ export default function AvatarDetail() {
         <LoadingIndicator absolute />
       )}
 
-      
+
       {/* dialog and modals */}
-      
+
       <ChangeFavoriteModal
         open={openChangeFavorite}
         setOpen={setOpenChangeFavorite}

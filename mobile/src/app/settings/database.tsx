@@ -10,7 +10,7 @@ import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 
 
 
-export default function Tmp() {
+export default function DatabaseSettings() {
   const theme = useTheme();
   const { t } = useTranslation();
   const cache = useCache();

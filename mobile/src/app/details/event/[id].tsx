@@ -3,10 +3,10 @@ import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { useCache } from "@/contexts/CacheContext";
+import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
-import { Group } from "@/vrchat/api";
+import { CalendarEvent } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -16,32 +16,49 @@ import { MenuItem } from "@/components/layout/type";
 import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import CardViewEventDetail from "@/components/view/item-CardView/detail/CardViewEventDetail";
+import { GroupLike } from "@/libs/vrchat";
+import { TouchableOpacity } from "@/components/CustomElements";
+import { routeToGroup } from "@/libs/route";
+import IconSymbol from "@/components/view/icon-components/IconView";
+import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 
-export default function GroupDetail() {
+export default function EventDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [ groupId, calendarId ] = id?.split(":") ?? [];
   const vrc = useVRChat();
   const { t } = useTranslation();
   const cache = useCache();
   const theme = useTheme();
   const { showToast } = useToast();
-  const [group, setGroup] = useState<Group>();
+  const [event, setEvent] = useState<CalendarEvent>();
+  const [ownerGroup, setOwnerGroup] = useState<GroupLike>();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
   const [openJson, setOpenJson] = useState(false);
 
 
-  const fetchGroup = () => {
+  const fetchEvent = () => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
-    cache.group.get(id, true)
-      .then(setGroup)
-      .catch((e) => showToast("error", "Error fetching group data", extractErrMsg(e)))
+    vrc.calendarApi.getGroupCalendarEvent({
+      groupId: groupId ?? "",
+      calendarId: calendarId  ?? "",
+    })
+      .then((res) => setEvent(res.data))
+      .catch((e) => showToast("error", "Error fetching event data", extractErrMsg(e)))
       .finally(() => fetchingRef.current = false);
+  };
+  const fetchOwnerGroup = () => {
+    cache.group.get(groupId ?? "")
+      .then(setOwnerGroup)
+      .catch((e) => console.warn("Error fetching owner group data", extractErrMsg(e)));
   };
 
   useEffect(() => {
-    fetchGroup();
+    fetchEvent();
+    fetchOwnerGroup();
   }, []);
 
   const menuItems: MenuItem[] = [
@@ -50,38 +67,39 @@ export default function GroupDetail() {
     },
     {
       icon: "code-json",
-      title: t("pages.detail_group.menuLabel_json"),
+      title: t("pages.detail_event.menuLabel_json"),
       onPress: () => setOpenJson(true),
     },
   ];
 
   return (
     <GenericScreen menuItems={menuItems}>
-      {group ? (
+      {event ? (
         <View style={{ flex: 1 }}>
-          <CardViewGroupDetail group={group} style={[styles.cardView]} />
+          <CardViewEventDetail event={event} style={[styles.cardView]} />
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
                 refreshing={isLoading}
-                onRefresh={fetchGroup}
+                onRefresh={fetchEvent}
               />
             }
           >
-            <DetailItemContainer title="Title1">
-              <View style={styles.detailItemContent}>
-                <Text style={{ color: theme.colors.text }}>text1-1</Text>
-                <Text style={{ color: theme.colors.text }}>text1-2</Text>
-              </View>
-            </DetailItemContainer>
 
-            <DetailItemContainer
-              title="Title2"
-              iconButtonConfig={[{ name: "edit", onPress: () => {} }]}
-            >
+            {ownerGroup && ownerGroup.id && (
+              <DetailItemContainer title={t("pages.detail_event.sectionLabel_owner")}>
+                <View style={styles.detailItemContent}>
+                  <TouchableOpacity style={styles.ownerChip} onPress={() => ownerGroup.id && routeToGroup(ownerGroup.id)}>
+                    <UserOrGroupChip data={ownerGroup} />
+                  </TouchableOpacity>
+                </View>
+              </DetailItemContainer>
+            )}
+
+            <DetailItemContainer title={t("pages.detail_event.sectionLabel_description")}>
               <View style={styles.detailItemContent}>
-                <Text style={{ color: theme.colors.text }}>text2-1</Text>
+                <Text style={{ color: theme.colors.text }}>{event.description}</Text>
               </View>
             </DetailItemContainer>
 
@@ -92,7 +110,7 @@ export default function GroupDetail() {
       )}
 
       {/* Modals */}
-      <JsonDataModal open={openJson} setOpen={setOpenJson} data={group} />
+      <JsonDataModal open={openJson} setOpen={setOpenJson} data={event} />
 
     </GenericScreen>
   );
@@ -102,24 +120,19 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: navigationBarHeight,
   },
+  horizontal: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: spacing.small,
+  },
+  ownerChip: {
+    flex: 1
+  },
   cardView: {
     position: "relative",
     paddingVertical: spacing.medium,
   },
-  badgeContainer: {
-    position: "absolute",
-    width: "100%",
-    top: spacing.medium,
-    bottom: spacing.medium,
-    borderRadius: radius.small,
-    padding: spacing.medium,
-  },
-  badge: {
-    padding: spacing.small,
-    width: "20%",
-    aspectRatio: 1,
-  },
-
   detailItemContent: {
     flex: 1,
     // borderStyle:"dotted", borderColor:"red",borderWidth:1

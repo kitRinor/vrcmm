@@ -45,7 +45,7 @@ export default function AppearanceSettings() {
 
   const listContents: SettingItemListContents = [
     {
-      title: t("pages.setting_appearance.groupLabel_appearance"),
+      title: t("pages.setting_appearance.groupLabel_app"),
       items: [
         {
           icon: "theme-light-dark",
@@ -119,55 +119,39 @@ export default function AppearanceSettings() {
             }
           }),
         },
-        // {
-        //   icon: "account",
-        //   title: t("pages.setting_appearance.itemLabel_friendColor"),
-        //   description: t("pages.setting_appearance.itemDescription_friendColor"),
-        //   leading: <ColorSquarePreview colors={[uiOptions.user.friendColor]} />,
-        //   onPress: () => setFriendColorModal({
-        //     open: true,
-        //     defaultValue: uiOptions.user.friendColor,
-        //     onSubmit: (value) => {
-        //       saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, friendColor: value } } });
-        //     }
-        //   }),
-        // },
-        // {
-        //   icon: "group",
-        //   title: t("pages.setting_appearance.itemLabel_favoriteFriendsColors"),
-        //   description: t("pages.setting_appearance.itemDescription_favoriteFriendsColors"),
-        //   leading: <ColorSquarePreview colors={Object.values(uiOptions.user.favoriteFriendsColors)} />,
-        //   onPress: () => setFavoriteFriendsColorsModal({
-        //     open: true,
-        //     defaultValue: uiOptions.user.favoriteFriendsColors,
-        //     onSubmit: (value) => {
-        //       saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, favoriteFriendsColors: value } } });
-        //     }
-        //   }),
-        // },
-      ]
+      ],
     },
     {
-      title: t("pages.setting_appearance.groupLabel_others"),
+      title: t("pages.setting_appearance.groupLabel_friends"),
       items: [
         {
-          icon: "language",
-          title: t("pages.setting_appearance.itemLabel_language"),
-          description: t("pages.setting_appearance.itemDescription_language"),
-          onPress: async () => {
-            const cur = await getUserLanguage()
-            const newLang = cur === 'en' ? 'ja' : 'en';
-            setUserLanguage(newLang);
-            _tmpState[1](newLang); // force re-render
-          },
-          leading: (
-            <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
-              {_tmpState[0] === 'ja' ? '日本語' : 'English'}
-            </Text>
-          ),
+          icon: "account",
+          title: t("pages.setting_appearance.itemLabel_friendColor"),
+          description: t("pages.setting_appearance.itemDescription_friendColor"),
+          leading: <ColorSquarePreview colors={[uiOptions.user.friendColor]} />,
+          onPress: () => setFriendColorModal({
+            open: true,
+            defaultValue: uiOptions.user.friendColor,
+            onSubmit: (value) => {
+              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, friendColor: value } } });
+            }
+          }),
+        },
+        {
+          icon: "group",
+          title: t("pages.setting_appearance.itemLabel_favoriteFriendsColors"),
+          description: t("pages.setting_appearance.itemDescription_favoriteFriendsColors"),
+          leading: <ColorSquarePreview colors={Object.values(uiOptions.user.favoriteFriendsColors)} />,
+          onPress: () => setFavoriteFriendsColorsModal({
+            open: true,
+            defaultValue: uiOptions.user.favoriteFriendsColors,
+            onSubmit: (value) => {
+              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, favoriteFriendsColors: value } } });
+            }
+          }),
         },
       ]
-    }
+    },
   ]
 
   return (

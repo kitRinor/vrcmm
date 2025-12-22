@@ -11,12 +11,30 @@ export type InstanceLike = MinInstance | Instance
 type StatusGettableUser = Exclude<UserLike, LimitedUserInstance>
 
 // 最低限のInstance情報だけを持つ型 (Worldに付随した部分的なInstance情報に対応)
-type MinInstance = Pick< Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region"> 
+type MinInstance = Pick< Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">
   & Partial<Exclude< Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">>;
 
+/** Checker */
+export function isUserLike(data: any): data is UserLike {
+  return data && typeof data === "object" && "id" in data && data.id.startsWith("usr_");
+}
+export function isWorldLike(data: any): data is WorldLike {
+  return data && typeof data === "object" && "id" in data && data.id.startsWith("wrld_") && !("instanceId" in data);
+}
+export function isGroupLike(data: any): data is GroupLike {
+  return data && typeof data === "object" && "id" in data && data.id.startsWith("grp_");
+}
+export function isAvatarLike(data: any): data is AvatarLike {
+  return data && typeof data === "object" && "id" in data && data.id.startsWith("avtr_");
+}
+export function isInstanceLike(data: any): data is InstanceLike {
+  return data && typeof data === "object" && "instanceId" in data;
+}
 
-// get ImageUrls from user 
 
+
+//** User */
+// get ImageUrls from user
 export function getUserIconUrl(user: UserLike, highRes = false): string {
   if (user.userIcon) {
     return user.userIcon;
@@ -26,7 +44,7 @@ export function getUserIconUrl(user: UserLike, highRes = false): string {
       return user.profilePicOverride;
     } else if ("profilePicOverrideThumbnail" in user && user.profilePicOverrideThumbnail) {
       return user.profilePicOverrideThumbnail;
-    } 
+    }
     if (user.currentAvatarImageUrl) {
       return user.currentAvatarImageUrl;
     } else if (user.currentAvatarThumbnailImageUrl) {
@@ -52,7 +70,7 @@ export function getUserProfilePicUrl(user: UserLike, highRes = false): string {
       return user.profilePicOverride;
     } else if ("profilePicOverrideThumbnail" in user && user.profilePicOverrideThumbnail) {
       return user.profilePicOverrideThumbnail;
-    } 
+    }
     if (user.currentAvatarImageUrl) {
       return user.currentAvatarImageUrl;
     } else if (user.currentAvatarThumbnailImageUrl) {
@@ -73,15 +91,15 @@ export function getUserProfilePicUrl(user: UserLike, highRes = false): string {
   return "www";
 }
 
+//** location */
 // parse location string
-
-export function parseLocationString(location: string| undefined): 
+export function parseLocationString(location: string| undefined):
 {
   isOffline?: boolean;
   isPrivate?: boolean;
   isTraveling?: boolean;
-  parsedLocation?: { 
-    worldId?: string; 
+  parsedLocation?: {
+    worldId?: string;
     instanceId?: string;
   }
 } {
@@ -109,9 +127,9 @@ export function parseLocationString(location: string| undefined):
     return {};
   }
 }
-
+// parse instanceId string
 export function parseInstanceId(instanceId: string | undefined): {
-  name: string; 
+  name: string;
   type: InstanceType;
   groupAccessType?: GroupAccessType;
   region?: InstanceRegion
@@ -123,7 +141,7 @@ export function parseInstanceId(instanceId: string | undefined): {
 } | undefined {
   if (!instanceId) return undefined;
   const splitedInst = instanceId.split("~");
-  const name = splitedInst[0]; // 
+  const name = splitedInst[0]; //
 
   const parseByReg = (type: string) => {
     const regRes = splitedInst.find(s => s.startsWith(`${type}(`))?.match(/\((.+?)\)/)
@@ -140,16 +158,17 @@ export function parseInstanceId(instanceId: string | undefined): {
     group : parseByReg("group"),
   }
 
-  const type = parsed.hidden ? "hidden" 
-    : parsed.friends ? "friends" 
-    : parsed.private ? "private" 
-    : parsed.group ? "group" 
+  const type = parsed.hidden ? "hidden"
+    : parsed.friends ? "friends"
+    : parsed.private ? "private"
+    : parsed.group ? "group"
     : "public"; // default to public (no-type provide)
 
   return { name, type, ...parsed };
 }
 
-// Get instance type with DisplayName (ex.Friends+) 
+
+// Get instance type with DisplayName (ex.Friends+)
 export function getInstanceType(type:InstanceType, groupAccessType?: GroupAccessType) {
   if (type === "public") return vrcTexts.instanceType.public;
   if (type === "hidden") return vrcTexts.instanceType.friends_plus;
@@ -163,15 +182,14 @@ export function getInstanceType(type:InstanceType, groupAccessType?: GroupAccess
   }
   return vrcTexts.instanceType.private;
 }
-
+// get user state
 export function getState(user: LimitedUserFriend): UserState | undefined {
-  if (user.platform == "web") return "active"; 
-  if (user.status !== "offline") return "online"; 
+  if (user.platform == "web") return "active";
+  if (user.status !== "offline") return "online";
   if (user.location != "") return "offline";
   return undefined;
 }
-
-
+// get user status color
 export function getStatusColor(userOrStr: StatusGettableUser | string ): string {
   const status = typeof userOrStr === "string" ? userOrStr : userOrStr.status;
   if (status == "join me") return vrcColors.userStatus.join_me; // join me
@@ -225,7 +243,7 @@ export function getFriendRequestStatus(user: User): "null" | "outgoing" | "compl
   return "null";
 }
 
-// Avatar or World 
+// Avatar or World
 
 export function getAuthorTags(data: AvatarLike | WorldLike): string[] {
   const tags = data.tags?.filter(t => t.startsWith("author_tag_"));
@@ -271,7 +289,7 @@ export function convertToLimitedUserFriend(user: UserLike): LimitedUserFriend {
     last_login: obj.last_login ?? "",
     last_activity: obj.last_activity ?? "",
     platform: obj.platform ?? "",
-    
+
   };
 }
 // Convert User to LimitedUserInstance (for DataContext etc...)
@@ -291,4 +309,4 @@ export function convertToLimitedUserInstance(user: UserLike): LimitedUserInstanc
     last_mobile: obj.last_mobile ?? "",
     last_activity: obj.last_activity ?? "",
   };
-} 
+}

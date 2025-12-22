@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { MenuItem } from "@/components/layout/type";
 import Feeds from "../others/feeds";
-import Events from "../others/events";
+import EventCalendar from "../others/calendar";
 import Notifications from "../others/notifications";
 
 export default function Others() {
@@ -32,7 +32,7 @@ export default function Others() {
         <MaterialTab.Screen
           name="events"
           options={{ tabBarLabel: t("pages.others.tabLabel_events") }}
-          component={Events} //
+          component={EventCalendar} //
         />
         <MaterialTab.Screen
           name="feeds"

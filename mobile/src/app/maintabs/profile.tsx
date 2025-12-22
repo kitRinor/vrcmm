@@ -1,5 +1,5 @@
 import GenericScreen from "@/components/layout/GenericScreen";
-import DetailItemContainer from "@/components/features/detail/DetailItemContainer";
+import DetailItemContainer from "@/components/features/DetailItemContainer";
 import BadgeChip from "@/components/view/chip-badge/BadgeChip";
 import LinkChip from "@/components/view/chip-badge/LinkChip";
 import RegionBadge from "@/components/view/chip-badge/RegionBadge";
@@ -20,11 +20,11 @@ import {
 } from "react-native";
 import ImagePreview from "@/components/view/ImagePreview";
 import { getUserIconUrl, getUserProfilePicUrl } from "@/libs/vrchat";
-import ChangeStatusModal from "@/components/features/profile/ChangeStatusModal";
+import ChangeStatusModal from "@/components/modals/ChangeStatusModal";
 import { MenuItem } from "@/components/layout/type";
-import ChangeBioModal from "@/components/features/profile/ChangeBioModal";
-import ChangeBioLinksModal from "@/components/features/profile/ChangeBioLinksModal";
-import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import ChangeBioModal from "@/components/modals/ChangeBioModal";
+import ChangeBioLinksModal from "@/components/modals/ChangeBioLinksModal";
+import JsonDataModal from "@/components/modals/JsonDataModal";
 import { routeToAvatar, routeToFavorites, routeToResources } from "@/libs/route";
 import { useTranslation } from "react-i18next";
 
@@ -55,7 +55,7 @@ export default function Profile() {
       title: t("pages.profile.menuLabel_change_status"),
       onPress: () => setOpenChangeStatus(true),
     },
-    { 
+    {
       type: "divider"
     },
     {
@@ -73,14 +73,14 @@ export default function Profile() {
       title: t("pages.profile.menuLabel_route_current_avatar"),
       onPress: () => currentUser.data?.currentAvatar && routeToAvatar(currentUser.data.currentAvatar),
     },
-    { 
+    {
       type: "divider"
     },
     {
       icon: "code-json",
       title: t("pages.profile.menuLabel_json"),
       onPress: () => setOpenJson(true),
-    }, 
+    },
   ];
   return (
     <GenericScreen menuItems={menuItems}>
@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     flex: 1,
     // borderStyle:"dotted", borderColor:"red",borderWidth:1
   },
-  horizontal: { 
-    flexDirection: "row", 
+  horizontal: {
+    flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
   },

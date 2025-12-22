@@ -34,6 +34,10 @@ export default function ModalLayout() {
         name="group/[id]"
         options={{title: t("pages.detail_group.label") }}
       />
+      <Stack.Screen
+        name="event/[id]"
+        options={{title: t("pages.detail_event.label") }}
+      />
     </Stack>
   );
 }

@@ -1,8 +1,8 @@
 import GenericScreen from "@/components/layout/GenericScreen";
-import DetailItemContainer from "@/components/features/detail/DetailItemContainer";
+import DetailItemContainer from "@/components/features/DetailItemContainer";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
-import UserChip from "@/components/view/chip-badge/UserChip";
+import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import CardViewInstanceDetail from "@/components/view/item-CardView/detail/CardViewInstanceDetail";
 import CardViewWorldDetail from "@/components/view/item-CardView/detail/CardViewWorldDetail";
 import ListViewInstance from "@/components/view/item-ListView/ListViewInstance";
@@ -30,18 +30,18 @@ import { routeToGroup, routeToSearch, routeToUser, routeToWorld } from "@/libs/r
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { RefreshControl } from "react-native-gesture-handler";
 import { MenuItem } from "@/components/layout/type";
-import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "@/components/CustomElements";
 import { t } from "i18next";
 
-type Owner = 
+type Owner =
   | { type: "user"; owner: UserLike }
   | { type: "group"; owner: GroupLike };
 
 export default function InstanceDetail() {
-  const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp)) 
+  const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp))
   const { parsedLocation } = parseLocationString(id);
   const vrc = useVRChat();
   const { t } = useTranslation();
@@ -59,7 +59,7 @@ export default function InstanceDetail() {
   const [openJson, setOpenJson] = useState(false);
 
   const fetchInstance = () => {
-    // instance isnot cached 
+    // instance isnot cached
     if (fetchingRef.current) return;
     fetchingRef.current = true;
     vrc.instancesApi.getInstance({
@@ -104,14 +104,14 @@ export default function InstanceDetail() {
 
 
   const menuItems: MenuItem[] = [
-    { 
+    {
       type: "divider"
     },
     {
       icon: "code-json",
       title: t("pages.detail_instance.menuLabel_json"),
       onPress: () => setOpenJson(true),
-    }, 
+    },
   ];
 
   return (
@@ -128,45 +128,54 @@ export default function InstanceDetail() {
               />
             }
           >
-
-            <DetailItemContainer title={owner ? t("pages.detail_instance.sectionLabel_ownerAndWorld") : t("pages.detail_instance.sectionLabel_World")}>
-              <View style={[styles.detailItemContent, styles.horizontal]}>
-                {owner && (
-                  owner.type === "user" ? (
-                    <TouchableOpacity key={owner.owner.id} onPress={() => routeToUser(owner.owner.id)}>
-                      <UserChip user={owner.owner} icon="crown" textColor={getTrustRankColor(owner.owner, true, false)} />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity key={owner.owner.id} onPress={() => owner.owner.id &&routeToGroup(owner.owner.id)}>
-                      <Text style={{ color: theme.colors.text, fontSize: fontSize.medium }}>
-                        <IconSymbol name="group" size={fontSize.medium} /> {owner.owner.name}
-                      </Text>
-                    </TouchableOpacity>
-                  )
-                )}
-                <TouchableOpacity onPress={() => routeToWorld(instance.worldId)} activeOpacity={0.7}>
-                  <IconSymbol name="earth" size={fontSize.large} color={theme.colors.text} style={styles.worldIcon} />
-                  <CachedImage src={instance.world.thumbnailImageUrl} style={[styles.worldImage, { borderColor: theme.colors.subText }]} />
-                </TouchableOpacity>
-              </View>
-            </DetailItemContainer>
-
-            <DetailItemContainer title={t("pages.detail_instance.sectionLabel_users")}>
+            <DetailItemContainer title={t("pages.detail_instance.sectionLabel_usersInInstance")}>
               <View style={styles.detailItemContent}>
-                {chunkArray(friends, 2).map((chunk, index) => (
+                {/* {chunkArray(friends, 2).map((chunk, index) => (
                   <View style={{ flexDirection: "row" }} key={`friend-chunk-${index}`}>
                     {chunk.map((friend) => (
-                      <TouchableOpacity style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)} activeOpacity={0.7}>
-                        <UserChip user={friend} textColor={getTrustRankColor(friend, true, false)} />
+                      <TouchableOpacity style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)}>
+                        <UserOrGroupChip data={friend} textColor={getTrustRankColor(friend, true, false)} />
                       </TouchableOpacity>
                     ))}
                   </View>
+                ))} */}
+                {friends.map((friend) => (
+                  <TouchableOpacity style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)}>
+                    <UserOrGroupChip data={friend} textColor={getTrustRankColor(friend, true, false)} />
+                  </TouchableOpacity>
                 ))}
                 {instance.n_users > friends.length && (
                   <Text style={[styles.moreUser,{ color: theme.colors.text }]}>{t("pages.detail_instance.section_users_more_user_count_other", { count: instance.n_users - friends.length })}</Text>
                 )}
               </View>
             </DetailItemContainer>
+
+            <DetailItemContainer title={t("pages.detail_instance.sectionLabel_world")}>
+              <View style={styles.detailItemContent}>
+                <TouchableOpacity style={styles.horizontal} onPress={() => routeToWorld(instance.worldId)} activeOpacity={0.7}>
+                  <CachedImage src={instance.world.thumbnailImageUrl} style={[styles.worldImage, { borderColor: theme.colors.subText }]} />
+                  <Text style={[styles.worldName, { color: theme.colors.text }]}>
+                    {instance.world.name}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </DetailItemContainer>
+
+            {owner && (
+              <DetailItemContainer title={t("pages.detail_instance.sectionLabel_owner")}>
+                <View style={[styles.detailItemContent]}>
+                  {owner.type === "user" ? (
+                    <TouchableOpacity onPress={() => routeToUser(owner.owner.id)}>
+                      <UserOrGroupChip data={owner.owner} icon="crown" textColor={getTrustRankColor(owner.owner, true, false)} />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => owner.owner.id &&routeToGroup(owner.owner.id)}>
+                      <UserOrGroupChip data={owner.owner} icon="crown"/>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </DetailItemContainer>
+            )}
 
             <DetailItemContainer title={t("pages.detail_instance.sectionLabel_platform")}>
               <View style={styles.detailItemContent}>
@@ -222,7 +231,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: spacing.small,
   },
   cardView: {
     position: "relative",
@@ -245,7 +254,8 @@ const styles = StyleSheet.create({
 
   },
   user: {
-    width: "50%",
+    // width: "50%",
+    width: "100%",
     // borderStyle:"dotted", borderColor:"blue",borderWidth:1
   },
   moreUser: {
@@ -262,14 +272,10 @@ const styles = StyleSheet.create({
     height: spacing.small * 2 + fontSize.medium * 3,
     aspectRatio: 16 / 9,
     borderRadius: radius.small,
-    borderStyle:"solid", 
+    borderStyle:"solid",
     borderWidth: 1
   },
-  worldIcon: {
-    position: "absolute",
-    left: spacing.mini,
-    top: spacing.mini,
-    zIndex: 1,
-    // borderStyle:"dotted", borderColor:"blue",borderWidth:1
-  },
+  worldName: {
+    fontSize: fontSize.medium,
+  }
 });

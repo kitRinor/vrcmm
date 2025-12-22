@@ -1,5 +1,5 @@
 import GenericScreen from "@/components/layout/GenericScreen";
-import UserChip from "@/components/view/chip-badge/UserChip";
+import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import CardViewInstance from "@/components/view/item-CardView/CardViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { navigationBarHeight, spacing } from "@/configs/styles";
@@ -49,7 +49,7 @@ export default function FriendLocations() {
       <View style={styles.chunk}>
       {item.map((friend: LimitedUserFriend) => (
         <TouchableOpacity key={friend.id} style={styles.userChip} onPress={() => routeToUser(friend.id)} activeOpacity={0.7}>
-          <UserChip user={friend} />
+          <UserOrGroupChip data={friend} />
         </TouchableOpacity>
       ))}
       </View>
@@ -63,21 +63,21 @@ export default function FriendLocations() {
   const chunkInstances = useMemo(() => chunkArray(instances, 2), [instances]);
   const chunkUnlocatableFriends = useMemo(() => chunkArray(unlocatableFriends, 3), [unlocatableFriends]);
 
-  const sections: { 
-    title: string; 
-    data: any[]; 
+  const sections: {
+    title: string;
+    data: any[];
     keyExtractor: (item: any, index: number) => string;
-    renderItem: ({ item, index }: { item: any, index: number }) => React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | null 
+    renderItem: ({ item, index }: { item: any, index: number }) => React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | null
   }[] = useMemo(() => [
-    { 
-      title: t("pages.friendlocations.sectionLabel_instances"), 
-      data: chunkInstances, 
+    {
+      title: t("pages.friendlocations.sectionLabel_instances"),
+      data: chunkInstances,
       renderItem: renderInstItem,
       keyExtractor: (_, index) => `friend-instance-chunk-${index}`
     },
-    { 
-      title: t("pages.friendlocations.sectionLabel_private"), 
-      data: chunkUnlocatableFriends, 
+    {
+      title: t("pages.friendlocations.sectionLabel_private"),
+      data: chunkUnlocatableFriends,
       renderItem: renderUnlocItem,
       keyExtractor: (_, index) => `private-friend-chunk-${index}`
     },
@@ -113,9 +113,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionHeader: {
-    paddingTop: spacing.medium, 
-    marginBottom: spacing.small, 
-    borderBottomWidth: 1, 
+    paddingTop: spacing.medium,
+    marginBottom: spacing.small,
+    borderBottomWidth: 1,
   },
   chunk: {
     flexDirection: "row",

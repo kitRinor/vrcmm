@@ -11,8 +11,9 @@ import AboutModal from "@/components/features/settings/AboutModal";
 import FeedbackModal from "@/components/features/settings/FeedbackModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
-import { routeToAppearanceSettings, routeToDatabaseSettings, routeToNotificationSettings } from "@/libs/route";
+import { routeToAppearanceSettings, routeToDatabaseSettings, routeToLanguageSettings, routeToNotificationSettings } from "@/libs/route";
 import SettingItemList from "@/components/features/settings/SettingItemList";
+import { useSetting } from "@/contexts/SettingContext";
 
 interface SettingItem {
   icon: SupportedIconNames;
@@ -30,7 +31,6 @@ export default function Settings() {
   const [openDevelopment, setOpenDevelopment] = useState(false);
   const [openFeedback, setOpenFeedback] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
-  const [openNotification, setOpenNotification] = useState(false);
 
   const { showToast } = useToast();
 
@@ -58,6 +58,12 @@ export default function Settings() {
           title: t("pages.settings.itemLabel_notifications"),
           description: t("pages.settings.itemDescription_notifications"),
           onPress: () => routeToNotificationSettings(),
+        },
+        {
+          icon: "language",
+          title: t("pages.settings.itemLabel_language"),
+          description: t("pages.settings.itemDescription_language"),
+          onPress: () => routeToLanguageSettings(),
         },
       ],
     },

@@ -1,5 +1,5 @@
 import GenericScreen from "@/components/layout/GenericScreen";
-import DetailItemContainer from "@/components/features/detail/DetailItemContainer";
+import DetailItemContainer from "@/components/features/DetailItemContainer";
 import LinkChip from "@/components/view/chip-badge/LinkChip";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
@@ -19,11 +19,11 @@ import BadgeChip from "@/components/view/chip-badge/BadgeChip";
 import { useData } from "@/contexts/DataContext";
 import ImagePreview from "@/components/view/ImagePreview";
 import { MenuItem } from "@/components/layout/type";
-import ChangeNoteModal from "@/components/features/detail/user/ChangeNoteModal";
-import ChangeFavoriteModal from "@/components/features/detail/ChangeFavoriteModal";
-import ChangeFriendModal from "@/components/features/detail/user/ChangeFriendModal";
+import ChangeNoteModal from "@/components/modals/ChangeNoteModal";
+import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";
+import ChangeFriendModal from "@/components/modals/ChangeFriendModal";
 import { RefreshControl } from "react-native-gesture-handler";
-import JsonDataModal from "@/components/features/detail/JsonDataModal";
+import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 
@@ -120,8 +120,8 @@ export default function UserDetail() {
   const menuItems: MenuItem[] = [
     {
       icon: freReqStatus === "completed" ? "account-minus" : freReqStatus === "null" ? "account-plus" : "account-cancel",
-      title: freReqStatus === "completed" ? t("pages.detail_user.menuLabel_friend_remove") 
-        : freReqStatus === "null" ? t("pages.detail_user.menuLabel_friend_sendRequest") 
+      title: freReqStatus === "completed" ? t("pages.detail_user.menuLabel_friend_remove")
+        : freReqStatus === "null" ? t("pages.detail_user.menuLabel_friend_sendRequest")
         : t("pages.detail_user.menuLabel_friend_cancelRequest"),
       onPress: () => setOpenChangeFriend(true)
     },
@@ -136,10 +136,10 @@ export default function UserDetail() {
       title: t("pages.detail_user.menuLabel_note_edit"),
       onPress: () => setOpenChangeNote(true),
     },
-    { 
+    {
       type: "divider",
       hidden: freReqStatus !== "completed"
-    }, 
+    },
     {
       icon: "chat-question",
       title: t("pages.detail_user.menuLabel_invite_request"),
@@ -152,14 +152,14 @@ export default function UserDetail() {
       // onPress: () => {},
       hidden: freReqStatus !== "completed"
     },
-    { 
+    {
       type: "divider"
     },
     {
       icon: "code-json",
       title: t("pages.detail_user.menuLabel_json"),
       onPress: () => setOpenJson(true),
-    }, 
+    },
 
   ];
 
@@ -167,11 +167,11 @@ export default function UserDetail() {
     <GenericScreen menuItems={menuItems}>
       {user ? (
         <View style={{ flex: 1 }}>
-          <CardViewUserDetail 
-            user={user} 
+          <CardViewUserDetail
+            user={user}
             onPress={() => user && setPreview({imageUrl: getUserProfilePicUrl(user, true), open: true})}
             onPressIcon={() => user && setPreview({imageUrl: getUserIconUrl(user, true), open: true})}
-            style={[styles.cardView]} 
+            style={[styles.cardView]}
           />
           <ScrollView
             contentContainerStyle={styles.scrollContent}
@@ -185,8 +185,8 @@ export default function UserDetail() {
 
             <DetailItemContainer title={t("pages.detail_user.sectionLabel_location")}>
               {locationInfo ? (
-                <TouchableOpacity 
-                  activeOpacity={0.7} 
+                <TouchableOpacity
+                  activeOpacity={0.7}
                   style={styles.location}
                   onPress={(locationInfo.wId && locationInfo.iId) ? () => routeToInstance(locationInfo.wId!, locationInfo.iId!) : undefined}
                 >
@@ -217,7 +217,7 @@ export default function UserDetail() {
               ) : (
                 <LoadingIndicator size={30} />
               )}
-              
+
             </DetailItemContainer>
 
             <DetailItemContainer title={t("pages.detail_user.sectionLabel_note")}>
@@ -324,8 +324,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   noteInput: {
-    borderWidth: 1, 
-    borderRadius: radius.small, 
+    borderWidth: 1,
+    borderRadius: radius.small,
     padding: spacing.small
   },
   detailItemContent: {
@@ -337,8 +337,8 @@ const styles = StyleSheet.create({
     height: spacing.small * 2 + fontSize.medium * 3,
     aspectRatio: 16 / 9,
   },
-  horizontal: { 
-    flexDirection: "row", 
+  horizontal: {
+    flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
   },

@@ -12,8 +12,7 @@ import { User } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Platform, TouchableOpacity } from "react-native";
-import { KeyboardAvoidingView, KeyboardAvoidingViewComponent, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { routeToInstance } from "@/libs/route";
 import BadgeChip from "@/components/view/chip-badge/BadgeChip";
 import { useData } from "@/contexts/DataContext";
@@ -26,6 +25,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { TouchableEx } from "@/components/CustomElements";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -185,8 +185,7 @@ export default function UserDetail() {
 
             <DetailItemContainer title={t("pages.detail_user.sectionLabel_location")}>
               {locationInfo ? (
-                <TouchableOpacity
-                  activeOpacity={0.7}
+                <TouchableEx
                   style={styles.location}
                   onPress={(locationInfo.wId && locationInfo.iId) ? () => routeToInstance(locationInfo.wId!, locationInfo.iId!) : undefined}
                 >
@@ -213,7 +212,7 @@ export default function UserDetail() {
                       </Text>
                     )}
                   </View>
-                </TouchableOpacity>
+                </TouchableEx>
               ) : (
                 <LoadingIndicator size={30} />
               )}

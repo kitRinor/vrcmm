@@ -1,8 +1,9 @@
+import { TouchableEx } from "@/components/CustomElements";
 import { fontSize, radius, spacing } from "@/configs/styles";
 import { omitObject } from "@/libs/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 interface Props<T> {
   data: T;
@@ -48,8 +49,7 @@ const BaseListView = <T,>({
         "SubtitleStyle"
       )}
     >
-      <TouchableOpacity
-        activeOpacity={0.7}
+      <TouchableEx
         onPress={onPress}
         onLongPress={onLongPress}
         style={[styles.base, { backgroundColor: theme.colors.card }]}
@@ -74,7 +74,7 @@ const BaseListView = <T,>({
             ))}
         </View>
         <View style={styles.overlap}>{OverlapComponents}</View>
-      </TouchableOpacity>
+      </TouchableEx>
     </View>
   );
 };

@@ -1,7 +1,8 @@
+import { ButtonEx } from "@/components/CustomElements";
 import IconButton from "@/components/view/icon-components/IconButton";
 import globalStyles, { radius, spacing } from "@/configs/styles";
 import { omitObject } from "@/libs/utils";
-import { Button, Text } from "@react-navigation/elements";
+import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
@@ -24,12 +25,12 @@ const SeeMoreContainer = ({ title, onPress, children, ...rest }: Props) => {
         <View style={styles.header}>
           <Text style={globalStyles.subheader}>{title}</Text>
           {onPress && (
-            <Button 
-              onPress={onPress} 
+            <ButtonEx
+              onPress={onPress}
               variant="plain"
             >
               {t("pages.home.see_more") + "  >"}
-            </Button>
+            </ButtonEx>
           )}
         </View>
         <View style={styles.children}>

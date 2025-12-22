@@ -2,10 +2,9 @@ import GenericModal from "@/components/layout/GenericModal";
 import GenericScreen from "@/components/layout/GenericScreen";
 import { Atag } from "@/components/view/Atag";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, spacing } from "@/configs/styles";
+import { fontSize, navigationBarHeight, spacing } from "@/configs/styles";
 import { useAuth } from "@/contexts/AuthContext";
 import { MiscellaneousApi } from "@/vrchat/api";
-import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { navigate } from "expo-router/build/global-state/routing";
@@ -24,6 +23,7 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { ButtonEx } from "@/components/CustomElements";
 
 // login screen
 export default function Login() {
@@ -152,13 +152,14 @@ export default function Login() {
       .catch((err) => {
         console.log("Failed to get online users:", err);
       });
-  
+
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+
       <GenericScreen>
         {auth.isLoading && <LoadingIndicator absolute />}
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.containerCentered}>
           <Pressable
             style={{
@@ -179,7 +180,7 @@ export default function Login() {
               source={require("@/assets/images/logo.png")}
               style={{
                 height: "100%",
-                aspectRatio: 1, 
+                aspectRatio: 1,
                 resizeMode: "center",
                 transform: [
                   {
@@ -192,7 +193,6 @@ export default function Login() {
               }}
             />
           </Pressable>
-
           <View style={styles.containerVertical}>
             <Text
               style={[
@@ -239,14 +239,14 @@ export default function Login() {
             </View>
           </View>
           <View style={styles.containerHorizontal}>
-            <Button // button to navigate to sitemap (for debug)
+            <ButtonEx // button to navigate to sitemap (for debug)
               style={[styles.button]}
               color={theme.colors.primary}
               onPress={() => setOpenLinks(true)}
             >
               {t("pages.login.button_links")}
-            </Button>
-            <Button
+            </ButtonEx>
+            <ButtonEx
               style={[
                 styles.button,
                 styles.repeatingitemHorizontal,
@@ -257,8 +257,15 @@ export default function Login() {
               variant="filled"
             >
               {t("pages.login.button_login")}
-            </Button>
+            </ButtonEx>
           </View>
+        </View>
+        </KeyboardAvoidingView>
+
+        <View style={styles.disclaimerContainer}>
+          <Text style={{color: theme.colors.subText, fontSize: fontSize.small, textAlign: "center" }}>
+            {t("pages.login.disclaimer")}
+          </Text>
         </View>
 
         {/* 2fa modal */}
@@ -339,7 +346,6 @@ export default function Login() {
 
         </GenericModal>
       </GenericScreen>
-    </KeyboardAvoidingView>
   );
 }
 
@@ -389,6 +395,12 @@ const styles = StyleSheet.create({
     marginLeft: spacing.medium,
     fontSize: fontSize.small,
     fontWeight: "normal"
+  },
+  disclaimerContainer: {
+    position: "absolute",
+    bottom: navigationBarHeight,
+    left: spacing.small,
+    right: spacing.small,
   },
 
   // form elements

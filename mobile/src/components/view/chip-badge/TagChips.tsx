@@ -1,3 +1,4 @@
+import { TouchableEx } from "@/components/CustomElements";
 import { radius, spacing } from "@/configs/styles";
 import { omitObject } from "@/libs/utils";
 import { Text } from "@react-navigation/elements";
@@ -14,13 +15,9 @@ const TagChips = ({ tags, onPress, ...rest }: Props) => {
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
       {tags.map((tag) => (
-        <Text
-          onPress={() => onPress?.(tag)}
-          style={[styles.tag, { backgroundColor: theme.colors.card }]}
-          key={tag}
-        >
-          {tag}
-        </Text>
+        <TouchableEx key={tag} onPress={onPress ? () => onPress(tag) : undefined}>
+          <Text style={[styles.tag, { backgroundColor: theme.colors.card }]}>{tag}</Text>
+        </TouchableEx>
       ))}
     </View>
   );

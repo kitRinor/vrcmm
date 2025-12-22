@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import GenericModal from "@/components/layout/GenericModal";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
@@ -53,11 +53,11 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
     if (isLoading) return;
     try {
       setIsLoading(true);
-      // first remove 
+      // first remove
       const res = await vrc.favoritesApi.removeFavorite({
         favoriteId: item.id,
       });
-      if (group) {// add 
+      if (group) {// add
         const res = await vrc.favoritesApi.addFavorite({
           addFavoriteRequest: {
             favoriteId: item.id,
@@ -85,7 +85,7 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.changeFavoriteModal.button_cancel"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
@@ -93,7 +93,7 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
       onPress: handleSubmitChange,
       color: theme.colors.primary,
       // disabled: !group,
-      flex: 1, 
+      flex: 1,
     },
   ]
   return (
@@ -101,19 +101,19 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
       {isLoading && <LoadingIndicator absolute />}
       {groups.map((g) => (
         <View key={g.id}>
-          <TouchableOpacity onPress={() => setGroup(g)}>
+          <TouchableEx onPress={() => setGroup(g)}>
             <View style={[styles.group, {backgroundColor: theme.colors.card}, group?.id == g.id && {borderColor: theme.colors.primary}]}>
               <Text style={[g.displayName.length ? {color: theme.colors.text} : { fontStyle: "italic", color: theme.colors.subText }]}>{g.displayName.length > 0 ? g.displayName : "*No Name*"}</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableEx>
         </View>
       ))}
       {/* remove */}
-      <TouchableOpacity onPress={() => setGroup(null)}>
+      <TouchableEx onPress={() => setGroup(null)}>
         <View style={[styles.group, {backgroundColor: getTintedColor(theme.colors.error)}, group === null && {borderColor: theme.colors.error}]}>
           <Text style={[{color: theme.colors.text}]}>{t("components.changeFavoriteModal.button_unselect")}</Text>
         </View>
-      </TouchableOpacity>
+      </TouchableEx>
     </GenericModal>
   );
 };
@@ -126,9 +126,9 @@ const styles = StyleSheet.create({
     padding: spacing.medium,
     borderWidth: 2,
     borderRadius: radius.small,
-    borderColor: "transparent", 
+    borderColor: "transparent",
   },
-  
+
 });
 
 export default ChangeFavoriteModal;

@@ -10,7 +10,7 @@ import { Avatar, LimitedWorld, OrderOption, Print, SortOption } from "@/vrchat/a
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, Touchable, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useData } from "@/contexts/DataContext";
 import CardViewPrint from "@/components/view/item-CardView/CardViewPrint";
 import { CachedImage } from "@/contexts/CacheContext";
@@ -145,7 +145,7 @@ const WorldsTab = memo(() => {
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
   const NumPerReq = 50;
-  
+
   const [worlds, setWorlds] = useState<LimitedWorld[]>([]);
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
@@ -303,7 +303,7 @@ const PrintsTab = memo(() => {
         refreshing={isLoading}
         contentContainerStyle={styles.scrollContentContainer}
       />
-      
+
       {/* dialog and modals */}
       <ImagePreview imageUrls={previewImageUrls} initialIdx={preview.idx} open={preview.open} onClose={() => setPreview(prev => ({ ...prev, open: false }))} />
     </View>

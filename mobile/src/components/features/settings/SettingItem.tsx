@@ -1,10 +1,11 @@
+import { TouchableEx } from "@/components/CustomElements";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { SupportedIconNames } from "@/components/view/icon-components/utils";
 import globalStyles, { fontSize, spacing } from "@/configs/styles";
 import { omitObject } from "@/libs/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export interface SettingItemProps {
   icon: SupportedIconNames;
@@ -26,7 +27,7 @@ const SettingItem = ({
 }: SettingItemProps ) => {
   const theme = useTheme();
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <TouchableEx onPress={onPress}  >
       <View style={[styles.container, rest.style]} {...omitObject(rest, 'style')}>
         <View style={styles.icon}>
           <IconSymbol name={icon} size={fontSize.large * 1.3} color={iconColor ?? theme.colors.text} />
@@ -41,7 +42,7 @@ const SettingItem = ({
         </View>
         <View>{leading}</View>
       </View>
-    </TouchableOpacity>
+    </TouchableEx>
   );
 }
 

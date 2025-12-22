@@ -89,6 +89,7 @@ export default function EventCalendar () {
   };
 
   useEffect(() => {
+    if (!auth.user) return;
     reload();
   },[auth.user, selectedMonth]);
 

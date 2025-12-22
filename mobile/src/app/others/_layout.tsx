@@ -26,8 +26,8 @@ export default function ModalLayout() {
 
       {/* Other > tabs */}
       <Stack.Screen
-        name="events"
-        options={{title: t("pages.events.label"), headerRight: undefined }} // no menu button
+        name="calendar"
+        options={{title: t("pages.calendar.label"), headerRight: undefined }} // no menu button
       />
       <Stack.Screen
         name="feeds"

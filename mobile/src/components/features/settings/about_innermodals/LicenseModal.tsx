@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, Text, FlatList, StyleSheet, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Linking } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 // generated license data by "make gen-oss" command
@@ -7,6 +7,7 @@ import rawLicenses from '@/assets/licenses.json';
 import { useToast } from '@/contexts/ToastContext';
 import GenericModal from '@/components/layout/GenericModal';
 import { useTranslation } from 'react-i18next';
+import { TouchableEx } from '@/components/CustomElements';
 
 interface LicenseData {
   key: string;
@@ -54,7 +55,7 @@ export default function LicenseModal({ open, setOpen }: Props) {
     };
 
     return (
-      <TouchableOpacity
+      <TouchableEx
         style={[styles.itemContainer, { borderBottomColor: theme.colors.border }]}
         onPress={handlePress}
         disabled={!item.url}
@@ -80,7 +81,7 @@ export default function LicenseModal({ open, setOpen }: Props) {
             {t("components.aboutModal.innerModals.licenses.link_to_repos")}
           </Text>
         )}
-      </TouchableOpacity>
+      </TouchableEx>
     );
   };
 

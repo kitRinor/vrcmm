@@ -194,6 +194,7 @@ const EventsArea = memo(({ style }: {
   };
 
   useEffect(() => {
+    if (!auth.user) return;
     reload();
   },[auth.user]);
 

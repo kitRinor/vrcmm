@@ -1,4 +1,6 @@
 {
+  "_langTag_": "en-US",
+  "_langDisplayName_": "English (US)",
   "app": "VRCP",
   "common": {
     "dateFormats": {
@@ -146,7 +148,6 @@
     "setting_language": {
       "label": "Language Settings"
     },
-
     "detail_user": {
       "label": "User Details",
       "menuLabel_friend_remove": "Remove Friend",
@@ -228,8 +229,6 @@
       "sectionLabel_owner": "Owner",
       "sectionLabel_description": "Description"
     },
-
-
     "search": {
       "label": "Search Results",
       "searchbox_placeholder": "Search for worlds, groups, or users",
@@ -304,7 +303,8 @@
       "linksModal_registerLinkText": "Create an account",
       "linksModal_text2": "Forgot your credentials?\n",
       "linksModal_passwordLinkText": "Reset password",
-      "linksModal_emailLinkText": "Recover email"
+      "linksModal_emailLinkText": "Recover email",
+      "disclaimer": "VRCP is an unofficial application for VRChat. This application is not affiliated with, endorsed, sponsored, or approved by VRChat Inc. or its affiliates."
     }
   },
   "components": {

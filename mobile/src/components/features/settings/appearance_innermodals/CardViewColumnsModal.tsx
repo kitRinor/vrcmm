@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import GenericModal from "@/components/layout/GenericModal";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import IconSymbol from "@/components/view/icon-components/IconView";
@@ -82,7 +82,7 @@ const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) 
       >
         <View style={styles.container}>
           {Array.from([1, 2, 3]).map((v) => (
-            <TouchableOpacity
+            <TouchableEx
               key={`color-schema-option-${v}`}
               style={[styles.item, { borderColor: v === selectedValue ? theme.colors.primary : theme.colors.border }]}
               onPress={() => {
@@ -97,7 +97,7 @@ const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) 
               <Text style={[{ color: theme.colors.text }]}>
                 {getButtonText(v as CardViewColumns)}
               </Text>
-            </TouchableOpacity>
+            </TouchableEx>
           ))}
         </View>
       </GenericModal>

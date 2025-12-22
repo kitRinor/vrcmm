@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import GenericModal from "@/components/layout/GenericModal";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import IconSymbol from "@/components/view/icon-components/IconView";
@@ -80,7 +80,7 @@ const ThemeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
       >
         <View style={styles.container}>
           {['light', 'system', 'dark'].map((value) => (
-            <TouchableOpacity
+            <TouchableEx
               key={`color-schema-option-${value}`}
               style={[styles.item, { borderColor: value === selectedValue ? theme.colors.primary : theme.colors.border }]}
               onPress={() => {
@@ -95,7 +95,7 @@ const ThemeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
               <Text style={[{ color: theme.colors.text }]}>
                 {getButtonText(value as ColorSchema)}
               </Text>
-            </TouchableOpacity>
+            </TouchableEx>
           ))}
         </View>
       </GenericModal>

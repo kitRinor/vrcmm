@@ -6,7 +6,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { Text } from "@react-navigation/elements";
 import { fontSize, radius, spacing } from "@/configs/styles";
 import { useState } from "react";
-import { TouchableOpacity } from "../CustomElements";
+import { TouchableEx } from "../CustomElements";
 
 interface Props extends Partial<RenderItemParams<string>> {
   deletable?: boolean;
@@ -32,9 +32,9 @@ const DraggableFlatListItem = ({ item, drag, isActive, deletable = false , allow
             style={[styles.text, styles.textContainer, { color: theme.colors.text}]}
           />
         ) : (
-          <TouchableOpacity style={styles.textContainer} onPress={() => setIsEditing(true)}>
+          <TouchableEx style={styles.textContainer} onPress={() => setIsEditing(true)}>
             <Text style={[styles.text, { color: theme.colors.text}]}>{item}</Text>
-          </TouchableOpacity>
+          </TouchableEx>
         )}
         { deletable && (
           <IconButton name="delete" size={20} color={theme.colors.subText} onPress={onDelete} />

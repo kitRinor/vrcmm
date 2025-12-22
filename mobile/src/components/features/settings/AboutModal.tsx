@@ -1,6 +1,6 @@
 import GenericModal from "@/components/layout/GenericModal";
 import globalStyles, { spacing } from "@/configs/styles";
-import { Button, Text } from "@react-navigation/elements";
+import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import LicenseModal from "./about_innermodals/LicenseModal";
 import ChangeLogModal from "./about_innermodals/ChangeLogModal";
 import { useTranslation } from "react-i18next";
 import TermsOfUseModal from "./about_innermodals/TermsOfUseModal";
+import { ButtonEx } from "@/components/CustomElements";
 
 
 interface Props {
@@ -78,9 +79,9 @@ const AboutModal = ({ open, setOpen }: Props) => {
       <View style={{ marginTop: spacing.medium, gap: spacing.small }} >
       {buttonItems.map((item, index) => (
         <View key={index}>
-          <Button onPress={item.onPress} >
+          <ButtonEx onPress={item.onPress} >
             {item.title}
-          </Button>
+          </ButtonEx>
         </View>
       ))}
       </View>

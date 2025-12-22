@@ -8,7 +8,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getStatusColor } from "@/libs/vrchat";
 import { UserStatus } from "@/vrchat/api";
-import { Button, Text } from "@react-navigation/elements";
+import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -58,14 +58,14 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.changeBioModal.button_cancel"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
       title: t("components.changeBioModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
-      flex: 1, 
+      flex: 1,
     },
   ]
   return (
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: radius.input,
   },
-  
+
 });
 
 export default ChangeBioModal;

@@ -2,11 +2,12 @@ import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useTheme } from "@react-navigation/native";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
 import { ButtonItemForFooter } from "./type";
-import { Button, Text } from "@react-navigation/elements";
+import { Text } from "@react-navigation/elements";
 import { useMemo } from "react";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import IconButton from "../view/icon-components/IconButton";
 import { hide } from "expo-router/build/utils/splash";
+import { ButtonEx } from "../CustomElements";
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -48,7 +49,7 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
                 : {}),
             { backgroundColor: theme.colors.background },
             ]}
-          > 
+          >
             { (showCloseButton || title)  && (
               <View style={[styles.titleContainer, {backgroundColor: theme.colors.card}]}>
                 {showCloseButton && (
@@ -89,7 +90,7 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
                     {item.title}
                   </Text>
                 ) : (
-                <Button
+                <ButtonEx
                   key={index}
                   style={[styles.footerButton, {
                     flex: item.flex,
@@ -102,7 +103,7 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
                   disabled={item.disabled}
                 >
                   {item.title}
-                </Button>
+                </ButtonEx>
               ))}
             </View>
           </View>
@@ -112,9 +113,9 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
   );
 };
 
-const ChildContainer = ({ scrollable, children }: { 
-  scrollable: boolean | "horizontal" | "vertical" | "both"; 
-  children: React.ReactNode 
+const ChildContainer = ({ scrollable, children }: {
+  scrollable: boolean | "horizontal" | "vertical" | "both";
+  children: React.ReactNode
 }) => {
 
   if (scrollable === "both") {
@@ -136,7 +137,7 @@ const ChildContainer = ({ scrollable, children }: {
     );
   } else {
     return (
-      <View 
+      <View
         style={styles.childContainer}
       >
         {children}

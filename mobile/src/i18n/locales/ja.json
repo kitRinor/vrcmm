@@ -1,12 +1,14 @@
 {
+  "_langTag_": "ja",
+  "_langDisplayName_": "日本語",
   "app": "VRCP",
   "common": {
     "dateFormats": {
-      "date": "yyyy年MM月dd日",
+      "date": "yyyy年M月d日",
       "time": "HH:mm",
-      "dateTime": "yyyy年MM月dd日 HH:mm",
-      "dateTimeRange_diffDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, yyyy/MM/dd HH:mm}}",
-      "dateTimeRange_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}",
+      "dateTime": "yyyy年M月d日 HH:mm",
+      "dateTimeRange_diffDay": "{{start, yyyy年M月d日 HH:mm}} ~ {{end, yyyy年M月d日 HH:mm}}",
+      "dateTimeRange_sameDay": "{{start, yyyy年M月d日 HH:mm}} ~ {{end, HH:mm}}",
       "timeRange": "{{start, HH:mm}} ~ {{end, HH:mm}}"
     },
     "message": {
@@ -164,8 +166,8 @@
       "sectionLabel_bio_links": "リンク",
       "sectionLabel_badges": "バッジ",
       "sectionLabel_info": "情報",
-      "section_info_last_activity": "最終アクティビティ: {{date, yyyy年MM月dd日 HH:mm}}",
-      "section_info_joined": "登録日: {{date, yyyy年MM月dd日}}",
+      "section_info_last_activity": "最終アクティビティ: {{date, yyyy年M月d日 HH:mm}}",
+      "section_info_joined": "登録日: {{date, yyyy年M月d日}}",
       "userLocation_offline": "このユーザーはオフラインです...",
       "userLocation_private": "このユーザーはプライベートインスタンスにいます...",
       "userLocation_traveling": "このユーザーは移動中です...",
@@ -199,8 +201,8 @@
       "sectionLabel_info": "情報",
       "section_info_capacityAndRecommended": "定員: {{capacity}} | 推奨: {{recommendedCapacity}}",
       "section_info_visits": "訪問数: {{visits}}",
-      "section_info_updated": "最終更新: {{date, yyyy年MM月dd日}}",
-      "section_info_created": "公開日: {{date, yyyy年MM月dd日}}"
+      "section_info_updated": "最終更新: {{date, yyyy年M月d日}}",
+      "section_info_created": "公開日: {{date, yyyy年M月d日}}"
     },
     "detail_instance": {
       "label": "インスタンス詳細",
@@ -221,12 +223,27 @@
       "menuLabel_json": "JSONデータ",
       "sectionLabel_info": "情報"
     },
+    "detail_event": {
+      "label": "イベント詳細",
+      "sectionLabel_description": "説明",
+      "menuLabel_json": "JSONデータ",
+      "sectionLabel_owner": "オーナー"
+    },
     "search": {
       "label": "検索結果",
       "searchbox_placeholder": "ワールド、グループ、ユーザーを検索",
       "no_worlds_found": "'{{search}}' に一致するワールドは見つかりませんでした。",
       "no_groups_found": "'{{search}}' に一致するグループは見つかりませんでした。",
       "no_users_found": "'{{search}}' に一致するユーザーは見つかりませんでした。"
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} 件",
+      "calendar_date_event_count_other": "{{count}} 件",
+      "label": "イベント",
+      "calendar_month_label": "{{date, yyyy年 M月}}",
+      "no_events": "イベントがありません",
+      "selected_month_events": "{{date, yyyy年 M月}} のイベント",
+      "selected_month_events_day_label": "{{date, d日 (E)}}"
     },
     "favorites": {
       "label": "お気に入り",
@@ -286,22 +303,8 @@
       "linksModal_registerLinkText": "アカウント作成",
       "linksModal_text2": "パスワードを忘れましたか？\n",
       "linksModal_passwordLinkText": "パスワードリセット",
-      "linksModal_emailLinkText": "メールアドレスの確認"
-    },
-    "calendar": {
-      "calendar_date_event_count_one": "{{count}} 件",
-      "calendar_date_event_count_other": "{{count}} 件",
-      "label": "イベント",
-      "calendar_month_label": "{{date, yyyy MMMM}}",
-      "no_events": "イベントがありません",
-      "selected_month_events": "{{date, yyyy/MM}} のイベント",
-      "selected_month_events_day_label": "{{date, dd日 (EEE)}}"
-    },
-    "detail_event": {
-      "label": "イベント詳細",
-      "sectionLabel_description": "説明",
-      "menuLabel_json": "JSONデータ",
-      "sectionLabel_owner": "オーナー"
+      "linksModal_emailLinkText": "メールアドレスの確認",
+      "disclaimer": "VRCPはVRChat用の非公式アプリケーションです。\nこのアプリケーションは、VRChat Inc. またはその関連会社と提携、承認、後援、または承認されていません。"
     }
   },
   "components": {

@@ -1,5 +1,5 @@
 import GenericModal from "@/components/layout/GenericModal";
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
@@ -8,7 +8,7 @@ import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getStatusColor } from "@/libs/vrchat";
 import { UserStatus } from "@/vrchat/api";
-import { Button, Text } from "@react-navigation/elements";
+import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
@@ -70,14 +70,14 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.changeStatusModal.button_cancel"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
       title: t("components.changeStatusModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
-      flex: 1, 
+      flex: 1,
     },
   ]
   return (
@@ -87,14 +87,14 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
         <View style={styles.container}>
           <View style={styles.statusOptionAreaContainer}>
             {statusOptions.map(status => (
-              <TouchableOpacity 
+              <TouchableEx
                 key={`status_option_${status}`}
-                style={[styles.statusOptionItem, selectedStatus === status && { borderColor: theme.colors.primary}]} 
+                style={[styles.statusOptionItem, selectedStatus === status && { borderColor: theme.colors.primary}]}
                 onPress={() => setSelectedStatus(status)}
               >
                 <IconSymbol name="circle" size={12} color={getStatusColor(status)} style={{ marginRight: spacing.mini }} />
                 <Text style={{ fontWeight: selectedStatus === status ? "bold" : "normal" }}>{status}</Text>
-              </TouchableOpacity>
+              </TouchableEx>
             ))}
           </View>
           <View style={styles.descriptionAreaContainer}>
@@ -106,14 +106,14 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
               placeholder={t("components.changeStatusModal.placeholder")}
 
             />
-            <FlatList 
+            <FlatList
               style={styles.descriptionHistory}
               data={currentUser.data.statusHistory}
               keyExtractor={(_, index) => `status_history_${index}`}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => setStatusDescription(item)} style={styles.descriptionHistoryItem}>
+                <TouchableEx onPress={() => setStatusDescription(item)} style={styles.descriptionHistoryItem}>
                   <Text style={styles.descriptionHistoryItemText}>{item}</Text>
-                </TouchableOpacity>
+                </TouchableEx>
               )}
               ListEmptyComponent={() => (
                 <Text style={[globalStyles.text, { fontStyle: "italic", color: theme.colors.subText }]}>No status history</Text>
@@ -133,19 +133,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.medium,
   },
-  
+
   statusOptionAreaContainer: {
     width: "30%",
     gap: spacing.medium,
     // borderStyle:"dotted", borderColor:"blue",borderWidth:1
   },
-  statusOptionItem: { 
+  statusOptionItem: {
     flexDirection: "row",
     alignItems: "center",
     padding: spacing.small,
-    borderWidth: 2, 
+    borderWidth: 2,
     borderRadius: radius.button,
-    borderColor: "transparent", 
+    borderColor: "transparent",
   },
   descriptionAreaContainer: {
     height: (fontSize.medium + 4 * spacing.small) * 5, // 5 lines

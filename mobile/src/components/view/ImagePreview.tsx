@@ -7,8 +7,6 @@ import {
   FlatList,
   Dimensions,
   StyleSheet,
-  TouchableOpacity,
-  Text,
 } from "react-native";
 import {
   Gesture,
@@ -90,7 +88,7 @@ const ImagePreview = ({ imageUrls, initialIdx = 0, open, onClose }: Props) => {
   useEffect(() => {
     if (!open) {
       setRotateMap({});
-    } 
+    }
   }, [open]);
 
   const rotateImage = (direction: "left" | "right") => {
@@ -165,9 +163,9 @@ const ImagePreview = ({ imageUrls, initialIdx = 0, open, onClose }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  gesturehandlerRoot: { 
-    flex: 1, 
-    position: "absolute" 
+  gesturehandlerRoot: {
+    flex: 1,
+    position: "absolute"
   },
   topRightButtons: {
     position: "absolute",

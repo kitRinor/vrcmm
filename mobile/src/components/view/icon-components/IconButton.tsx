@@ -2,7 +2,7 @@ import { omitObject } from "@/libs/utils";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { isMaterialIconsName, SupportedIconNames } from "./utils";
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 
 interface Props {
   onPress?: () => void;
@@ -18,7 +18,7 @@ interface Props {
 const IconButton = ({ onPress, onPressIn, onPressOut, onLongPress, name, color, size, ...rest }: Props) => {
   const theme = useTheme();
   return (
-    <TouchableOpacity
+    <TouchableEx
       style={[
         {
           display: "flex",
@@ -48,7 +48,7 @@ const IconButton = ({ onPress, onPressIn, onPressOut, onLongPress, name, color, 
         />
       )}
       {rest.children}
-    </TouchableOpacity>
+    </TouchableEx>
   );
 };
 

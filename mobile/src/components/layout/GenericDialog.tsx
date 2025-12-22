@@ -1,7 +1,8 @@
 import globalStyles, { radius, spacing } from "@/configs/styles";
-import { Button, Text } from "@react-navigation/elements";
+import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { ButtonEx } from "../CustomElements";
 interface Props {
   open: boolean;
   message?: string;
@@ -54,20 +55,20 @@ Props) => {
             </Text>
           </View>
           <View style={styles.dialogButtonsContainer}>
-            <Button
+            <ButtonEx
               style={styles.dialogButton}
               onPress={onCancel}
               color={colorCancel ?? theme.colors.text}
             >
               {cancelTitle ?? "Cancel"}
-            </Button>
-            <Button
+            </ButtonEx>
+            <ButtonEx
               style={styles.dialogButton}
               onPress={onConfirm}
               color={colorConfirm ?? theme.colors.primary}
             >
               {confirmTitle ?? "Confirm"}
-            </Button>
+            </ButtonEx>
           </View>
         </View>
       </View>

@@ -33,7 +33,7 @@ import { MenuItem } from "@/components/layout/type";
 import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import { t } from "i18next";
 
 type Owner =
@@ -140,9 +140,9 @@ export default function InstanceDetail() {
                   </View>
                 ))} */}
                 {friends.map((friend) => (
-                  <TouchableOpacity style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)}>
+                  <TouchableEx style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)}>
                     <UserOrGroupChip data={friend} textColor={getTrustRankColor(friend, true, false)} />
-                  </TouchableOpacity>
+                  </TouchableEx>
                 ))}
                 {instance.n_users > friends.length && (
                   <Text style={[styles.moreUser,{ color: theme.colors.text }]}>{t("pages.detail_instance.section_users_more_user_count_other", { count: instance.n_users - friends.length })}</Text>
@@ -152,12 +152,12 @@ export default function InstanceDetail() {
 
             <DetailItemContainer title={t("pages.detail_instance.sectionLabel_world")}>
               <View style={styles.detailItemContent}>
-                <TouchableOpacity style={styles.horizontal} onPress={() => routeToWorld(instance.worldId)} activeOpacity={0.7}>
+                <TouchableEx style={styles.horizontal} onPress={() => routeToWorld(instance.worldId)}>
                   <CachedImage src={instance.world.thumbnailImageUrl} style={[styles.worldImage, { borderColor: theme.colors.subText }]} />
                   <Text style={[styles.worldName, { color: theme.colors.text }]}>
                     {instance.world.name}
                   </Text>
-                </TouchableOpacity>
+                </TouchableEx>
               </View>
             </DetailItemContainer>
 
@@ -165,13 +165,13 @@ export default function InstanceDetail() {
               <DetailItemContainer title={t("pages.detail_instance.sectionLabel_owner")}>
                 <View style={[styles.detailItemContent]}>
                   {owner.type === "user" ? (
-                    <TouchableOpacity onPress={() => routeToUser(owner.owner.id)}>
+                    <TouchableEx onPress={() => routeToUser(owner.owner.id)}>
                       <UserOrGroupChip data={owner.owner} icon="crown" textColor={getTrustRankColor(owner.owner, true, false)} />
-                    </TouchableOpacity>
+                    </TouchableEx>
                   ) : (
-                    <TouchableOpacity onPress={() => owner.owner.id &&routeToGroup(owner.owner.id)}>
+                    <TouchableEx onPress={() => owner.owner.id &&routeToGroup(owner.owner.id)}>
                       <UserOrGroupChip data={owner.owner} icon="crown"/>
-                    </TouchableOpacity>
+                    </TouchableEx>
                   )}
                 </View>
               </DetailItemContainer>

@@ -4,7 +4,7 @@ import globalStyles, { fontSize, spacing } from "@/configs/styles";
 import { omitObject } from "@/libs/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import SettingItem, { SettingItemProps } from "./SettingItem";
 
 interface SettingItemGroup {

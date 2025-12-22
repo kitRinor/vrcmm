@@ -1,5 +1,5 @@
 import GenericModal from "@/components/layout/GenericModal";
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
@@ -19,7 +19,7 @@ interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
- 
+
 const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
@@ -58,14 +58,14 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.changeBioLinksModal.button_cancel"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
       title: t("components.changeBioLinksModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
-      flex: 1, 
+      flex: 1,
     },
   ]
   return (
@@ -86,7 +86,7 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
             }}
           />
           <DraggableFlatList
-            style={styles.draggableList} 
+            style={styles.draggableList}
             data={bioLinks}
             onDragEnd={({ data }) => setBioLinks(data)}
             keyExtractor={(item, index) => `draggable-item-${index}-${item}`}
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.medium,
     gap: spacing.small,
   }
-  
+
 });
 
 export default ChangeBioLinksModal;

@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import { fontSize, radius, spacing } from "@/configs/styles";
 import { CachedImage } from "@/contexts/CacheContext";
 import { omitObject } from "@/libs/utils";
@@ -13,7 +13,7 @@ interface Props<T> {
   title: string | ((data: T) => string);
   onPress?: () => void;
   onLongPress?: () => void;
-  
+
   numberOfLines?: number; // for title
   OverlapComponents?: React.ReactNode; // Optional components to overlap on the card
   // Additional props
@@ -43,7 +43,7 @@ const BaseCardView = <T,>({
       style={[styles.root, rest.style]}
       {...omitObject(rest, "style", "ImageStyle", "FooterStyle", "TitleStyle")}
     >
-      <TouchableOpacity
+      <TouchableEx
         onPress={onPress}
         onLongPress={onLongPress}
         style={[styles.base, { backgroundColor: theme.colors.card }]}
@@ -59,7 +59,7 @@ const BaseCardView = <T,>({
             </Text>
           </View>
         <View style={styles.overlap}>{OverlapComponents}</View>
-      </TouchableOpacity>
+      </TouchableEx>
     </View>
   );
 };

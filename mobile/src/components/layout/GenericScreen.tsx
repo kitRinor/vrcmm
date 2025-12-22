@@ -1,7 +1,7 @@
 import { spacing } from "@/configs/styles";
 import { DrawerRouter, useTheme } from "@react-navigation/native";
 import { useFocusEffect, usePathname, useRootNavigationState, useRouter } from "expo-router";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { SupportedIconNames } from "../view/icon-components/utils";
 import { useMenu } from "@/contexts/MenuContext";
 import { Drawer } from 'react-native-drawer-layout';
@@ -10,6 +10,7 @@ import { useCallback, useEffect } from "react";
 import IconSymbol from "../view/icon-components/IconView";
 import { MenuItem } from "./type";
 import { ScrollView } from "react-native-gesture-handler";
+import { TouchableEx } from "../CustomElements";
 
 interface Props {
   menuItems?: MenuItem[];
@@ -34,7 +35,7 @@ const GenericScreen = ({
   if (menuItems !== undefined) {
     return (
       <View style={styles.screenRoot}>
-        
+
         <Drawer
           direction="rtl"
           drawerStyle={[styles.drawer, { backgroundColor: theme.colors.card }]}
@@ -55,7 +56,7 @@ const GenericScreen = ({
         <ChildContainer scrollable={scrollable}>{children}</ChildContainer>
       </View>
     );
-  } 
+  }
 };
 
 const ChildContainer = ({ scrollable, children }: { scrollable: boolean; children: React.ReactNode }) => {
@@ -69,7 +70,7 @@ const ChildContainer = ({ scrollable, children }: { scrollable: boolean; childre
     );
   } else {
     return (
-      <View 
+      <View
         style={styles.screenContainer}
       >
         {children}
@@ -104,12 +105,12 @@ const DrawerContent = ({
           setOpenMenu(false);
         }
         return (
-          <TouchableOpacity key={`menu-item-${index}-${item.title}`} onPress={onPress} style={styles.drawerItemContainer}>
+          <TouchableEx key={`menu-item-${index}-${item.title}`} onPress={onPress} style={styles.drawerItemContainer}>
             {item.icon && (
               <IconSymbol name={item.icon} size={20} color={theme.colors.text} />
             )}
             <Text style={{ color: theme.colors.text }}>{item.title}</Text>
-          </TouchableOpacity>
+          </TouchableEx>
         );
       })}
     </View>

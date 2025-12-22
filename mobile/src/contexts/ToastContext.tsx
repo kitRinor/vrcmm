@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, Animated, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import { spacing, radius, fontSize } from "@/configs/styles";
 import { useTheme } from "@react-navigation/native";
+import { TouchableEx } from "@/components/CustomElements";
 
 interface ToastItem {
   id: string;
@@ -72,17 +73,17 @@ const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => voi
     return () => clearTimeout(timer);
   }, []);
 
-  const typeColor = toast.type === "success" ? theme.colors.success 
+  const typeColor = toast.type === "success" ? theme.colors.success
     : toast.type === "error" ? theme.colors.error
     : toast.type === "info" ? theme.colors.info
     : theme.colors.text;
 
   return (
     <Animated.View style={[styles.toast, { borderColor: typeColor, backgroundColor: theme.colors.card, transform: [{ translateY }] }]}>
-      <TouchableOpacity onPress={onClose}>
+      <TouchableEx onPress={onClose}>
         <Text style={[styles.title, {color: theme.colors.text}]}>{toast.title}</Text>
         <Text style={[styles.message, {color: theme.colors.text}]}>{toast.message}</Text>
-      </TouchableOpacity>
+      </TouchableEx>
     </Animated.View>
   );
 };

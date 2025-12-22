@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 // ルートの json を読み込み
-import rawVersions from '@/../versions.json'; 
+import rawVersions from '@/../versions.json';
 import GenericModal from '@/components/layout/GenericModal';
 import { isNewVersion, updateLastVersion } from '@/libs/utils';
 import { radius, spacing } from '@/configs/styles';
 import { useTranslation } from 'react-i18next';
+import { TouchableEx } from '@/components/CustomElements';
 
 export default function ReleaseNote() {
   const theme = useTheme();
@@ -33,7 +34,7 @@ export default function ReleaseNote() {
 
   return (
     <GenericModal
-      title={t('components.releaseNote.title')} // タイトルもお知らせ風に
+      title={t('components.releaseNote.label')} // タイトルもお知らせ風に
       open={open}
       onClose={handleClose}
       showCloseButton={false} // 下部に大きな閉じるボタンを置くので、右上の×は隠しても良いかも
@@ -65,12 +66,12 @@ export default function ReleaseNote() {
         </ScrollView>
 
         {/* フッター: 閉じるボタン */}
-        <TouchableOpacity
+        <TouchableEx
           style={[styles.closeButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleClose}
         >
           <Text style={styles.closeButtonText}>{t('components.releaseNote.button_close')}</Text>
-        </TouchableOpacity>
+        </TouchableEx>
       </View>
     </GenericModal>
   );

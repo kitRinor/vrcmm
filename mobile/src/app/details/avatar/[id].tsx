@@ -10,7 +10,7 @@ import { Avatar, User } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { routeToUser } from "@/libs/route";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { getAuthorTags, getPlatform, getTrustRankColor } from "@/libs/vrchat";
@@ -24,6 +24,7 @@ import JsonDataModal from "@/components/modals/JsonDataModal";
 import ChangeAvatarModal from "@/components/modals/ChangeAvatarModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { TouchableEx } from "@/components/CustomElements";
 
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -127,9 +128,9 @@ export default function AvatarDetail() {
             <DetailItemContainer title={t("pages.detail_avatar.sectionLabel_author")}>
               {author && (
                 <View style={styles.detailItemContent}>
-                  <TouchableOpacity onPress={() => routeToUser(author.id)} activeOpacity={0.7}>
+                  <TouchableEx onPress={() => routeToUser(author.id)}  >
                     <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)}/>
-                  </TouchableOpacity>
+                  </TouchableEx>
                 </View>
               )}
             </DetailItemContainer>

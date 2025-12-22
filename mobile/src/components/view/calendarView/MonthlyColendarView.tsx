@@ -1,7 +1,7 @@
-import { TouchableOpacity } from "@/components/CustomElements";
+import { ButtonEx, TouchableEx } from "@/components/CustomElements";
 import { fontSize, spacing } from "@/configs/styles";
 import { getTintedColor } from "@/libs/utils";
-import { Button, Text } from "@react-navigation/elements";
+import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { isSameDay } from "date-fns";
 import { useMemo, useState } from "react";
@@ -79,7 +79,7 @@ const MonthlyCalendarView = ({
     }
 
     if (date.getMonth() !== selectedMonth.getMonth()) {
-      dateColor = getTintedColor(dateColor, 0.60); 
+      dateColor = getTintedColor(dateColor, 0.60);
     };
     return dateColor;
   }
@@ -88,29 +88,29 @@ const MonthlyCalendarView = ({
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[ styles.header ,{ color: theme.colors.text }]}>
-          {t("pages.events.calendar_month_label", { date: selectedMonth })}
+          {t("pages.calendar.calendar_month_label", { date: selectedMonth })}
         </Text>
         <View style={[styles.buttons]}>
-          <Button
+          <ButtonEx
             style={styles.button}
             onPress={() => handleChangeMonth(-1)}
             color={theme.colors.text}
-          > {"<"} </Button>
-          <Button
+          > {"<"} </ButtonEx>
+          <ButtonEx
             style={styles.button}
             onPress={() => handleChangeMonth(1)}
             color={theme.colors.text}
-          > {">"} </Button>
+          > {">"} </ButtonEx>
         </View>
       </View>
       <View style={[styles.calendarContainer, styles.border]} >
       {calendarWeeks.map((week, weekIndex) => (
         <View key={weekIndex} style={[styles.weekContainer, { height: `${100 / calendarWeeks.length}%` }]}>
           {week.map((date, dateIndex) => (
-            <TouchableOpacity style={[styles.border, styles.dateContainer, isSameDay(date, selectedDate) ? styles.selectedDate : null]} onPress={() => handleTapDate(date)} key={dateIndex} >
+            <TouchableEx style={[styles.border, styles.dateContainer, isSameDay(date, selectedDate) ? styles.selectedDate : null]} onPress={() => handleTapDate(date)} key={dateIndex} >
               <Text style={[styles.dateNumber, {color: getDateColor(date) }]}>{date.getDate()}</Text>
               {renderDateContent ? renderDateContent(date) : null}
-            </TouchableOpacity>
+            </TouchableEx>
           ))}
         </View>
       ))}
@@ -170,6 +170,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(100, 149, 237, 0.2)", // cornflowerblue with opacity
   },
 
-}); 
+});
 
 export default MonthlyCalendarView;

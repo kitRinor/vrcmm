@@ -18,7 +18,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import CardViewEventDetail from "@/components/view/item-CardView/detail/CardViewEventDetail";
 import { GroupLike } from "@/libs/vrchat";
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import { routeToGroup } from "@/libs/route";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
@@ -90,9 +90,9 @@ export default function EventDetail() {
             {ownerGroup && ownerGroup.id && (
               <DetailItemContainer title={t("pages.detail_event.sectionLabel_owner")}>
                 <View style={styles.detailItemContent}>
-                  <TouchableOpacity style={styles.ownerChip} onPress={() => ownerGroup.id && routeToGroup(ownerGroup.id)}>
+                  <TouchableEx style={styles.ownerChip} onPress={() => ownerGroup.id && routeToGroup(ownerGroup.id)}>
                     <UserOrGroupChip data={ownerGroup} />
-                  </TouchableOpacity>
+                  </TouchableEx>
                 </View>
               </DetailItemContainer>
             )}

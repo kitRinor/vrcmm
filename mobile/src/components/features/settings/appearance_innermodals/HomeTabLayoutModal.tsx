@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import GenericModal from "@/components/layout/GenericModal";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import IconSymbol from "@/components/view/icon-components/IconView";
@@ -115,7 +115,7 @@ const HomeTabLayoutModal = ({ open, setOpen, defaultValue, onSubmit }: Props) =>
               </Text>
               <View style={styles.iconButtonContainer}>
                 {['friend-locations', 'feeds', 'events' ].map((value) => (
-                  <TouchableOpacity
+                  <TouchableEx
                     key={`color-schema-option-${value}`}
                     style={[styles.item, { borderColor: value === selectedValue.top ? theme.colors.primary : theme.colors.border }]}
                     onPress={() => {
@@ -134,7 +134,7 @@ const HomeTabLayoutModal = ({ open, setOpen, defaultValue, onSubmit }: Props) =>
                     <Text style={[{ color: theme.colors.text, fontSize: fontSize.small }]}>
                       {getButtonText(value as HomeTopVariant)}
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableEx>
                 ))}
               </View>
             </View>
@@ -144,7 +144,7 @@ const HomeTabLayoutModal = ({ open, setOpen, defaultValue, onSubmit }: Props) =>
               </Text>
               <View style={styles.iconButtonContainer}>
                 {['friend-locations', 'feeds', 'events' ].map((value) => (
-                  <TouchableOpacity
+                  <TouchableEx
                     key={`color-schema-option-${value}`}
                     style={[styles.item, { borderColor: value === selectedValue.bottom ? theme.colors.secondary : theme.colors.border }]}
                     onPress={() => {
@@ -163,7 +163,7 @@ const HomeTabLayoutModal = ({ open, setOpen, defaultValue, onSubmit }: Props) =>
                     <Text style={[{ color: theme.colors.text, fontSize: fontSize.small }]}>
                       {getButtonText(value as HomeBottomVariant)}
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableEx>
                 ))}
               </View>
             </View>

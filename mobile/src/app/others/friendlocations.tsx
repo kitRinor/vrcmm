@@ -12,10 +12,11 @@ import { InstanceLike } from "@/libs/vrchat";
 import { LimitedUserFriend } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import React, { useCallback, useMemo, useState } from "react";
-import { FlatList, SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, SectionList, StyleSheet, Text, View } from "react-native";
 import { useToast } from "@/contexts/ToastContext";
 import { extractErrMsg } from "@/libs/utils";
 import { useTranslation } from "react-i18next";
+import { TouchableEx } from "@/components/CustomElements";
 
 
 
@@ -48,9 +49,9 @@ export default function FriendLocations() {
   const renderUnlocItem = useCallback(({ item, index }: { item: LimitedUserFriend[], index: number }) => (
       <View style={styles.chunk}>
       {item.map((friend: LimitedUserFriend) => (
-        <TouchableOpacity key={friend.id} style={styles.userChip} onPress={() => routeToUser(friend.id)} activeOpacity={0.7}>
+        <TouchableEx key={friend.id} style={styles.userChip} onPress={() => routeToUser(friend.id)}  >
           <UserOrGroupChip data={friend} />
-        </TouchableOpacity>
+        </TouchableEx>
       ))}
       </View>
     ), []);

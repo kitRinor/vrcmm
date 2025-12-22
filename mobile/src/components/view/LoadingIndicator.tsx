@@ -16,7 +16,7 @@ const LoadingIndicator = ({
 }: Props) => {
   const theme = useTheme();
   return (
-    <View style={[styles.container, absolute ? { position: "absolute" } : {}]}>
+    <View style={[styles.container, absolute ? styles.absolute : {}]}>
       <ActivityIndicator size={size || 90} color={theme.colors.border} />
       {!notext && (
         <Text style={[styles.text, { color: theme.colors.subText }]}>
@@ -38,6 +38,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.3)",
     backgroundClip: "padding-box",
+  },
+  absolute: {
+    position: "absolute",
   },
   text: {
     marginTop: spacing.medium,

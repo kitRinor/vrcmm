@@ -1,8 +1,8 @@
+import { ButtonEx } from "@/components/CustomElements";
 import GenericScreen from "@/components/layout/GenericScreen";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { spacing } from "@/configs/styles";
 import { useCache } from "@/contexts/CacheContext";
-import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -103,13 +103,13 @@ export default function DatabaseSettings() {
               >
                 {t("pages.setting_database.cache_size_and_count", {size: (cacheInfo.size / (1024 * 1024)).toFixed(2), count: cacheInfo.count})}
               </Text>
-              <Button
+              <ButtonEx
                 style={[globalStyles.button, { marginLeft: spacing.medium }]}
                 color={theme.colors.text}
                 onPress={clearCache}
               >
                 {t("pages.setting_database.button_clearCache")}
-              </Button>
+              </ButtonEx>
             </View>
           ) : (
             <LoadingIndicator size={32} notext />

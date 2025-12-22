@@ -22,7 +22,6 @@ import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
-import { TouchableOpacity } from "react-native";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { routeToSearch, routeToUser } from "@/libs/route";
 import { useData } from "@/contexts/DataContext";
@@ -32,6 +31,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { TouchableEx } from "@/components/CustomElements";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -179,9 +179,9 @@ export default function WorldDetail() {
               <DetailItemContainer title={t("pages.detail_world.sectionLabel_author")}>
                 {author && (
                   <View style={styles.detailItemContent}>
-                    <TouchableOpacity onPress={() => routeToUser(author.id)} activeOpacity={0.7}>
+                    <TouchableEx onPress={() => routeToUser(author.id)}  >
                       <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)}/>
-                    </TouchableOpacity>
+                    </TouchableEx>
                   </View>
                 )}
               </DetailItemContainer>

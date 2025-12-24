@@ -401,6 +401,12 @@
       "type_feedback": "피드백",
       "type_bug": "버그 신고",
       "type_request": "기능 요청"
+    },
+    "exitDialog": {
+      "button_no": "아니요",
+      "button_yes": "예",
+      "label": "앱 종료",
+      "message": "앱을 종료하시겠습니까?"
     }
   }
 }

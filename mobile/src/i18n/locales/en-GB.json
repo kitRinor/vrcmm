@@ -401,6 +401,12 @@
       "type_feedback": "Feedback",
       "type_bug": "Bug Report",
       "type_request": "Feature Request"
+    },
+    "exitDialog": {
+      "button_no": "No",
+      "button_yes": "Yes",
+      "label": "Exit App",
+      "message": "Are you sure you want to exit the app?"
     }
   }
 }

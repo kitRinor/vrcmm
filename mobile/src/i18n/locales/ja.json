@@ -401,6 +401,12 @@
       "type_feedback": "フィードバック",
       "type_bug": "バグ報告",
       "type_request": "機能リクエスト"
+    },
+    "exitDialog": {
+      "button_no": "いいえ",
+      "button_yes": "はい",
+      "label": "アプリの終了",
+      "message": "アプリを終了してもよろしいですか?"
     }
   }
 }

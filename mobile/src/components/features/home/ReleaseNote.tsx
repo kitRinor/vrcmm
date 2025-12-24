@@ -34,10 +34,10 @@ export default function ReleaseNote() {
 
   return (
     <GenericModal
-      title={t('components.releaseNote.label')} // タイトルもお知らせ風に
+      title={t('components.releaseNote.label')}
       open={open}
       onClose={handleClose}
-      showCloseButton={false} // 下部に大きな閉じるボタンを置くので、右上の×は隠しても良いかも
+      showCloseButton={false}
     >
       <View style={styles.container}>
         {/* ヘッダー部分: バージョン番号を目立たせる */}

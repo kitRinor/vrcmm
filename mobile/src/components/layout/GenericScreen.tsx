@@ -3,7 +3,7 @@ import { DrawerRouter, useTheme } from "@react-navigation/native";
 import { useFocusEffect, usePathname, useRootNavigationState, useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { SupportedIconNames } from "../view/icon-components/utils";
-import { useMenu } from "@/contexts/MenuContext";
+import { useAppMenu } from "@/contexts/AppMenuContext";
 import { Drawer } from 'react-native-drawer-layout';
 import { Text } from "@react-navigation/elements";
 import { useCallback, useEffect } from "react";
@@ -24,13 +24,7 @@ const GenericScreen = ({
   children,
 }: Props) => {
   const theme = useTheme();
-  const pathname = usePathname();
-  const { openMenu, setOpenMenu } = useMenu();
-
-  useEffect(() => {
-    if (!openMenu) return;
-    setOpenMenu(false); // close menu on path change
-  }, [pathname]);
+  const { openMenu, setOpenMenu } = useAppMenu();
 
   if (menuItems !== undefined) {
     return (

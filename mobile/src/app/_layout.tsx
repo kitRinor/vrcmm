@@ -3,7 +3,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { CacheProvider } from "@/contexts/CacheContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { DBProvider } from "@/contexts/DBContext";
-import { MenuProvider } from "@/contexts/MenuContext";
+import { AppMenuProvider } from "@/contexts/AppMenuContext";
 import { SettingProvider } from "@/contexts/SettingContext";
 import { VRChatProvider } from "@/contexts/VRChatContext";
 import { ThemeProvider } from "@react-navigation/native";
@@ -44,7 +44,7 @@ export default function Root() {
           <AuthProvider>
             <CacheProvider>
               <DataProvider>
-              <MenuProvider>
+              <AppMenuProvider>
                 <SafeAreaProvider>
                   {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
                     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -59,7 +59,7 @@ export default function Root() {
                     </GestureHandlerRootView>
                   {/* </SafeAreaView> */}
                 </SafeAreaProvider>
-              </MenuProvider>
+              </AppMenuProvider>
             </DataProvider>
           </CacheProvider>
         </AuthProvider>

@@ -309,6 +309,12 @@
     }
   },
   "components": {
+    "exitDialog": {
+      "label": "Exit App",
+      "message": "Are you sure you want to exit the app?",
+      "button_yes": "Yes",
+      "button_no": "No"
+    },
     "releaseNote": {
       "label": "VRCP Release Notes",
       "button_close": "Close"

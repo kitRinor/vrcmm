@@ -401,6 +401,12 @@
       "type_feedback": "Отзыв",
       "type_bug": "Баг",
       "type_request": "Запрос функции"
+    },
+    "exitDialog": {
+      "button_no": "Нет",
+      "button_yes": "Да",
+      "label": "Выйти из приложения",
+      "message": "Вы уверены, что хотите выйти из приложения?"
     }
   }
 }

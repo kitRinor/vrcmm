@@ -401,6 +401,12 @@
       "type_feedback": "意見回饋",
       "type_bug": "錯誤報告",
       "type_request": "功能請求"
+    },
+    "exitDialog": {
+      "button_no": "不",
+      "button_yes": "是的",
+      "label": "退出應用程序",
+      "message": "您確定要退出該應用程序嗎？"
     }
   }
 }

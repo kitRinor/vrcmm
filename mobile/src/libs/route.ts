@@ -12,6 +12,10 @@ export const routeToGroup = (id:string) => push(`/details/group/${id}`);
 export const routeToInstance = (wrldId:string, instId: string) => push(`/details/instance/${wrldId}:${instId}`);
 export const routeToEvent = (grpId:string, calId:string) => push(`/details/event/${grpId}:${calId}`);
 
+// user sub-routes
+export const routeToUserWorlds = (id:string) => push(`/details/user/${id}/worlds`);
+export const routeToUserGroups = (id:string) => push(`/details/user/${id}/groups`);
+
 // Settings routes
 export const routeToAppearanceSettings = () => push(`/settings/appearance`);
 export const routeToDatabaseSettings = () => push(`/settings/database`);
@@ -24,9 +28,12 @@ export const routeToSearch = (search?:string) => {
   if (search) q.push(`search=${search}`);
   push(`/others/search?${q.join("&")}`);
 };
-export const routeToFavorites = () => push(`/others/favorites`);
-export const routeToResources = () => push(`/others/resources`);
-export const routeToFriendLocations = () => push(`/others/friendlocations`);
-export const routeToCalendar = () => push(`/others/calendar`);
-export const routeToFeeds = () => push(`/others/feeds`);
-export const routeToNotifications = () => push(`/others/notifications`);
+export const routeToAvatars = () => push(`/others/avatars`); // owned avatars
+export const routeToWorlds = () => push(`/others/worlds`); // owned worlds
+export const routeToGroups = () => push(`/others/groups`); // joined groups
+export const routeToPrints = () => push(`/others/prints`); // owned prints
+export const routeToFavorites = () => push(`/others/favorites`); // favorites
+export const routeToFriendLocations = () => push(`/others/friendlocations`); // my friend's locations
+export const routeToCalendar = () => push(`/others/calendar`); // event calendar of joined groups
+export const routeToFeeds = () => push(`/others/feeds`); // feeds
+export const routeToNotifications = () => push(`/others/notifications`); // notifications

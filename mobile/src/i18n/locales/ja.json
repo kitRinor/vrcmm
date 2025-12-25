@@ -48,14 +48,17 @@
       "menuLabel_change_status": "ステータスを変更",
       "menuLabel_route_current_avatar": "現在のアバター",
       "menuLabel_route_favorites": "お気に入り",
-      "menuLabel_route_resources": "マイリソース",
       "menuLabel_json": "JSONデータ",
       "sectionLabel_bio": "自己紹介",
       "sectionLabel_bio_links": "リンク",
       "sectionLabel_badges": "バッジ",
       "sectionLabel_info": "情報",
       "section_info_last_activity": "最終アクティビティ: {{date, yyyy年MM月dd日 HH:mm}}",
-      "section_info_joined": "登録日: {{date, yyyy年MM月dd日}}"
+      "section_info_joined": "登録日: {{date, yyyy年MM月dd日}}",
+      "menuLabel_route_avatars": "アバター",
+      "menuLabel_route_groups": "グループ",
+      "menuLabel_route_prints": "プリント",
+      "menuLabel_route_worlds": "ワールド"
     },
     "others": {
       "label": "その他",
@@ -253,15 +256,6 @@
       "tabLabel_avatars": "アバター",
       "no_favoritegroup_selected": "グループが選択されていません。"
     },
-    "resources": {
-      "label": "リソース",
-      "tabLabel_avatars": "アバター",
-      "tabLabel_worlds": "ワールド",
-      "tabLabel_prints": "プリント",
-      "no_avatars": "アバターがありません。",
-      "no_worlds": "ワールドがありません。",
-      "no_prints": "プリントがありません。"
-    },
     "friendlocations": {
       "label": "フレンドインスタンス",
       "sectionLabel_instances": "インスタンスにいるフレンド",
@@ -306,6 +300,30 @@
       "linksModal_passwordLinkText": "パスワードリセット",
       "linksModal_emailLinkText": "メールアドレスの確認",
       "disclaimer": "VRCPはVRChat用の非公式アプリケーションです。\nこのアプリケーションは、VRChat Inc. またはその関連会社と提携、承認、後援、または承認されていません。"
+    },
+    "avatars": {
+      "label": "マイアバター",
+      "no_avatars": "アップロードしたアバターはありません。"
+    },
+    "detail_user_groups": {
+      "label": "ユーザーのグループ",
+      "no_groups_found": "このユーザーのグループは見つかりませんでした。"
+    },
+    "detail_user_worlds": {
+      "label": "ユーザーのワールド",
+      "no_worlds_found": "このユーザーのワールドは見つかりませんでした。"
+    },
+    "groups": {
+      "label": "マイグループ",
+      "no_groups": "参加中のグループがありません。"
+    },
+    "prints": {
+      "label": "プリント",
+      "no_prints": "プリントがありません。"
+    },
+    "worlds": {
+      "label": "マイワールド",
+      "no_worlds": "アップロードしたワールドはありません。"
     }
   },
   "components": {

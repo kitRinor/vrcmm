@@ -46,8 +46,11 @@
       "menuLabel_edit_bio": "Edit Bio",
       "menuLabel_edit_bio_links": "Edit Bio Links",
       "menuLabel_change_status": "Change Status",
-      "menuLabel_route_resources": "My Resources",
-      "menuLabel_route_favorites": "My Favorites",
+      "menuLabel_route_avatars": "Avatars",
+      "menuLabel_route_worlds": "Worlds",
+      "menuLabel_route_groups": "Groups",
+      "menuLabel_route_prints": "Prints",
+      "menuLabel_route_favorites": "Favorites",
       "menuLabel_route_current_avatar": "Current Avatar",
       "menuLabel_json": "Raw JSON Data",
       "sectionLabel_bio": "Bio",
@@ -88,6 +91,7 @@
       "logout_dialog_cancel": "Cancel",
       "itemLabel_development": "Developper"
     },
+
     "setting_appearance": {
       "label": "Appearance Settings",
       "groupLabel_app": "App",
@@ -148,6 +152,9 @@
       "label": "Language Settings",
       "description": "Select Your Language "
     },
+
+
+
     "detail_user": {
       "label": "User Details",
       "menuLabel_friend_remove": "Remove Friend",
@@ -230,6 +237,16 @@
       "sectionLabel_owner": "Owner",
       "sectionLabel_description": "Description"
     },
+
+    "detail_user_worlds": {
+      "label": "User's Worlds",
+      "no_worlds_found": "No worlds found for this user."
+    },
+    "detail_user_groups": {
+      "label": "User's Groups",
+      "no_groups_found": "No groups found for this user."
+    },
+
     "search": {
       "label": "Search Results",
       "searchbox_placeholder": "Search for worlds, groups, or users",
@@ -244,14 +261,21 @@
       "tabLabel_avatars": "Avatars",
       "no_favoritegroup_selected": "No favorite group selected."
     },
-    "resources": {
-      "label": "Resources",
-      "tabLabel_avatars": "Avatars",
-      "tabLabel_worlds": "Worlds",
-      "tabLabel_prints": "Prints",
-      "no_avatars": "No avatars available.",
-      "no_worlds": "No worlds available.",
-      "no_prints": "No prints available."
+    "avatars": {
+      "label": "My Avatars",
+      "no_avatars": "You have no avatars."
+    },
+    "worlds": {
+      "label": "My Worlds",
+      "no_worlds": "You have no worlds."
+    },
+    "groups": {
+      "label": "My Groups",
+      "no_groups": "You have no groups."
+    },
+    "prints": {
+      "label": "Prints",
+      "no_prints": "You have no prints."
     },
     "calendar": {
       "label": "Events",

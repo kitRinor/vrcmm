@@ -31,7 +31,7 @@ export default function GroupDetail() {
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
-  const [mode, setMode] = useState<"info" | "activity">("info");
+  const [mode, setMode] = useState<"info" | "instances">("info");
   const [openJson, setOpenJson] = useState(false);
 
 
@@ -81,7 +81,7 @@ export default function GroupDetail() {
     },
     {
       label: "ACTIVITY",
-      value: "activity",
+      value: "instances",
     },
   ];
 

@@ -13,7 +13,7 @@ export default function Others() {
   const MaterialTab = createMaterialTopTabNavigator();
 
   return (
-    <GenericScreen> {/* no menu items (add each Tab screen) */}
+    <GenericScreen>
       <MaterialTab.Navigator
         screenOptions={{
           tabBarStyle: { backgroundColor: theme.colors.background },

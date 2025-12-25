@@ -25,7 +25,7 @@ import { MenuItem } from "@/components/layout/type";
 import ChangeBioModal from "@/components/modals/ChangeBioModal";
 import ChangeBioLinksModal from "@/components/modals/ChangeBioLinksModal";
 import JsonDataModal from "@/components/modals/JsonDataModal";
-import { routeToAvatar, routeToFavorites, routeToResources } from "@/libs/route";
+import { routeToAvatar, routeToFavorites, routeToAvatars, routeToGroups, routeToPrints, routeToWorlds} from "@/libs/route";
 import { useTranslation } from "react-i18next";
 import { useSideMenu } from "@/contexts/AppMenuContext";
 
@@ -58,12 +58,31 @@ export default function Profile() {
       onPress: () => setOpenChangeStatus(true),
     },
     {
-      type: "divider"
+      type: "divider",
     },
     {
-      icon: "cloud-upload",
-      title: t("pages.profile.menuLabel_route_resources"),
-      onPress: () => routeToResources(),
+      icon: "human",
+      title: t("pages.profile.menuLabel_route_avatars"),
+      onPress: () => routeToAvatars(),
+    },
+    {
+      icon: "forest",
+      title: t("pages.profile.menuLabel_route_worlds"),
+      onPress: () => routeToWorlds(),
+
+    },
+    {
+      icon: "diversity-3",
+      title: t("pages.profile.menuLabel_route_groups"),
+      onPress: () => routeToGroups(),
+    },
+    {
+      icon: "panorama",
+      title: t("pages.profile.menuLabel_route_prints"),
+      onPress: () => routeToPrints(),
+    },
+    {
+      type: "divider"
     },
     {
       icon: "star",

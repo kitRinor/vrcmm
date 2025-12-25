@@ -14,29 +14,39 @@ export default function ModalLayout() {
         headerRight: MenuButtonForHeader,
       }}
     >
+      {/* details */}
       <Stack.Screen
-        name="user/[id]"
+        name="user/[id]/index"
         options={{title: t("pages.detail_user.label") }}
       />
       <Stack.Screen
-        name="world/[id]"
+        name="world/[id]/index"
         options={{title: t("pages.detail_world.label") }}
       />
       <Stack.Screen
-        name="instance/[id]"
+        name="instance/[id]/index"
         options={{title: t("pages.detail_instance.label") }}
       />
       <Stack.Screen
-        name="avatar/[id]"
+        name="avatar/[id]/index"
         options={{title: t("pages.detail_avatar.label") }}
       />
       <Stack.Screen
-        name="group/[id]"
+        name="group/[id]/index"
         options={{title: t("pages.detail_group.label") }}
       />
       <Stack.Screen
-        name="event/[id]"
+        name="event/[id]/index"
         options={{title: t("pages.detail_event.label") }}
+      />
+      {/* user subroutes */}
+      <Stack.Screen
+        name="user/[id]/worlds"
+        options={{title: t("pages.detail_user_worlds.label") }}
+      />
+      <Stack.Screen
+        name="user/[id]/groups"
+        options={{title: t("pages.detail_user_groups.label") }}
       />
     </Stack>
   );

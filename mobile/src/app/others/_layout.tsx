@@ -20,8 +20,20 @@ export default function ModalLayout() {
         options={{title: t("pages.favorites.label"), headerRight: undefined }}
       />
       <Stack.Screen
-        name="resources"
-        options={{title: t("pages.resources.label"), headerRight: undefined }}
+        name="avatars"
+        options={{title: t("pages.avatars.label"), headerRight: undefined }} // no menu button
+      />
+      <Stack.Screen
+        name="worlds"
+        options={{title: t("pages.worlds.label"), headerRight: undefined }} // no menu button
+      />
+      <Stack.Screen
+        name="groups"
+        options={{title: t("pages.groups.label"), headerRight: undefined }} // no menu button
+      />
+      <Stack.Screen
+        name="prints"
+        options={{title: t("pages.prints.label"), headerRight: undefined }} // no menu button
       />
 
       {/* Other > tabs */}

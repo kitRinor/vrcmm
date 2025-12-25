@@ -13,7 +13,7 @@ import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { routeToInstance } from "@/libs/route";
+import { routeToInstance, routeToUserGroups, routeToUserWorlds } from "@/libs/route";
 import BadgeChip from "@/components/view/chip-badge/BadgeChip";
 import { useData } from "@/contexts/DataContext";
 import ImagePreview from "@/components/view/ImagePreview";
@@ -155,6 +155,19 @@ export default function UserDetail() {
       title: t("pages.detail_user.menuLabel_invite_send"),
       // onPress: () => {},
       hidden: freReqStatus !== "completed"
+    },
+    {
+      type: "divider",
+    },
+    {
+      icon: "forest",
+      title: t("pages.detail_user_worlds.label"),
+      onPress: () => user && routeToUserWorlds(user.id),
+    },
+    {
+      icon: "diversity-3",
+      title: t("pages.detail_user_groups.label"),
+      onPress: () => user && routeToUserGroups(user.id),
     },
     {
       type: "divider",

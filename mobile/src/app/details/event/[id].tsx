@@ -23,6 +23,7 @@ import { routeToGroup } from "@/libs/route";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { useSetting } from "@/contexts/SettingContext";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function EventDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -63,7 +64,7 @@ export default function EventDetail() {
     fetchOwnerGroup();
   }, []);
 
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: "circle-medium",
       title: "SUBSCRIBE or UNSUBSCRIBE THIS EVENT", // notify me
@@ -79,10 +80,11 @@ export default function EventDetail() {
       onPress: () => setOpenJson(true),
       hidden: !enableJsonViewer,
     },
-  ];
+  ], [enableJsonViewer, t]);
+  useSideMenu(menuItems);
 
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen>
       {event ? (
         <View style={{ flex: 1 }}>
           <CardViewEventDetail event={event} style={[styles.cardView]} />

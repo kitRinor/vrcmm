@@ -4,6 +4,7 @@ import MonthlyCalendarView from "@/components/view/calendarView/MonthlyColendarV
 import ListViewEvent from "@/components/view/item-ListView/ListViewEvent";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { navigationBarHeight, spacing } from "@/configs/styles";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
@@ -162,16 +163,17 @@ export default function EventCalendar () {
   ), [theme.colors.text, t]);
 
 
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: "circle-medium",
       title: "SUBSCRIBING EVENTS",
       // onPress: () => {},
     }
-  ];
+  ], []);
+  useSideMenu(menuItems);
 
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen>
       <View style={styles.calendarContainer}>
         {isLoading && <LoadingIndicator absolute />}
         <MonthlyCalendarView

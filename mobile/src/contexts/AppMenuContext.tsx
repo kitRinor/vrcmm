@@ -1,6 +1,7 @@
 import GenericDialog from "@/components/layout/GenericDialog";
-import { useRouter } from "expo-router";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { MenuItem } from "@/components/layout/type";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BackHandler } from 'react-native';
 // provide menu state globally
@@ -8,6 +9,8 @@ import { BackHandler } from 'react-native';
 interface AppMenuContextType {
   openMenu: boolean; // use in GenericScreen, HeaderMenuButton
   setOpenMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  menuItems: MenuItem[] | null; // use in AppMenuDrawer
+  setMenuItems: React.Dispatch<React.SetStateAction<MenuItem[] | null>>;
   handleBack: () => void;
 }
 const Context = createContext<AppMenuContextType | undefined>(undefined);
@@ -22,6 +25,7 @@ const AppMenuProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   const [openMenu, setOpenMenu] = useState(false);
+  const [menuItems, setMenuItems] = useState<MenuItem[] | null>(null);
   const router = useRouter();
   const [ openExitDialog, setOpenExitDialog ] = useState(false);
   const { t } = useTranslation();
@@ -53,6 +57,8 @@ const AppMenuProvider: React.FC<{ children?: React.ReactNode }> = ({
     <Context.Provider value={{
       openMenu,
       setOpenMenu,
+      menuItems,
+      setMenuItems,
       handleBack,
     }}>
       {children}
@@ -68,4 +74,17 @@ const AppMenuProvider: React.FC<{ children?: React.ReactNode }> = ({
   );
 }
 
-export { AppMenuProvider, useAppMenu };
+/**
+ * メニューアイテムの登録用カスタムフック, (static or memorized じゃないとレンダーループするかも)
+ */
+const useSideMenu = (items: MenuItem[] | null) => {
+  const { setMenuItems } = useAppMenu();
+  useFocusEffect(
+    useCallback(() => {
+      setMenuItems(items);
+      return () => setMenuItems([]);
+    }, [items, setMenuItems])
+  );
+};
+
+export { AppMenuProvider, useAppMenu, useSideMenu };

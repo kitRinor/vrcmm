@@ -26,6 +26,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { useSetting } from "@/contexts/SettingContext";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -67,7 +68,7 @@ export default function AvatarDetail() {
 
   const isCurrentAvatar = data.currentUser.data?.currentAvatar === avatar?.id;
 
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: isFavorite ? "heart" : "heart-plus",
       title: isFavorite ? t("pages.detail_avatar.menuLabel_favoriteGroup_edit") : t("pages.detail_avatar.menuLabel_favoriteGroup_add"),
@@ -93,10 +94,12 @@ export default function AvatarDetail() {
       onPress: () => setOpenJson(true),
       hidden: !enableJsonViewer,
     },
-  ];
+  ], [isFavorite, isCurrentAvatar, avatar, enableJsonViewer, t, data.currentUser.data]);
+
+  useSideMenu(menuItems);
 
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen>
       {avatar ? (
         <View style={{ flex: 1 }}>
           <CardViewAvatarDetail avatar={avatar} style={[styles.cardView]} />

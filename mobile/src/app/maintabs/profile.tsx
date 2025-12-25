@@ -9,7 +9,7 @@ import { navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   RefreshControl,
   ScrollView,
@@ -27,6 +27,7 @@ import ChangeBioLinksModal from "@/components/modals/ChangeBioLinksModal";
 import JsonDataModal from "@/components/modals/JsonDataModal";
 import { routeToAvatar, routeToFavorites, routeToResources } from "@/libs/route";
 import { useTranslation } from "react-i18next";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function Profile() {
   const vrc = useVRChat();
@@ -39,7 +40,7 @@ export default function Profile() {
   const [openChangeBio, setOpenChangeBio] = useState(false);
   const [openChangeBioLinks, setOpenChangeBioLinks] = useState(false);
 
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: "playlist-edit",
       title: t("pages.profile.menuLabel_edit_bio"),
@@ -82,9 +83,12 @@ export default function Profile() {
       title: t("pages.profile.menuLabel_json"),
       onPress: () => setOpenJson(true),
     },
-  ];
+  ], [t, currentUser.data]);
+
+  useSideMenu(menuItems);
+
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen >
       {currentUser.data ? (
         <View style={{ height: "100%" }}>
           <CardViewUserDetail

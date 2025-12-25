@@ -82,7 +82,7 @@ export default function Favorites() {
     };
 
     return (
-      <View style={{ flex: 1 }}>
+      <GenericScreen>
         <SelectGroupButton
           style={styles.selectGroupButton}
           data={favoriteGroupsMap.worlds}
@@ -112,7 +112,7 @@ export default function Favorites() {
         ) : (
           <Text>{t("pages.favorites.no_favoritegroup_selected")}</Text>
         )}
-      </View>
+      </GenericScreen>
     );
   };
   const FriendsTab = () => {

@@ -17,6 +17,7 @@ import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { useSetting } from "@/contexts/SettingContext";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function GroupDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -30,6 +31,7 @@ export default function GroupDetail() {
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
+  const [mode, setMode] = useState<"info" | "activity">("info");
   const [openJson, setOpenJson] = useState(false);
 
 
@@ -46,7 +48,7 @@ export default function GroupDetail() {
     fetchGroup();
   }, []);
 
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: "circle-medium",
       title: "(REQUEST) JOIN GROUP or LEAVE GROUP",
@@ -65,10 +67,26 @@ export default function GroupDetail() {
       onPress: () => setOpenJson(true),
       hidden: !enableJsonViewer,
     },
+  ], [enableJsonViewer, t]);
+
+  useSideMenu(menuItems);
+
+  const tabItems: {
+    label: string;
+    value: typeof mode,
+  }[] = [
+    {
+      label: "INFO",
+      value: "info",
+    },
+    {
+      label: "ACTIVITY",
+      value: "activity",
+    },
   ];
 
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen>
       {group ? (
         <View style={{ flex: 1 }}>
           <CardViewGroupDetail group={group} style={[styles.cardView]} />

@@ -27,6 +27,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { useSetting } from "@/contexts/SettingContext";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -119,7 +120,8 @@ export default function UserDetail() {
   }, [user?.location]);
 
   const freReqStatus = user ? getFriendRequestStatus(user) : "null";
-  const menuItems: MenuItem[] = [
+
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: freReqStatus === "completed" ? "account-minus" : freReqStatus === "null" ? "account-plus" : "account-cancel",
       title: freReqStatus === "completed" ? t("pages.detail_user.menuLabel_friend_remove")
@@ -165,10 +167,12 @@ export default function UserDetail() {
       hidden: !enableJsonViewer,
     },
 
-  ];
+  ], [freReqStatus, isFavorite, locationInfo, enableJsonViewer, t]);
+
+  useSideMenu(menuItems);
 
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen>
       {user ? (
         <View style={{ flex: 1 }}>
           <CardViewUserDetail

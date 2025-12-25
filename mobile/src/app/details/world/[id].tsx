@@ -33,6 +33,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { useSetting } from "@/contexts/SettingContext";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -105,7 +106,7 @@ export default function WorldDetail() {
 
 
 
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: isFavorite ? "heart" : "heart-plus",
       title: isFavorite ? t("pages.detail_world.menuLabel_favoriteGroup_edit") : t("pages.detail_world.menuLabel_favoriteGroup_add"),
@@ -126,7 +127,9 @@ export default function WorldDetail() {
       onPress: () => setOpenJson(true),
       hidden: !enableJsonViewer,
     },
-  ];
+  ], [isFavorite, enableJsonViewer, t]);
+
+  useSideMenu(menuItems);
 
   const tabItems: {
     label: string;
@@ -143,7 +146,7 @@ export default function WorldDetail() {
   ];
 
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen>
       {world ? (
         <View style={{ flex: 1 }}>
           <CardViewWorldDetail world={world} style={[styles.cardView]} />

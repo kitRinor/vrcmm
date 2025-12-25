@@ -36,6 +36,7 @@ import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { t } from "i18next";
 import { useSetting } from "@/contexts/SettingContext";
+import { useSideMenu } from "@/contexts/AppMenuContext";
 
 type Owner =
   | { type: "user"; owner: UserLike }
@@ -105,7 +106,7 @@ export default function InstanceDetail() {
   }, [instance, instance?.users, instance?.ownerId]);
 
 
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: "circle-medium",
       title: "INVITE ME or REQUEST INVITE"
@@ -121,10 +122,11 @@ export default function InstanceDetail() {
       onPress: () => setOpenJson(true),
       hidden: !enableJsonViewer,
     },
-  ];
+  ], [enableJsonViewer, t]);
+  useSideMenu(menuItems);
 
   return (
-    <GenericScreen menuItems={menuItems}>
+    <GenericScreen>
       {instance ? (
         <View style={{ flex: 1 }}>
           <CardViewInstanceDetail instance={instance} style={[styles.cardView]} />

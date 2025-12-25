@@ -11,7 +11,8 @@ export default function NotificationsSettings() {
 
   return (
     <GenericScreen>
-      <Text style={{ color: theme.colors.text }}>notifications</Text>
+      <View></View>
+      {/* <Text style={{ color: theme.colors.text }}>notifications</Text> */}
     </GenericScreen>
   );
 }

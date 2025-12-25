@@ -17,6 +17,7 @@ import { useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 
 import '@/i18n'; // i18n 初期化
+import GlobalDrawer from "@/components/layout/GlobalDrawer";
 
 function RootLayout() {
   return (
@@ -52,7 +53,9 @@ export default function Root() {
                       >
                         <AppMenuProvider>
                           <ToastProvider>
-                            <RootLayout />
+                            <GlobalDrawer>
+                              <RootLayout />
+                            </GlobalDrawer>
                             <StatusBar style="auto" />
                           </ToastProvider>
                         </AppMenuProvider>

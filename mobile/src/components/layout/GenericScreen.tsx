@@ -24,33 +24,11 @@ const GenericScreen = ({
   children,
 }: Props) => {
   const theme = useTheme();
-  const { openMenu, setOpenMenu } = useAppMenu();
-
-  if (menuItems !== undefined) {
-    return (
-      <View style={styles.screenRoot}>
-
-        <Drawer
-          direction="rtl"
-          drawerStyle={[styles.drawer, { backgroundColor: theme.colors.card }]}
-          open={openMenu}
-          onOpen={() => setOpenMenu(true)}
-          onClose={() => setOpenMenu(false)}
-          renderDrawerContent={() => (
-            <DrawerContent menuItems={menuItems} setOpenMenu={setOpenMenu} />
-          )}
-        >
-          <ChildContainer scrollable={scrollable}>{children}</ChildContainer>
-        </Drawer>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.screenRoot}>
-        <ChildContainer scrollable={scrollable}>{children}</ChildContainer>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.screenRoot}>
+      <ChildContainer scrollable={scrollable}>{children}</ChildContainer>
+    </View>
+  );
 };
 
 const ChildContainer = ({ scrollable, children }: { scrollable: boolean; children: React.ReactNode }) => {
@@ -73,68 +51,11 @@ const ChildContainer = ({ scrollable, children }: { scrollable: boolean; childre
   }
 };
 
-const DrawerContent = ({
-  menuItems,
-  setOpenMenu,
-}: {
-  menuItems?: MenuItem[];
-  setOpenMenu: (open: boolean) => void;
-}) => {
-  const theme = useTheme();
-  return (
-    <View>
-      {menuItems?.map((item, index) => {
-        if (item.hidden) { // skip hidden items
-          return null;
-        }
-        // handle divider
-        if (item.type === "divider") {
-          return (
-            <View key={`menu-item-${index}-${item.title}`} style={[styles.drawerItemDivider, { borderBottomColor: theme.colors.subText }]} />
-          );
-        }
-        // handle normal item(= button)
-        const onPress = () => {
-          item.onPress?.();
-          setOpenMenu(false);
-        }
-        return (
-          <TouchableEx key={`menu-item-${index}-${item.title}`} onPress={onPress} style={styles.drawerItemContainer}>
-            {item.icon && (
-              <IconSymbol name={item.icon} size={20} color={theme.colors.text} />
-            )}
-            <Text style={{ color: theme.colors.text }}>{item.title}</Text>
-          </TouchableEx>
-        );
-      })}
-    </View>
-  );
-}
 
 const styles = StyleSheet.create({
   screenRoot: {
     // attach to Root-View
     flex: 1,
-  },
-  drawer: {
-    right: 0,
-    width: 200,
-    maxWidth: "66%",
-    // borderColor: "red", borderStyle: "dashed", borderWidth: 1,
-  },
-  drawerItemContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.medium,
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.large,
-    // borderColor: "blue", borderStyle: "dashed", borderWidth: 1,
-  },
-  drawerItemDivider: {
-    marginHorizontal: spacing.medium,
-    borderBottomWidth: 1,
-    marginVertical: spacing.small,
   },
   screenContainer: {
     flex: 1,

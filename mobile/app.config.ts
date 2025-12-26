@@ -65,7 +65,7 @@ export default ({ config }: ConfigContext) => ({
     scheme: "vrcp", // This is used for deep linking (ex. schema://internal/link)
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    owner: "ktrn-dev",
+    owner: "amgr-cc",
     updates: { // configure EAS Update
       url: "https://u.expo.dev/5dcb6ea7-b710-4155-9dc5-e4c5a9ce160d"
     },

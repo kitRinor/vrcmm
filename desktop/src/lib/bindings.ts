@@ -26,14 +26,7 @@ vrcLogEvent: "vrc-log-event"
 
 /** user-defined types **/
 
-/**
- * The actual payload structure sent to the frontend via the event system.
- */
 export type Payload = { event: VrcLogEvent; timestamp: string }
-/**
- * Enum representing specific events detected in VRChat logs.
- * This will be serialized and sent to the frontend.
- */
 export type VrcLogEvent = { type: "AppStart" } | { type: "AppStop" } | { type: "Login"; data: { username: string; user_id: string } } | { type: "WorldEnter"; data: { world_name: string } } | { type: "InstanceJoin"; data: { world_id: string; instance_id: string } } | { type: "PlayerJoin"; data: { player_name: string; user_id: string } } | { type: "PlayerLeft"; data: { player_name: string; user_id: string } } | { type: "SelfLeft" }
 
 /** tauri-specta globals **/

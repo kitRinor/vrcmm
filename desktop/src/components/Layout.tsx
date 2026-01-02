@@ -1,12 +1,12 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Activity, Settings, History } from "lucide-react"; // アイコン
+import { Activity, Settings, BarChart3 } from "lucide-react"; // アイコン
 
 export default function Layout() {
   const location = useLocation();
 
   const navItems = [
     { path: "/", label: "Monitor", icon: Activity },
-    { path: "/history", label: "History", icon: History },
+    { path: "/history", label: "History", icon: BarChart3 },
     { path: "/settings", label: "Settings", icon: Settings },
   ];
 
@@ -15,7 +15,7 @@ export default function Layout() {
       {/* Sidebar */}
       <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col p-4">
         <h1 className="text-xl font-bold mb-8 px-2 tracking-tight text-blue-400">
-          VRCP Monitor
+          VRCP Desktop
         </h1>
 
         <nav className="flex flex-col gap-2">

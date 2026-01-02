@@ -36,6 +36,7 @@ rusqlite = { version = "0.38.0", features = ["bundled"] }
 tower-http = { version = "0.6.8", features = ["cors"] }
 axum = "0.8.8"
 local-ip-address = "0.6.8"
+tauri-plugin-dialog = "2"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-autostart = "2"

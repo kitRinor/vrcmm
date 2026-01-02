@@ -13,6 +13,8 @@ pub fn create_specta_builder() -> SpectaBuilder {
             modules::server::get_server_port,
             modules::server::get_server_url,
             modules::db::get_logs,
+            modules::db::delete_all_logs,
+            modules::db::export_logs,
         ])
         .events(collect_events![
             modules::watcher::Payload,
@@ -29,6 +31,7 @@ pub fn run() {
     let builder = create_specta_builder();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         // .plugin(tauri_plugin_autostart::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,

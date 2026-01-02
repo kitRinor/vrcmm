@@ -1,6 +1,7 @@
 use super::watcher::{Payload, VrcLogEvent};
 use rusqlite::{params, Connection};
 use std::fs;
+use std::io;
 use std::sync::{Arc, Mutex};
 
 // エラーハンドリング用
@@ -135,6 +136,16 @@ impl LogDatabase {
 
         Ok(logs)
     }
+
+    /// ログを全て削除し、DBのファイルサイズを最小化(VACUUM)する
+    pub fn delete_all_logs(&self) -> DbResult<()> {
+        let conn = self.conn.lock().unwrap();
+        // 1. 全削除
+        conn.execute("DELETE FROM logs", [])?;
+        // 2. 空き領域の解放 (ファイルサイズを小さくする)
+        conn.execute("VACUUM", [])?;
+        Ok(())
+    }
 }
 
 // commands
@@ -149,4 +160,28 @@ pub fn get_logs(
     // db.get_logs の frontからの呼び出し
     db.get_logs(start.as_deref(), end.as_deref())
         .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn delete_all_logs(db: tauri::State<'_, LogDatabase>) -> Result<(), String> {
+    db.delete_all_logs().map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn export_logs(db: tauri::State<'_, LogDatabase>, file_path: String) -> Result<usize, String> {
+    // 1. 全ログを取得 (since=None, until=None で全期間)
+    let logs = db.get_logs(None, None).map_err(|e| e.to_string())?;
+    let count = logs.len();
+
+    // 2. ファイルを作成
+    let file = fs::File::create(file_path).map_err(|e| e.to_string())?;
+    let writer = io::BufWriter::new(file);
+
+    // 3. JSONとして書き出し (Pretty Printで見やすく)
+    serde_json::to_writer_pretty(writer, &logs).map_err(|e| e.to_string())?;
+
+    Ok(count)
 }

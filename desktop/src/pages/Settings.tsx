@@ -3,13 +3,15 @@ import QRCode from "react-qr-code";
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import { commands } from "../generated/bindings";
 import { useLogContext } from "../context/LogContext";
-// Globe アイコンを追加
-import { Smartphone, Power, Globe } from "lucide-react";
+import { save, ask } from "@tauri-apps/plugin-dialog";
+import { Smartphone, Power, Globe, Database, Download, Trash2, AlertTriangle } from "lucide-react";
 
 export default function Settings() {
   const { serverUrl } = useLogContext();
   const [autoStart, setAutoStart] = useState(false);
   const [portInput, setPortInput] = useState<string | null>(null);
+
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     // 自動起動設定の確認
@@ -57,11 +59,65 @@ export default function Settings() {
     }
   };
 
-  return (
-    <div className="p-8 max-w-4xl mx-auto w-full overflow-y-auto font-sans">
-      <h2 className="text-3xl font-bold mb-8 border-b border-slate-700 pb-4">Settings</h2>
+  const handleExport = async () => {
+    try {
+      // 1. 保存先ダイアログを表示
+      const filePath = await save({
+        filters: [{ name: 'JSON', extensions: ['json'] }],
+        defaultPath: 'vrcp_logs_backup.json',
+      });
 
-      <div className="grid gap-8">
+      if (!filePath) return; // キャンセルされた場合
+
+      setIsProcessing(true);
+
+      // 2. Rustへパスを渡して書き出し実行
+      const result = await commands.exportLogs(filePath);
+
+      if (typeof result === 'number') {
+        alert(`Export successful!\nSaved ${result} records.`);
+      } else {
+        // Result型でラップされている場合 (bindingsの生成設定による)
+        // alert("Export complete.");
+      }
+
+    } catch (e) {
+      console.error(e);
+      alert(`Export failed: ${e}`);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleClear = async () => {
+    // 1. 確認ダイアログ (Tauriのネイティブダイアログ推奨)
+    const confirmed = await ask("Are you sure you want to delete ALL logs?\nThis action cannot be undone.", {
+      title: 'Danger: Clear Database',
+      kind: 'warning',
+    });
+
+    if (!confirmed) return;
+
+    setIsProcessing(true);
+    try {
+      await commands.deleteAllLogs();
+      alert("Database cleared successfully.");
+    } catch (e) {
+      console.error(e);
+      alert(`Failed to clear database: ${e}`);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      <header className="flex justify-between items-center p-6">
+        <h2 className="text-2xl font-bold">Settings</h2>
+      </header>
+
+
+      <div className="grid gap-8 p-6 overflow-y-auto ">
 
 
         {/* Mobile Connection */}
@@ -131,6 +187,50 @@ export default function Settings() {
                 className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition shadow-lg shadow-blue-900/20 font-medium"
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Data Management Section */}
+        <section className="bg-slate-800/40 p-6 rounded-xl border border-slate-700">
+          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Database className="text-yellow-400" /> Data Management
+          </h3>
+
+          <div className="space-y-6">
+            {/* Export */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-700/50">
+              <div>
+                <p className="font-medium flex items-center gap-2">
+                  <Download size={18} className="text-blue-400" /> Export Data
+                </p>
+                <p className="text-sm text-slate-400">Save all logs to a JSON file for backup.</p>
+              </div>
+              <button
+                onClick={handleExport}
+                disabled={isProcessing}
+                className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg transition disabled:opacity-50 flex items-center gap-2"
+              >
+                {isProcessing ? "Processing..." : "Export JSON"}
+              </button>
+            </div>
+
+            {/* Clear */}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium flex items-center gap-2 text-red-400">
+                  <Trash2 size={18} /> Clear Database
+                </p>
+                <p className="text-sm text-slate-400">Permanently delete all logs from the database.</p>
+              </div>
+              <button
+                onClick={handleClear}
+                disabled={isProcessing}
+                className="border border-red-500/30 text-red-400 hover:bg-red-500/10 px-4 py-2 rounded-lg transition disabled:opacity-50 flex items-center gap-2"
+              >
+                <AlertTriangle size={16} />
+                Delete All
               </button>
             </div>
           </div>

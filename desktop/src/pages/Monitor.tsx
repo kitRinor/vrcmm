@@ -25,8 +25,8 @@ export default function Monitor() {
   };
 
   return (
-    <div className="flex flex-col h-full p-6">
-      <header className="flex justify-between items-center mb-4">
+    <div className="flex flex-col h-full">
+      <header className="flex justify-between items-center p-6">
         <h2 className="text-2xl font-bold">Realtime Logs</h2>
         <div className="flex gap-4 text-sm text-slate-400">
           <span>Total: {logs.length}</span>
@@ -34,7 +34,7 @@ export default function Monitor() {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto bg-slate-800/50 rounded-xl p-4 shadow-inner border border-slate-700/50 font-mono text-sm">
+      <div className="flex-1 overflow-y-auto bg-slate-800/50 rounded-xl m-6 shadow-inner border border-slate-700/50 font-mono text-sm">
         {logs.length === 0 ? (
           <div className="h-full flex items-center justify-center text-slate-500">
             Running... Waiting for logs.

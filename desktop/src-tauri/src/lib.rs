@@ -1,6 +1,4 @@
 mod modules;
-use modules::db::LogDatabase;
-use modules::watcher::{Payload, VrcLogEvent};
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
 
 // ---------------------------------------------------------
@@ -9,8 +7,11 @@ use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
 
 pub fn create_specta_builder() -> SpectaBuilder {
     SpectaBuilder::new()
-        .commands(collect_commands![])
-        .events(collect_events![Payload, VrcLogEvent])
+        .commands(collect_commands![modules::server::get_server_url])
+        .events(collect_events![
+            modules::watcher::Payload,
+            modules::watcher::VrcLogEvent
+        ])
 }
 
 // ---------------------------------------------------------
@@ -28,10 +29,11 @@ pub fn run() {
             builder.mount_events(app);
 
             // DB 初期化
-            let db = LogDatabase::new().expect("failed to initialize database");
+            let db = modules::db::LogDatabase::new().expect("failed to initialize database");
             // Watcher起動
-            modules::watcher::spawn_log_watcher(app.handle().clone(), db);
+            modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
 
+            modules::server::spawn_server(db);
             Ok(())
         })
         .run(tauri::generate_context!())

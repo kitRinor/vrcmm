@@ -2,7 +2,6 @@ use super::watcher::{Payload, VrcLogEvent};
 use rusqlite::{params, Connection};
 use std::fs;
 use std::sync::{Arc, Mutex};
-
 // エラーハンドリング用
 type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
 
@@ -72,5 +71,41 @@ impl LogDatabase {
         )?;
 
         Ok(())
+    }
+
+    /// Retrieve logs newer than the specified timestamp.
+    /// timestamp format: "YYYY.MM.DD HH:mm:ss" (Same as VRChat log format)
+    pub fn get_logs_since(&self, since_timestamp: &str) -> DbResult<Vec<Payload>> {
+        let conn = self.conn.lock().unwrap();
+
+        // Prepare the SQL query
+        // String comparison works for ISO-like dates (YYYY.MM.DD...)
+        let mut stmt = conn.prepare(
+            "SELECT timestamp, data FROM logs
+             WHERE timestamp > ?1
+             ORDER BY timestamp ASC",
+        )?;
+
+        // Map the rows to Payload objects
+        let log_iter = stmt.query_map(params![since_timestamp], |row| {
+            let timestamp: String = row.get(0)?;
+            let data_json: String = row.get(1)?;
+
+            // Deserialize JSON string back to VrcLogEvent Enum
+            // Note: Since we are inside a closure returning rusqlite::Result,
+            // we map serde errors to a custom error or panic (here we treat as error)
+            let event: VrcLogEvent = serde_json::from_str(&data_json)
+                .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
+
+            Ok(Payload { event, timestamp })
+        })?;
+
+        // Collect results into a Vec
+        let mut logs = Vec::new();
+        for log in log_iter {
+            logs.push(log?);
+        }
+
+        Ok(logs)
     }
 }

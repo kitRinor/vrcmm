@@ -1,5 +1,5 @@
 use regex::{Captures, Regex};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
@@ -16,7 +16,7 @@ use crate::modules::db::LogDatabase;
 // (イベント定義や正規表現など、データの「中身」に関する処理)
 // ================================================================
 
-#[derive(Clone, Serialize, Debug, Type, Event)]
+#[derive(Clone, Serialize, Debug, Type, Event, Deserialize)]
 #[serde(tag = "type", content = "data")]
 pub enum VrcLogEvent {
     AppStart,
@@ -43,7 +43,7 @@ pub enum VrcLogEvent {
     SelfLeft,
 }
 
-#[derive(Clone, Serialize, Type, Event)]
+#[derive(Clone, Serialize, Deserialize, Type, Event)]
 pub struct Payload {
     pub event: VrcLogEvent,
     pub timestamp: String,

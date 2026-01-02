@@ -2,7 +2,6 @@ use super::watcher::{Payload, VrcLogEvent};
 use rusqlite::{params, Connection};
 use std::fs;
 use std::sync::{Arc, Mutex};
-use tauri::Manager;
 
 // エラーハンドリング用
 type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
@@ -14,13 +13,7 @@ pub struct LogDatabase {
 
 impl LogDatabase {
     /// データベースを初期化する
-    pub fn new(app: tauri::AppHandle) -> DbResult<Self> {
-        // 1. AppData\Local\{cc.amgr.vrcp} のパス取得
-        let app_dir = app
-            .path()
-            .app_local_data_dir()
-            .expect("failed to resolve app local data dir");
-
+    pub fn new(app_dir: std::path::PathBuf) -> DbResult<Self> {
         // 3. ディレクトリが存在しなければ作成
         if !app_dir.exists() {
             fs::create_dir_all(&app_dir)?;
@@ -116,7 +109,7 @@ impl LogDatabase {
         let mut stmt = conn.prepare(
             "SELECT timestamp, data FROM logs
              WHERE timestamp > ?1 AND timestamp <= ?2
-             ORDER BY timestamp ASC",
+             ORDER BY timestamp ASC, id ASC",
         )?;
         let start = start_timestamp.unwrap_or("1970-01-01 00:00:00");
         let end = end_timestamp.unwrap_or("9999-12-31 23:59:59");

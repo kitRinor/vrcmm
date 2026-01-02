@@ -124,12 +124,11 @@ fn get_compiled_matchers() -> &'static Vec<CompiledMatcher> {
             .collect()
     })
 }
-
-/// 1行を解析してイベントを送信する内部関数
-fn process_log_line(line: &str, app: &AppHandle, db: &LogDatabase) {
+/// 1行を解析してPayloadを返す
+pub fn parse_log_line(line: &str) -> Option<Payload> {
     let line = line.trim();
     if line.is_empty() {
-        return;
+        return None;
     }
 
     for matcher in get_compiled_matchers() {
@@ -139,23 +138,28 @@ fn process_log_line(line: &str, app: &AppHandle, db: &LogDatabase) {
                 .get(1)
                 .map_or("unknown", |m| m.as_str())
                 .to_string()
-                .replace(".", "-"); // normalize to YYYY-MM-DD HH:mm:ss
+                .replace(".", "-"); // normalize
 
-            let payload = Payload {
+            return Some(Payload {
                 event: event_data,
                 timestamp,
-            };
-            // to frontend
-            if let Err(e) = Payload::emit(&payload, app) {
-                eprintln!("Failed to emit log event: {}", e);
-            }
-
-            // to DataBase
-            if let Err(e) = db.insert_log(&payload) {
-                eprintln!("Failed to save log to DB: {}", e);
-            }
-            return;
+            });
         }
+    }
+    None
+}
+/// 1行解析してイベントを送信する内部関数
+fn process_log_line(line: &str, app: &AppHandle, db: &LogDatabase) {
+    if let Some(payload) = parse_log_line(line) {
+        // to frontend
+        if let Err(e) = Payload::emit(&payload, app) {
+            eprintln!("Failed to emit log event: {}", e);
+        }
+        // to DataBase
+        if let Err(e) = db.insert_log(&payload) {
+            eprintln!("Failed to save log to DB: {}", e);
+        }
+        return;
     }
 }
 

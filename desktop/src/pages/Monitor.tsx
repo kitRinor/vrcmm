@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useLogContext } from "../context/LogContext";
-import { type VrcLogEvent } from "../lib/bindings";
+import { type VrcLogEvent } from "../generated/bindings";
 
 export default function Monitor() {
   const { logs, clearLogs } = useLogContext();

@@ -13,9 +13,9 @@ fn main() {
                 .bigint(BigIntExportBehavior::Number) // BigIntをnumberとして扱う
                 .formatter(specta_typescript::formatter::prettier)
                 .header("// @ts-nocheck\n/* eslint-disable */"),
-            "../src/lib/bindings.ts",
+            "../src/generated/bindings.ts",
         )
         .expect("Failed to export typescript bindings");
 
-    println!("✅ Bindings generated at ../src/lib/bindings.ts");
+    println!("✅ Bindings generated at ../src/generated/bindings.ts");
 }

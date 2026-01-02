@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
-import { commands } from "../lib/bindings";
+import { commands } from "../generated/bindings";
 import { useLogContext } from "../context/LogContext";
 // Globe アイコンを追加
 import { Smartphone, Power, Globe } from "lucide-react";

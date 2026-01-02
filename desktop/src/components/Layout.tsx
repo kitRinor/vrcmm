@@ -1,11 +1,12 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Activity, Settings } from "lucide-react"; // アイコン
+import { Activity, Settings, History } from "lucide-react"; // アイコン
 
 export default function Layout() {
   const location = useLocation();
 
   const navItems = [
     { path: "/", label: "Monitor", icon: Activity },
+    { path: "/history", label: "History", icon: History },
     { path: "/settings", label: "Settings", icon: Settings },
   ];
 
@@ -26,8 +27,8 @@ export default function Layout() {
                 key={item.path}
                 to={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${isActive
-                    ? "bg-blue-600/20 text-blue-400 font-medium"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                  ? "bg-blue-600/20 text-blue-400 font-medium"
+                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
                   }`}
               >
                 <Icon size={20} />

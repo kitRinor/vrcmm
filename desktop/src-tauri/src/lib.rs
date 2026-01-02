@@ -1,4 +1,4 @@
-mod modules;
+pub mod modules;
 use tauri::Manager;
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
 
@@ -40,8 +40,13 @@ pub fn run() {
             builder.mount_events(app);
 
             // DB 初期化
-            let db = modules::db::LogDatabase::new(app.handle().clone())
-                .expect("failed to initialize database");
+            let db = modules::db::LogDatabase::new(
+                app.handle()
+                    .path()
+                    .app_local_data_dir()
+                    .expect("failed to resolve app local data dir"),
+            )
+            .expect("failed to initialize database");
             app.manage(db.clone());
             // Watcher起動
             modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());

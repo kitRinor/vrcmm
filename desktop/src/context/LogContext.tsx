@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { events, commands, type Payload } from "../lib/bindings";
+import { events, commands, type Payload } from "../generated/bindings";
 
 interface LogContextType {
   logs: Payload[];

@@ -64,10 +64,6 @@ pub fn get_server_url(db: tauri::State<'_, LogDatabase>) -> Result<String, Strin
 
     let port_str = db.get_setting("port").unwrap_or(SERVER_PORT.to_string());
     let port: u16 = port_str.parse().unwrap_or(SERVER_PORT);
-    println!(
-        "get_server_url: Providing server URL: http://{}:{}",
-        ip, port
-    );
     Ok(format!("http://{}:{}", ip, port))
 }
 
